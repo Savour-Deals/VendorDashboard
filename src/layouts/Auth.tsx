@@ -1,8 +1,11 @@
 import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import { Route, Switch } from "react-router-dom";
+import { AuthNavbar } from "../components/Navbars/AuthNavbar";
+import { AuthFooter } from "../components/Footers/AuthFooter";
+import routes from "../routes";
 
-export const getRoutes = (routes: PageRoute) => {
+export const getRoutes = (routes: PageRoute[]) => {
     return routes.map((prop, key) => {
       if (prop.layout === "/auth") {
         return (

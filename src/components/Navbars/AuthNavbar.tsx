@@ -13,7 +13,7 @@ import {
   Col
 } from "reactstrap";
 
-export const AdminNavbar: React.FC = () => {
+export const AuthNavbar: React.FC = () => {
     return(
         <>
         <Navbar
