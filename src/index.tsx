@@ -4,16 +4,16 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { Auth } from './layouts/Auth';
+import { AuthLayout } from './layouts/Auth';
 
 import "assets/vendor/nucleo/css/nucleo.css";
 import "assets/vendor/@fortawesome/fontawesome-free/css/all.min.css";
-import "assets/scss/argon-dashboard-react.scss";
+import "assets/css/argon-dashboard-react.css";
 
 ReactDOM.render(
     <BrowserRouter>
         <Switch>
-        <Route path="/" render={props => <Auth/>}/>
+        <Route path="/" render={props => <AuthLayout {...props}/>}/>
         </Switch>
     </BrowserRouter>
     , 

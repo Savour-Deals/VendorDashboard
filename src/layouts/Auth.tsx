@@ -5,23 +5,23 @@ import { AuthNavbar } from "../components/Navbars/AuthNavbar";
 import { AuthFooter } from "../components/Footers/AuthFooter";
 import routes from "../routes";
 
-export const getRoutes = (routes: PageRoute[]) => {
-    return routes.map((prop, key) => {
-      if (prop.layout === "/auth") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
-        );
-      } else {
-        return null;
-      }
-    });
-  };
 
-export const Auth: React.FC = () => {
+export const AuthLayout: React.FC<any> = (props) => {
+    const getRoutes = (routes: PageRoute[]) => {
+        return routes.map((prop, key) => {
+          if (prop.layout === "/auth") {
+            return (
+              <Route
+                path={prop.layout + prop.path}
+                component={prop.component}
+                key={key}
+              />
+            );
+          } else {
+            return null;
+          }
+        });
+      };
     return (
         <>
         <div className="main-content">

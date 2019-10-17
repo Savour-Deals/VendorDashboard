@@ -19,7 +19,7 @@
 // import Profile from "views/examples/Profile.jsx";
 // import Maps from "views/examples/Maps.jsx";
 // import Register from "views/examples/Register.jsx";
-// import Login from "views/examples/Login.jsx";
+import Login from "./views/examples/Login";
 // import Tables from "views/examples/Tables.jsx";
 // import Icons from "views/examples/Icons.jsx";
 
@@ -61,13 +61,13 @@ var routes: PageRoute[] = [
 //     component: Tables,
 //     layout: "/admin"
 //   },
-//   {
-//     path: "/login",
-//     name: "Login",
-//     icon: "ni ni-key-25 text-info",
-//     component: Login,
-//     layout: "/auth"
-//   },
+  {
+    path: "/login",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: Login,
+    layout: "/auth"
+  },
 //   {
 //     path: "/register",
 //     name: "Register",
