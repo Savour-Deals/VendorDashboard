@@ -10,11 +10,15 @@ import "assets/vendor/nucleo/css/nucleo.css";
 import "assets/vendor/@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/css/argon-dashboard-react.css";
 
+// placeholder value
+const isAuthenticated = false;
+
 ReactDOM.render(
     <BrowserRouter>
         <Switch>
         <Route path="/" render={props => <AuthLayout {...props}/>}/>
         </Switch>
+        {(isAuthenticated) ? <Redirect from="/" to="/admin/index"/> : <Redirect from="/" to ="/auth/login"/>}
     </BrowserRouter>
     , 
     document.getElementById('root')
