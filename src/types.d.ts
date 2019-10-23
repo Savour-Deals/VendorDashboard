@@ -2,6 +2,6 @@ declare interface PageRoute {
     path: string;
     name: string;
     icon: string;
-    component: React.FC;
+    component: any;
     layout: string;
 }

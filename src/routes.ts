@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 // */
-// import Index from "views/Index.jsx";
+import Index from "./App";
 // import Profile from "views/examples/Profile.jsx";
 // import Maps from "views/examples/Maps.jsx";
 // import Register from "views/examples/Register.jsx";
@@ -26,13 +26,13 @@ import Login from "./views/examples/Login";
 
 
 var routes: PageRoute[] = [
-//   {
-//     path: "/index",
-//     name: "Dashboard",
-//     icon: "ni ni-tv-2 text-primary",
-//     component: Index,
-//     layout: "/admin"
-//   },
+  {
+    path: "/index",
+    name: "Dashboard",
+    icon: "ni ni-tv-2 text-primary",
+    component: Index,
+    layout: "/admin"
+  },
 //   {
 //     path: "/icons",
 //     name: "Icons",
