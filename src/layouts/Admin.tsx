@@ -3,9 +3,9 @@ import { Route, Switch } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-import AdminNavbar from "../components/Navbars/AdminNavbar";
-import AdminFooter from "../components/Footers/AdminFooter";
-import Sidebar from "../components/Sidebar/Sidebar";
+import { AdminNavbar } from "../components/Navbars/AdminNavbar";
+import { AdminFooter } from "../components/Footers/AdminFooter";
+import { Sidebar } from "../components/Sidebar/Sidebar";
 
 import routes from "../routes";
 
@@ -38,7 +38,7 @@ const getRoutes = (routes: any) => {
     return "Brand";
   };
 
-export const AdminLayout: React.FC = (props: any) => {
+export const AdminLayout: React.FC<any> = (props) => {
     return(
         <>
         <Sidebar

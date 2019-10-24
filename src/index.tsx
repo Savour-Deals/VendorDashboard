@@ -11,7 +11,7 @@ import "assets/vendor/@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/css/argon-dashboard-react.css";
 
 // placeholder value
-const isAuthenticated = false;
+const isAuthenticated = true;
 
 ReactDOM.render(
     <BrowserRouter>
