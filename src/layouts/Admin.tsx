@@ -3,9 +3,9 @@ import { Route, Switch } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
-import AdminFooter from "components/Footers/AdminFooter.jsx";
-import Sidebar from "../components/";
+import AdminNavbar from "../components/Navbars/AdminNavbar";
+import AdminFooter from "../components/Footers/AdminFooter";
+import Sidebar from "../components/Sidebar/Sidebar";
 
 import routes from "../routes";
 

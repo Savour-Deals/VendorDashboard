@@ -37,8 +37,21 @@ import {
 export const Sidebar: React.FC = (props: any) => {
 
   const { routes, logo } = props;
-  
+
   const [ collapseOpen, setCollapseOpen ] = useState(false);
+
+  let navbarBrandProps;
+  if (logo && logo.innerLink) {
+    navbarBrandProps = {
+      to: logo.innerLink,
+      tag: Link
+    };
+  } else if (logo && logo.outterLink) {
+    navbarBrandProps = {
+      href: logo.outterLink,
+      target: "_blank"
+    };
+  }
   
 // verifies if routeName is the one active (in browser input)
 const activeRoute = (routeName: any) => {
