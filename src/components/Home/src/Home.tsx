@@ -1,5 +1,6 @@
 import React from "react";
 import { HomeHeader } from "./HomeHeader";
+import { HomeBody } from "./HomeBody";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,7 +29,13 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Home: React.FC = () => {
   return (
     <>
-    <HomeHeader/>
+    <div>
+    
+      <HomeHeader/>
+    </div>
+    <div>
+      <HomeBody/>
+    </div>
     </>
   );
 }

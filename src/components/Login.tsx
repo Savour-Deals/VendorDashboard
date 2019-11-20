@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Login: React.FC<any> = (props) => {
+
   const { isAuthenticated } = props;
 
   if (isAuthenticated) return <Redirect to="/index" />;
@@ -30,7 +31,6 @@ const Login: React.FC<any> = (props) => {
   return(
     <>
     <Grid container item spacing={1} xs={12}>
-
       <Card>
         <CardHeader>
         </CardHeader>
