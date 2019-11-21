@@ -9,10 +9,12 @@ import {
   createStyles, 
   Theme, 
   TextField,
-  CardMedia
+  CardMedia,
+  Typography
 } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
+import {useSpring, animated} from 'react-spring'
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,7 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       maxWidth: "400px",
       margin: theme.spacing(3),
-      display: "inline-block"
+      display: "inline-block",
+
 
     },
     root: {
@@ -36,11 +39,18 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#49ABAA",
 
       
-  }
+    },
+    createAccount: {
+      margin: theme.spacing(2),
+      cursor: "pointer"
+    },
+
   }),
 );
 
 export const Login: React.FC<any> = (props) => {
+
+  const springProps = useSpring({opacity: 1, from: {opacity: 0}})
 
   const { isAuthenticated } = props;
   const styles = useStyles();
@@ -48,7 +58,7 @@ export const Login: React.FC<any> = (props) => {
   if (isAuthenticated) return <Redirect to="/index" />;
 
   return(
-    <div className={styles.root}>
+    <animated.div className={styles.root} style={springProps}>
       <Card className={styles.card}>
         {/* <CardHeader
         /> */}
@@ -58,7 +68,6 @@ export const Login: React.FC<any> = (props) => {
           title="logo"
         />
         <CardContent>
-          <h1>Sign In</h1>
           <form>
             
             <TextField
@@ -74,10 +83,10 @@ export const Login: React.FC<any> = (props) => {
             />
           </form>
 
-          <h4>Don't Have an Account? Click Here!</h4>
+        <Typography className={styles.createAccount} onClick={() => console.log("TEST")}>Don't Have an Account? Click Here!</Typography>
         </CardContent>
       </Card>
-    </div>
+    </animated.div>
   );
 }
 
