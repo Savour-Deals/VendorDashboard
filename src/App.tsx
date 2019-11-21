@@ -1,7 +1,7 @@
 import React from "react";
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import  Login  from "./components/Login";
+import  { Login }  from "./components/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Home } from "./components/Home/";
 
@@ -9,7 +9,7 @@ import "./assets/vendor/nucleo/css/nucleo.css";
 import "./assets/vendor/@fortawesome/fontawesome-free/css/all.min.css";
 import "./assets/css/argon-dashboard-react.css";
 
-const isAuthenticated = true;
+const isAuthenticated = false;
 
 const loginProps = { isAuthenticated };
 

@@ -23,8 +23,8 @@ interface HomeBodyProps {
 
 export const HomeBody: React.FC<HomeBodyProps> = props => {
   return (
-    <div>
-      <h1>Homebody</h1>
-    </div>
+    <>
+      
+    </>
   );
 }
