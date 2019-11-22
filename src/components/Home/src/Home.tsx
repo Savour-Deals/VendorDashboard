@@ -2,6 +2,7 @@ import React from "react";
 import { HomeHeader } from "./HomeHeader";
 import { HomeBody } from "./HomeBody";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import {useSpring, animated} from 'react-spring'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,16 +27,19 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+
 export const Home: React.FC = () => {
+  const springProps = useSpring({opacity: 1, from: {opacity: 0}})
+
   return (
-    <>
-    <div>
-    
-      <HomeHeader/>
-    </div>
-    <div>
-      <HomeBody/>
-    </div>
-    </>
+    <animated.div style={springProps}>
+      <div>
+      
+        <HomeHeader/>
+      </div>
+      <div>
+        <HomeBody/>
+      </div>
+    </animated.div>
   );
 }
