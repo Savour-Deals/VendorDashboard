@@ -17,12 +17,11 @@ import {
 import { Redirect } from "react-router-dom";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
 import {useSpring, animated} from 'react-spring'
-
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     card: {
-      maxWidth: "400px",
       margin: theme.spacing(3),
       display: "inline-block",
 
@@ -37,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
     },
     img: {
+      width: "100%",
       height: 125,
       backgroundColor: "#49ABAA",
 
@@ -57,11 +57,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const Login: React.FC<any> = (props) => {
 
-  const springProps = useSpring({opacity: 1, from: {opacity: 0}})
+  const { isAuthenticated } = props;
+
+  const springProps = useSpring({opacity: 1, from: {opacity: 0}});
+
+  const styles = useStyles();
+  const history = useHistory();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { isAuthenticated } = props;
-  const styles = useStyles();
+
+  const validateForm = () => email.length > 0 && password.length > 0;
 
   function handleLogin() {
     
@@ -107,29 +113,24 @@ export const Login: React.FC<any> = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-
-              <TextField
-                id="password"
-                label="Password"
-                type="password"
-                onChange={handlePasswordChange}
-              />
-                            </Grid>
-
-                            <Grid item xs={12}>
-
-              <Button
-                variant="contained"
-                className={styles.button}
-              >
-                Sign In
-              </Button>
+                <TextField
+                  id="password"
+                  label="Password"
+                  type="password"
+                  onChange={handlePasswordChange}
+                />
               </Grid>
-
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  className={styles.button}
+                >
+                  Sign In
+                </Button>
+              </Grid>
             </Grid>
           </form>
-
-        <Typography className={styles.createAccount} onClick={() => console.log("TEST")}>Don't Have an Account? Click Here!</Typography>
+        <Typography className={styles.createAccount} onClick={() => history.push("/create-account")}>Don't Have an Account? Click Here!</Typography>
         </CardContent>
       </Card>
     </animated.div>
