@@ -18,6 +18,15 @@ import { Redirect } from "react-router-dom";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
 import {useSpring, animated} from 'react-spring'
 import { useHistory } from "react-router-dom";
+import { Auth } from "aws-amplify";
+
+async function signIn(email: string, password: string) {
+  try {
+    const user = Auth.signIn(email,password);
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,6 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
       color: "white",
+      margin: theme.spacing(2),
     },
 
   }),
@@ -70,7 +80,7 @@ export const Login: React.FC<any> = (props) => {
   const validateForm = () => email.length > 0 && password.length > 0;
 
   function handleLogin() {
-    
+    signIn(email,password);
   }
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
@@ -123,6 +133,7 @@ export const Login: React.FC<any> = (props) => {
               <Grid item xs={12}>
                 <Button
                   variant="contained"
+                  onClick={handleLogin}
                   className={styles.button}
                 >
                   Sign In

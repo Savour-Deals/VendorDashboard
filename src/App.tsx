@@ -5,9 +5,11 @@ import  { Login }  from "./components/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Home } from "./components/Home/";
 import { CreateAccount } from "./components/CreateAccount";
-import "./assets/vendor/nucleo/css/nucleo.css";
-import "./assets/vendor/@fortawesome/fontawesome-free/css/all.min.css";
-import "./assets/css/argon-dashboard-react.css";
+import Amplify from 'aws-amplify';
+import awsconfig from './aws-exports';
+import { withAuthenticator } from 'aws-amplify-react'; // or 'aws-amplify-react-native';
+
+Amplify.configure(awsconfig);
 
 const isAuthenticated = false;
 
