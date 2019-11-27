@@ -16,56 +16,64 @@ import {
 } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
+import Background from "../assets/img/brand/vendorbackground.jpg";
+import Paper from "@material-ui/core/Paper";
 import {useSpring, animated} from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify";
 
-async function signIn(email: string, password: string) {
-  try {
-    const user = Auth.signIn(email,password);
-  } catch(err) {
-    console.log(err);
-  }
-}
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      margin: theme.spacing(3),
-      display: "inline-block",
-
-
-    },
-    root: {
-      textAlign: "center",
-      padding: theme.spacing(1),
-    },
-    header: {
-      backgroundColor: "#49ABAA",
-
-    },
-    img: {
-      width: "100%",
-      height: 125,
-      backgroundColor: "#49ABAA",
-
-      
-    },
-    createAccount: {
-      margin: theme.spacing(2),
-      cursor: "pointer"
-    },
-
-    button: {
-      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-      color: "white",
-      margin: theme.spacing(2),
-    },
-
-  }),
-);
 
 export const Login: React.FC<any> = (props) => {
+
+  async function signIn(email: string, password: string) {
+    try {
+      const user = Auth.signIn(email,password);
+    } catch(err) {
+      console.log(err);
+    }
+  }
+  
+  const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+      card: {
+        margin: theme.spacing(3),
+        display: "inline-block",
+  
+  
+      },
+      root: {
+        textAlign: "center",
+        padding: theme.spacing(1),
+        backgroundImage: `url(${Background})`,
+        backgroundSize: "cover",
+        overflow: "hidden",
+        height: "100%"
+      },
+      header: {
+        backgroundColor: "#49ABAA",
+  
+      },
+      img: {
+        width: "100%",
+        height: 125,
+        backgroundColor: "#49ABAA",
+  
+        
+      },
+      createAccount: {
+        margin: theme.spacing(2),
+        cursor: "pointer"
+      },
+  
+      button: {
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        color: "white",
+        margin: theme.spacing(2),
+      },
+  
+    }),
+  );
 
   const { isAuthenticated } = props;
 
@@ -76,8 +84,6 @@ export const Login: React.FC<any> = (props) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const validateForm = () => email.length > 0 && password.length > 0;
 
   function handleLogin() {
     signIn(email,password);
