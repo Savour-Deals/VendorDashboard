@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-
 export const Home: React.FC = () => {
   const springProps = useSpring({opacity: 1, from: {opacity: 0}})
 
