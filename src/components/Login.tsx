@@ -73,7 +73,6 @@ export const Login: React.FC<any> = (props) => {
   const [loadProps, setLoad] = useSpring(() => ({opacity: 1}));
   const styles = useStyles();
   const history = useHistory();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

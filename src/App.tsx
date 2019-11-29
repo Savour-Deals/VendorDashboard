@@ -20,14 +20,15 @@ const INITIAL_AUTH = {
 
 const loginProps = { isAuthenticated };
 
-const App: React.FC<any> = (props) => {
+const App: React.FC = () => {
   console.log(isAuthenticated);
 
   return (
     <AuthContext.Provider value={INITIAL_AUTH}>
       <AuthContext.Consumer>
-        {props => 
+        {auth => 
           <BrowserRouter>
+            {console.log(auth)}
             <Switch>
               <Route path="/login" render={() => <Login {...loginProps} />}/>
               <Route path="/create-account" render={() => <CreateAccount/>}/>
