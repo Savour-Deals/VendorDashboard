@@ -21,19 +21,11 @@ import Paper from "@material-ui/core/Paper";
 import {useSpring, animated} from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify";
-
+import { signIn } from "../auth";
 
 
 export const Login: React.FC<any> = (props) => {
 
-  async function signIn(email: string, password: string) {
-    try {
-      const user = Auth.signIn(email,password);
-    } catch(err) {
-      console.log(err);
-    }
-  }
-  
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
       card: {
@@ -78,16 +70,34 @@ export const Login: React.FC<any> = (props) => {
   const { isAuthenticated } = props;
 
   const springProps = useSpring({opacity: 1, from: {opacity: 0}});
-
+  const [loadProps, setLoad] = useSpring(() => ({opacity: 1}));
   const styles = useStyles();
   const history = useHistory();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleLogin() {
-    signIn(email,password);
+  async function handleLogin() {
+
+    setLoading(true);
+    try {
+      const currentSession = await Auth.currentSession();
+      console.log(currentSession);
+
+    } catch(error) {
+      console.log(error);
+    }
+
+    try {
+      const payload = await signIn(email,password);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+
   }
+
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
