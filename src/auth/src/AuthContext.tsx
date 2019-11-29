@@ -28,36 +28,28 @@ export const useAuth = (): IAuthContext => {
   const [loading, setLoading] = useState(false);
 
   async function getInitialData() {
-    setLoading(true);
+    
     try {
       const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
       setUser(currentAuthenticatedUser);
       setAuth(true);
+
+      console.log(currentAuthenticatedUser);
     } catch (error) {
       console.log("No Current User");
     }
-    setLoading(false);
 
   }
 
-  useEffect(() => {
-
-    getInitialData();
-  }, [auth, user]);
+  if (!auth) getInitialData();
 
   async function signIn(email: string, password: string) {
       try {
-        const currentSession = await Auth.currentSession();
-      } catch(error) {
-        console.log(error.message);
-      }
-  
-      try {
         const user = await Auth.signIn(email,password);
-    
+        console.log(user);
         if (user.challengeName === "SMS_MFA" || user.challengeName === "SOFTWARE_TOKEN_MFA") {
-    
-        } else if (user.challengeName === "NEW_PASSWORD_REQUEST") {
+          console.log("SMS_MFA or SOFTWARE_TOKEN_MFA")
+        } else if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
           const { requiredAttributes } = user.challengeParam;
           console.log(requiredAttributes);
         } else if (user.challengeName === "MFA_SETUP") {

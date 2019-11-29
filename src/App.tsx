@@ -20,7 +20,8 @@ const App: React.FC<any> =  (props) => {
 
   // console.log(authentication);
 
-  if (auth.loading) return <h1>Loading...</h1>
+  if (auth.loading) return <h1>Loading...</h1>;
+  
   return (
   <AuthContext.Provider value={auth}>
       <BrowserRouter>
