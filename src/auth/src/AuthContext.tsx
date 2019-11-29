@@ -1,5 +1,9 @@
 import React, { createContext } from "react";
 
 
+const INITIAL_AUTH = {
+  isAuthenticated: false,
+  user: null
+}
 
-const authContext = createContext({});
+export const AuthContext = createContext(INITIAL_AUTH);
