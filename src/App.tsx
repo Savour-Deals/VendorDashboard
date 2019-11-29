@@ -7,11 +7,16 @@ import { Home } from "./components/Home/";
 import { CreateAccount } from "./components/CreateAccount";
 import Amplify from 'aws-amplify';
 import awsconfig from './aws-exports';
-import { withAuthenticator } from 'aws-amplify-react'; // or 'aws-amplify-react-native';
+import { AuthContext } from "./auth";
 
 Amplify.configure(awsconfig);
 
 const isAuthenticated = false;
+
+const INITIAL_AUTH = {
+  isAuthenticated: false,
+  user: null
+}
 
 const loginProps = { isAuthenticated };
 
@@ -19,15 +24,23 @@ const App: React.FC = () => {
   console.log(isAuthenticated);
 
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/login" render={() => <Login {...loginProps} />}/>
-        <Route path="/create-account" render={() => <CreateAccount/>}/>
-        {/* Remove this fake auth prop being passed, should be retrieved by context */}
-        <PrivateRoute path="/index" auth={isAuthenticated} component={Home} />
-      </Switch>
-      {(isAuthenticated) ? <Redirect from="/" to="index" /> : <Redirect from="/" to="login" />}
-    </BrowserRouter>
+    <AuthContext.Provider value={INITIAL_AUTH}>
+      <AuthContext.Consumer>
+        {auth => 
+          <BrowserRouter>
+            {console.log(auth)}
+            <Switch>
+              <Route path="/login" render={() => <Login {...loginProps} />}/>
+              <Route path="/create-account" render={() => <CreateAccount/>}/>
+              {/* Remove this fake auth prop being passed, should be retrieved by context */}
+              <PrivateRoute path="/index" auth={isAuthenticated} component={Home} />
+            </Switch>
+            {(isAuthenticated) ? <Redirect from="/" to="index" /> : <Redirect from="/" to="login" />}
+          </BrowserRouter>
+        }
+      </AuthContext.Consumer>
+    </AuthContext.Provider>
+
   );
 }
 
