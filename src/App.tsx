@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import  { Login }  from "./components/Login";
@@ -7,38 +7,31 @@ import { Home } from "./components/Home/";
 import { CreateAccount } from "./components/CreateAccount";
 import Amplify from 'aws-amplify';
 import awsconfig from './aws-exports';
-import { AuthContext } from "./auth";
+import { AuthContext, useAuth } from "./auth";
 
 Amplify.configure(awsconfig);
 
-const isAuthenticated = false;
+const loginProps = { isAuthenticated: false };
 
-const INITIAL_AUTH = {
-  isAuthenticated: false,
-  user: null
-}
+const App: React.FC<any> =  (props) => {
 
-const loginProps = { isAuthenticated };
+  const auth = useAuth();
+  // const { authentication, updateAuthentication } = useContext(AuthContext);
 
-const App: React.FC = () => {
-  console.log(isAuthenticated);
+  // console.log(authentication);
 
+  if (auth.loading) return <h1>Loading...</h1>
   return (
-    <AuthContext.Provider value={INITIAL_AUTH}>
-      <AuthContext.Consumer>
-        {auth => 
-          <BrowserRouter>
-            {console.log(auth)}
-            <Switch>
-              <Route path="/login" render={() => <Login {...loginProps} />}/>
-              <Route path="/create-account" render={() => <CreateAccount/>}/>
-              {/* Remove this fake auth prop being passed, should be retrieved by context */}
-              <PrivateRoute path="/index" auth={isAuthenticated} component={Home} />
-            </Switch>
-            {(isAuthenticated) ? <Redirect from="/" to="index" /> : <Redirect from="/" to="login" />}
-          </BrowserRouter>
-        }
-      </AuthContext.Consumer>
+  <AuthContext.Provider value={auth}>
+      <BrowserRouter>
+      <Switch>
+          <Route path="/login" render={() => <Login {...loginProps} />}/>
+          <Route path="/create-account" render={() => <CreateAccount/>}/>
+          {/* Remove this fake auth prop being passed, should be retrieved by context */}
+          <PrivateRoute path="/index" auth={auth.auth} component={Home} />
+        </Switch>
+        {(auth.auth) ? <Redirect from="/" to="index" /> : <Redirect from="/" to="login" />}
+      </BrowserRouter>
     </AuthContext.Provider>
 
   );

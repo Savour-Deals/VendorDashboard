@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useContext } from "react";
 
 import { 
   Card, 
@@ -22,7 +22,7 @@ import {useSpring, animated} from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import { signIn } from "../auth";
-
+import { AuthContext } from "../auth";
 
 export const Login: React.FC<any> = (props) => {
 
@@ -67,7 +67,7 @@ export const Login: React.FC<any> = (props) => {
     }),
   );
 
-  const { isAuthenticated } = props;
+  const {auth, user, setAuth, setUser, signIn} = useContext(AuthContext);
 
   const springProps = useSpring({opacity: 1, from: {opacity: 0}});
   const [loadProps, setLoad] = useSpring(() => ({opacity: 1}));
@@ -78,23 +78,7 @@ export const Login: React.FC<any> = (props) => {
   const [loading, setLoading] = useState(false);
 
   async function handleLogin() {
-
-    setLoading(true);
-    try {
-      const currentSession = await Auth.currentSession();
-      console.log(currentSession);
-
-    } catch(error) {
-      console.log(error);
-    }
-
-    try {
-      const payload = await signIn(email,password);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-    }
-
+    await signIn(email, password);
   }
 
 
@@ -113,7 +97,7 @@ export const Login: React.FC<any> = (props) => {
   }
 
 
-  if (isAuthenticated) return <Redirect to="/index" />;
+  if (auth) return <Redirect to="/index" />;
 
   return(
     <animated.div className={styles.root} style={springProps}>
