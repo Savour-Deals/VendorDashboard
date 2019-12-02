@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
@@ -9,7 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-// import { useAuth } from "../../../auth";
+import { AuthContext } from "../../../auth";
 import { Redirect, useHistory } from "react-router-dom";
 
 
@@ -32,10 +32,11 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const { open, toggleDrawer } = props;
   // const { signOut } = useAuth();
   const history = useHistory();
+  const { handleLogout } = useContext<any>(AuthContext);
 
   async function handleSignOut(event: React.MouseEvent) {
-    // await signOut();
-    // history.push("/login");
+    await handleLogout();
+    history.push("/login");
   }
   const sideList = () => (
     <div
