@@ -3,6 +3,8 @@ import { HomeHeader } from "./HomeHeader";
 import { HomeBody } from "./HomeBody";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {useSpring, animated} from 'react-spring'
+import { useAuth } from "../../../auth";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,13 +29,17 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const Home: React.FC = () => {
+export const Home: React.FC = (props: any) => {
+  const { auth } = props;
+
+
   const springProps = useSpring({opacity: 1, from: {opacity: 0}})
+
+  if (!auth) return <Redirect to="/login"/>;
 
   return (
     <animated.div style={springProps}>
       <div>
-      
         <HomeHeader/>
       </div>
       <div>

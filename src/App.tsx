@@ -5,23 +5,23 @@ import  { Login }  from "./components/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Home } from "./components/Home/";
 import { CreateAccount } from "./components/CreateAccount";
-import Amplify from 'aws-amplify';
-import awsconfig from './aws-exports';
+
 import { AuthContext, useAuth } from "./auth";
 
-Amplify.configure(awsconfig);
 
 const loginProps = { isAuthenticated: false };
 
-const App: React.FC<any> =  (props) => {
+
+
+const App: React.FC =  () => {
 
   const auth = useAuth();
-  // const { authentication, updateAuthentication } = useContext(AuthContext);
-
-  // console.log(authentication);
-
+  const homeProps = {
+    auth: auth.auth
+  }
   if (auth.loading) return <h1>Loading...</h1>;
-  
+  console.log(auth);
+
   return (
   <AuthContext.Provider value={auth}>
       <BrowserRouter>
@@ -29,9 +29,9 @@ const App: React.FC<any> =  (props) => {
           <Route path="/login" render={() => <Login {...loginProps} />}/>
           <Route path="/create-account" render={() => <CreateAccount/>}/>
           {/* Remove this fake auth prop being passed, should be retrieved by context */}
-          <PrivateRoute path="/index" auth={auth.auth} component={Home} />
+          <PrivateRoute path="/index" auth={auth.auth} component={Home} componentProps={homeProps} />
         </Switch>
-        {(auth.auth) ? <Redirect from="/" to="index" /> : <Redirect from="/" to="login" />}
+        {(auth.auth) ? <Redirect to="/index" /> : <Redirect to="/login" />}
       </BrowserRouter>
     </AuthContext.Provider>
 

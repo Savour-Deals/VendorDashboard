@@ -67,7 +67,7 @@ export const Login: React.FC<any> = (props) => {
     }),
   );
 
-  const {auth, user, setAuth, setUser, signIn} = useContext(AuthContext);
+  const {auth, signIn} = useContext(AuthContext);
 
   const springProps = useSpring({opacity: 1, from: {opacity: 0}});
   const [loadProps, setLoad] = useSpring(() => ({opacity: 1}));
