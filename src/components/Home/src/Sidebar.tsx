@@ -9,7 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import { useAuth } from "../../../auth";
+// import { useAuth } from "../../../auth";
 import { Redirect, useHistory } from "react-router-dom";
 
 
@@ -30,12 +30,12 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = (props) => {
   const styles = useStyles();
   const { open, toggleDrawer } = props;
-  const { signOut } = useAuth();
+  // const { signOut } = useAuth();
   const history = useHistory();
 
   async function handleSignOut(event: React.MouseEvent) {
-    await signOut();
-    history.push("/login");
+    // await signOut();
+    // history.push("/login");
   }
   const sideList = () => (
     <div

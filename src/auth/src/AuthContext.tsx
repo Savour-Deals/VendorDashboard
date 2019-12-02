@@ -40,6 +40,9 @@ export const useAuth = (): IAuthContext => {
           if (possibleUser !== null) {
             setUser(possibleUser);
             setAuth(true);
+
+            console.log(user);
+            console.log(auth);
           }
         } catch (error) {
 
@@ -55,20 +58,18 @@ export const useAuth = (): IAuthContext => {
   async function signIn(email: string, password: string) {
       debugger;
       try {
-        const user = await Auth.signIn(email,password);
-        console.log(user);
-        if (user.challengeName === "SMS_MFA" || user.challengeName === "SOFTWARE_TOKEN_MFA") {
+        const authenticatedUser = await Auth.signIn(email,password);
+        if (authenticatedUser.challengeName === "SMS_MFA" || authenticatedUser.challengeName === "SOFTWARE_TOKEN_MFA") {
           console.log("SMS_MFA or SOFTWARE_TOKEN_MFA")
-        } else if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
-          const { requiredAttributes } = user.challengeParam;
-          console.log(requiredAttributes);
-        } else if (user.challengeName === "MFA_SETUP") {
-          Auth.setupTOTP(user);
+        } else if (authenticatedUser.challengeName === "NEW_PASSWORD_REQUIRED") {
+          const { requiredAttributes } = authenticatedUser.challengeParam;
+        } else if (authenticatedUser.challengeName === "MFA_SETUP") {
+          Auth.setupTOTP(authenticatedUser);
         } else {
-          console.log(auth);
+
           setUser(user);
           setAuth(true);
-          console.log(auth);
+
         }
       } catch(error) {
         console.log(error);

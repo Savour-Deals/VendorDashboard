@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
     img: {
       maxWidth:"15%",
-      height:"auto",
+      // height:"auto",
       
   }
   }),
