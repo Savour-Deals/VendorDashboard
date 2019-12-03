@@ -1,5 +1,9 @@
 import { createContext, useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
+import Amplify from 'aws-amplify';
+import awsconfig from '../../aws-exports';
+
+Amplify.configure(awsconfig);
 
 const INITIAL_AUTH: any = {
   auth: false,
@@ -17,6 +21,7 @@ export interface IAuthContext {
   setAuth: (updatedAuth: boolean) => void;
   setUser: (updatedUser: object) => void;
   signIn: (email: string, password: string) => void;
+  signOut: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>(INITIAL_AUTH);
@@ -27,40 +32,59 @@ export const useAuth = (): IAuthContext => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  async function getInitialData() {
-    
-    try {
-      const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
-      setUser(currentAuthenticatedUser);
-      setAuth(true);
+  useEffect(() => {
+      const checkIfSignedIn = async () => {
+        try {
+          const possibleUser = await Auth.currentAuthenticatedUser();
+          console.log(possibleUser);
+          if (possibleUser !== null) {
+            setUser(possibleUser);
+            setAuth(true);
 
-      console.log(currentAuthenticatedUser);
-    } catch (error) {
-      console.log("No Current User");
-    }
+            console.log(user);
+            console.log(auth);
+          }
+        } catch (error) {
 
-  }
+        }
+      };
 
-  if (!auth) getInitialData();
+      checkIfSignedIn();
+
+  }, []);
+
+  // if (!auth) getInitialData();
 
   async function signIn(email: string, password: string) {
+      debugger;
       try {
-        const user = await Auth.signIn(email,password);
-        console.log(user);
-        if (user.challengeName === "SMS_MFA" || user.challengeName === "SOFTWARE_TOKEN_MFA") {
+        const authenticatedUser = await Auth.signIn(email,password);
+        if (authenticatedUser.challengeName === "SMS_MFA" || authenticatedUser.challengeName === "SOFTWARE_TOKEN_MFA") {
           console.log("SMS_MFA or SOFTWARE_TOKEN_MFA")
-        } else if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
-          const { requiredAttributes } = user.challengeParam;
-          console.log(requiredAttributes);
-        } else if (user.challengeName === "MFA_SETUP") {
-          Auth.setupTOTP(user);
+        } else if (authenticatedUser.challengeName === "NEW_PASSWORD_REQUIRED") {
+          const { requiredAttributes } = authenticatedUser.challengeParam;
+        } else if (authenticatedUser.challengeName === "MFA_SETUP") {
+          Auth.setupTOTP(authenticatedUser);
         } else {
+
           setUser(user);
+          setAuth(true);
+
         }
       } catch(error) {
         console.log(error);
         alert(`Sorry! ${error.message}`);
       }
+
+  }
+
+  function signOut() {
+    Auth.signOut()
+    .then(data => console.log(data))
+    .catch(err => console.log(err));
+    setAuth(false);
+    setUser(null);
+    console.log(auth);
 
   }
 
@@ -70,6 +94,7 @@ export const useAuth = (): IAuthContext => {
     loading,
     setAuth,
     setUser,
-    signIn
+    signIn,
+    signOut
   }
 }
