@@ -11,6 +11,7 @@ const INITIAL_AUTH: any = {
   isAuthenticated: false,
   user: null,
   handleLogin: (email: string, password: string) => {},
+  handleSignUp: (email: string, password: string) => {},
   handleLogout: () => {}
 }
 
@@ -33,7 +34,16 @@ export const AuthContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
 
-
+  async function handleSignUp(email: string, password: string) {
+    const username = email;
+    try {
+      await Auth.signUp({ username, password, attributes: { email }})
+      return true;
+    } catch (error) {
+      alert(`Sorry! ${error.message}`);
+    }  
+    return false
+  }
   
   async function handleAuthentication() {
     const payload = {
@@ -90,8 +100,6 @@ export const AuthContextProvider = (props: any) => {
     } catch (error) {
       alert(`Sorry! ${error.message}`);
     }
-  
- 
   }
 
   
@@ -111,7 +119,8 @@ export const AuthContextProvider = (props: any) => {
   return <AuthContext.Provider value={{
     ...state,
     handleLogin: handleLogin,
-    handleLogout: handleLogout
+    handleLogout: handleLogout,
+    handleSignUp: handleSignUp
   }}>
     {props.children}
   </AuthContext.Provider>

@@ -37,9 +37,10 @@ export const Login: React.FC<any> = (props) => {
         textAlign: "center",
         padding: theme.spacing(1),
         backgroundImage: `url(${Background})`,
-        backgroundSize: "cover",
-        overflow: "hidden",
-        height: "100%"
+        position: 'fixed',
+        width: '100%',
+        height: '100%',
+        backgroundSize: 'cover',
       },
       header: {
         backgroundColor: "#49ABAA",
