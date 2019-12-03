@@ -21,7 +21,6 @@ import Paper from "@material-ui/core/Paper";
 import {useSpring, animated} from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { Auth } from "aws-amplify";
-import { signIn } from "../auth";
 import { AuthContext } from "../auth";
 
 export const Login: React.FC<any> = (props) => {
@@ -76,17 +75,15 @@ export const Login: React.FC<any> = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
-  async function handleLogin() {
-    await signIn(email, password);
+  const {handleLogin} = useContext<any>(AuthContext);
+  async function handleSignIn() {
+    await handleLogin(email, password);
+    history.push("/index");
   }
 
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-
-    
-
     const email: string = event.target.value;
     setEmail(email);
   }
@@ -132,7 +129,7 @@ export const Login: React.FC<any> = (props) => {
               <Grid item xs={12}>
                 <Button
                   variant="contained"
-                  onClick={handleLogin}
+                  onClick={handleSignIn}
                   className={styles.button}
                 >
                   Sign In

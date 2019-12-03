@@ -4,7 +4,6 @@ import { HomeBody } from "./HomeBody";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {useSpring, animated} from 'react-spring'
 import { Redirect } from "react-router-dom";
-import { AuthContext } from "../../../auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

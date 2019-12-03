@@ -81,22 +81,30 @@ export const AuthContextProvider = (props: any) => {
       } else {
         payload["user"] = authenticatedUser;
         payload["isAuthenticated"] = true;
-  
+        dispatch({
+          type: "loginUser",
+          payload
+        }); 
   
       }
     } catch (error) {
       alert(`Sorry! ${error.message}`);
     }
   
-    return payload;
+ 
   }
+
+  
 
   if (!state.isAuthenticated) {
     handleAuthentication().then(payload => {
-      dispatch({
-        type: "loginUser",
-        payload
-      });
+
+      if (payload.isAuthenticated) {
+        dispatch({
+          type: "loginUser",
+          payload
+        });
+      }
   });
 }
 
