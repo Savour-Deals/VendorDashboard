@@ -4,6 +4,7 @@ import { Menu } from "@material-ui/icons";
 import LogoWhite from "../../../assets/img/brand/Savour_White.png";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Sidebar } from "./Sidebar";
+import { AuthContext } from "../../../auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const HomeHeader: React.FC = () => {
-  
+
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const toggleDrawer = (event: React.MouseEvent) => {
