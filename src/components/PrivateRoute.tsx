@@ -5,15 +5,16 @@ interface PrivateRouteProps {
   component: React.FC<any>;
   auth: boolean;
   path: string;
-  componentProps: object;
 };
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = (props) => {
-  const { component: Component, path, auth, componentProps } = props;
+  const { component: Component, path, auth } = props;
+
+  console.log(props);
   return (
     <Route path={path} render={(props) => (
         (auth) 
-        ? <Component {...componentProps}/> 
+        ? <Component /> 
         : <Redirect to="/login"/>
       )}
     />

@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { HomeHeader } from "./HomeHeader";
 import { HomeBody } from "./HomeBody";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {useSpring, animated} from 'react-spring'
-import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,19 +27,15 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const Home: React.FC = (props: any) => {
+export const Home: React.FC = () => {
+  const styles = useStyles();
 
-  const springProps = useSpring({opacity: 1, from: {opacity: 0}})
-
+  const springProps = useSpring({opacity: 1, from: {opacity: 0}});
 
   return (
-    <animated.div style={springProps}>
-      <div>
+    <animated.div className={styles.root} style={springProps}>
         <HomeHeader/>
-      </div>
-      <div>
         <HomeBody/>
-      </div>
     </animated.div>
   );
 }

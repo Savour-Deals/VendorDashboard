@@ -2,9 +2,7 @@ import React, { useState, ChangeEvent, useContext } from "react";
 
 import { 
   Card, 
-  CardHeader, 
   CardContent, 
-  AppBar,
   Grid,
   makeStyles, 
   createStyles, 
@@ -14,13 +12,10 @@ import {
   Typography,
   Button
 } from "@material-ui/core";
-import { Redirect } from "react-router-dom";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
 import Background from "../assets/img/brand/vendorbackground.jpg";
-import Paper from "@material-ui/core/Paper";
-import {useSpring, animated} from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
-import { Auth } from "aws-amplify";
 import { AuthContext } from "../auth";
 
 export const Login: React.FC<any> = (props) => {
@@ -70,12 +65,10 @@ export const Login: React.FC<any> = (props) => {
   // const {auth, signIn} = useContext(AuthContext);
 
   const springProps = useSpring({opacity: 1, from: {opacity: 0}});
-  const [loadProps, setLoad] = useSpring(() => ({opacity: 1}));
   const styles = useStyles();
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const {handleLogin} = useContext<any>(AuthContext);
   async function handleSignIn() {
     await handleLogin(email, password);
