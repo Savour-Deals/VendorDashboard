@@ -5,10 +5,7 @@ import  { Login }  from "./components/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Home } from "./components/Home/";
 import { CreateAccount } from "./components/CreateAccount";
-
 import { AuthContextProvider, AuthContext} from "./auth";
-import { IAuthContext } from "./auth/src/AuthContext";
-
 
 const loginProps = { isAuthenticated: false };
 

@@ -18,7 +18,7 @@ import {useSpring, animated} from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../auth";
 
-export const CreateAccount: React.FC<any> = (props) => {
+export const CreateAccount: React.FC = () => {
 
   const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -67,10 +67,10 @@ export const CreateAccount: React.FC<any> = (props) => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleSignUp, handleLogin } = useContext<any>(AuthContext);
+  const { handleSignUp, handleLogin } = useContext<IAuthContext>(AuthContext);
   async function handleCreateAccount() {
     const creationSucess = await handleSignUp(email, password);
-    if (creationSucess){
+    if (creationSucess.isAuthenticated){
       await handleLogin(email, password);//this should not fail?
       history.push("/index");
     }//else an error was displayed from auth object

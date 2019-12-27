@@ -9,19 +9,15 @@ const INITIAL_AUTH: IAuthContext = {
   isAuthenticated: false,
   user: null,
   handleLogin: (email: string, password: string) => {},
-  handleSignUp: (email: string, password: string) => {},
+  handleSignUp: (email: string, password: string) => new Promise(res => ({
+    user: null,
+    isAuthenticated: false
+  })),
   handleLogout: () => {}
 }
 
 export const AuthContext = createContext<IAuthContext>(INITIAL_AUTH);
 
-export interface IAuthContext {
-  isAuthenticated: boolean;
-  user: CognitoUser | null;
-  handleLogin: (email: string, password: string) => void;
-  handleSignUp: (email: string, password: string) => void;
-  handleLogout: () => void;
-}
 
 
 
@@ -44,7 +40,7 @@ export const AuthContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
 
-  async function handleSignUp(email: string, password: string) {
+  async function handleSignUp(email: string, password: string): Promise<IUserAuth> {
     const username = email;
     try {
       const signupResult = await Auth.signUp({ username, password, attributes: { email }});
@@ -57,7 +53,10 @@ export const AuthContextProvider = (props: any) => {
       debugger;
       alert(`Sorry! ${error.message}`);
     }  
-    return false
+    return {
+      user: null,
+      isAuthenticated: false
+    }
   }
   
   async function handleAuthentication() {

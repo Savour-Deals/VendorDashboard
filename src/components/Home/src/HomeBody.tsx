@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,7 +13,12 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth:"15%",
       height:"auto",
       
-  }
+  },
+  button: {
+    backgroundColor: "#49ABAA",
+    color: "white",
+    margin: theme.spacing(2),
+  },
   }),
 );
 
@@ -20,6 +26,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const HomeBody: React.FC = () => {
   const [vendors, setVendors] = useState([]);
+  const [open, setOpen] = useState(false);
+  const styles = useStyles();
+
+  function handleAddVendor() {
+    setVendors([]);
+  }
+
+  function handleClose() {
+    setOpen(false);
+  }
 
   function renderVendors(vendors: Vendor[]): JSX.Element[] {
     const renderedVendors: JSX.Element[] = [];
@@ -33,11 +49,17 @@ export const HomeBody: React.FC = () => {
     return renderedVendors;
   }
 
-  const styles = useStyles();
 
   return ( 
     <div className={styles.root}>
-      {renderVendors(vendors)}
+      {(vendors.length > 0) 
+      ? renderVendors(vendors)
+      : <Button 
+        variant="contained" 
+        className={styles.button} 
+        onClick={handleAddVendor}>
+          Add Vendor
+        </Button>}
     </div>
   );
 }
