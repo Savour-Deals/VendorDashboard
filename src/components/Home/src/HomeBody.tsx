@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Button } from "@material-ui/core";
+import { AddVendorModal } from "./AddVendorModal";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,6 +38,10 @@ export const HomeBody: React.FC = () => {
     setOpen(false);
   }
 
+  function toggleModal() {
+    setOpen(!open);
+  }
+
   function renderVendors(vendors: Vendor[]): JSX.Element[] {
     const renderedVendors: JSX.Element[] = [];
 
@@ -55,11 +60,17 @@ export const HomeBody: React.FC = () => {
       {(vendors.length > 0) 
       ? renderVendors(vendors)
       : <Button 
-        variant="contained" 
+        variant="contained"   
         className={styles.button} 
-        onClick={handleAddVendor}>
+        onClick={toggleModal}>
           Add Vendor
         </Button>}
+
+        <AddVendorModal
+          open={open}
+          handleClose={handleClose}
+          addVendor={handleAddVendor}
+        />
     </div>
   );
 }
