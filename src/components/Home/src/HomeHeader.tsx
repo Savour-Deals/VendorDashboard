@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { AppBar, Container, Icon, Grid, IconButton } from "@material-ui/core";
+import { AppBar, Grid, IconButton } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import LogoWhite from "../../../assets/img/brand/Savour_White.png";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Sidebar } from "./Sidebar";
-import { AuthContext } from "../../../auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,7 +35,7 @@ export const HomeHeader: React.FC = () => {
           <IconButton onClick={toggleDrawer}><Menu/></IconButton>
         </Grid>
         <Grid item xs={6}>
-          <img src={LogoWhite} className={classes.img}/>
+          <img src={LogoWhite} className={classes.img} alt="savour logo"/>
         </Grid>
       </Grid>
       <Sidebar

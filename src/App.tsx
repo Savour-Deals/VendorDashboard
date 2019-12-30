@@ -5,34 +5,28 @@ import  { Login }  from "./components/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Home } from "./components/Home/";
 import { CreateAccount } from "./components/CreateAccount";
-
 import { AuthContextProvider, AuthContext} from "./auth";
-
 
 const loginProps = { isAuthenticated: false };
 
-
-
 const App: React.FC =  () => {
 
-  const homeProps = {};
 
   return (
   <AuthContextProvider >
     <AuthContext.Consumer>
-      {(auth: any) => 
+      {(auth: IAuthContext) => 
             <BrowserRouter>
-            {console.log(auth)}
             <Switch>
                 <Route path="/login" render={() => <Login {...loginProps} />}/>
                 <Route path="/create-account" render={() => <CreateAccount/>}/>
                 {/* Remove this fake auth prop being passed, should be retrieved by context */}
-                <PrivateRoute path="/index" auth={auth.isAuthenticated} component={Home} componentProps={homeProps} />
+                <PrivateRoute path="/index" auth={auth.isAuthenticated} component={Home} />
               </Switch>
               {(auth.isAuthenticated) ? <Redirect to="/index" /> : <Redirect to="/login" />}
             </BrowserRouter>
       }
-    </AuthContext.Consumer>
+      </AuthContext.Consumer>
     </AuthContextProvider>
 
   );
