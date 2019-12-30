@@ -14,3 +14,8 @@ declare interface IUserAuth {
   user: CognitoUser | null;
   isAuthenticated: boolean;
 }
+
+declare interface MapCoordinates {
+  lat: number;
+  lng: number;
+}
