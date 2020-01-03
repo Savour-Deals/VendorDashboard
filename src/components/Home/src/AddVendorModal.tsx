@@ -124,7 +124,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     }
                   }
                 >
-                  {mapsApiLoaded && <SearchBox/>}
+                  {mapsApiLoaded && <SearchBox map={mapInstance} mapsApi={mapsApi}/>}
                 </GoogleMapsReact>
               </div>
             </form>

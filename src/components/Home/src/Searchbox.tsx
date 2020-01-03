@@ -1,6 +1,13 @@
 import React from "react";
 
-export const SearchBox: React.FC = () => {
+interface ISearchBox {
+  map: any;
+  mapsApi: any;
+}
+
+export const SearchBox: React.FC<ISearchBox> = props => {
+
+  console.log(props);
   return(
     <input
     />
