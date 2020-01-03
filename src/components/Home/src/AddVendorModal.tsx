@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Card, CardContent, makeStyles, createStyles, Theme } from "@material-ui/core";
 import { useSpring, animated } from "react-spring";
 import GoogleMapsReact from "google-map-react";
-
+import { SearchBox } from "./Searchbox";
 
 interface IAddVendorModal {
   open: boolean;
@@ -72,7 +72,12 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     lat: 59.95,
     lng: 30.33
   });
+  const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [mapsApi, setMapsApi] = useState(null);
+
   const styles = useStyles();
+  
   let defaultProps = {
     center: {
       lat: 59.95,
@@ -103,15 +108,23 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
         <Card className={styles.card}>
           <CardContent>
             <form>
-              <h1>Create Vendor</h1>
+              <h1>Add Business</h1>
               <div style={{ height: '60vh', width: '100%' }}>
 
                 <GoogleMapsReact
                   bootstrapURLKeys={{key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!}}
                   defaultCenter={coords}
                   defaultZoom={defaultProps.zoom}
+                  yesIWantToUseGoogleMapApiInternals
+                  options={{fullscreenControl: true, mapTypeControl: true}}
+                  onGoogleApiLoaded={({map, maps}) => {
+                      setMapsApiLoaded(true);
+                      setMapInstance(map);
+                      setMapsApi(maps);
+                    }
+                  }
                 >
-
+                  {mapsApiLoaded && <SearchBox/>}
                 </GoogleMapsReact>
               </div>
             </form>
