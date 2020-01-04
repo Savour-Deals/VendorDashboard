@@ -1,26 +1,54 @@
-import React, { createRef, useEffect } from "react";
+import React, { useEffect, useState, ChangeEvent, SyntheticEvent } from "react";
 import { TextField } from "@material-ui/core";
 interface ISearchBox {
   map: any;
   mapsApi: any;
+  addPlace?: Function;
   placeHolder?: string;
 }
 
 export const SearchBox: React.FC<ISearchBox> = props => {
-  const searchInput = createRef<HTMLInputElement>();
-  // const [searchBox, setSearchBox] = useState();
+  const [searchInput, setSearchInput] = useState("");
+  const [searchBox, setSearchBox] = useState<any | null>(null);
+  function onPlacesChanged({map, addPlace} = props) {
+    const selected = searchBox.getPlaces();
+    console.log(selected);
+    const { 0: place } = selected;
 
-  function onPlacesChanged() {
+    if (!place.geometry) return;
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);
+    }
 
+    addPlace!(selected);
+  }
+
+  function clearSearchBox() {
+    setSearchInput("");
+  }
+
+  const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value;
+    setSearchInput(val);
   }
 
   useEffect(() => {
     const {
       mapsApi: { places },
+      map
     } = props;
 
-    const searchBox = new places.SearchBox(searchInput.current);
-    searchBox.addListener("places_changed", onPlacesChanged)
+    setSearchBox(new places.SearchBox(searchInput));
+
+    if (searchBox !== null) {
+      console.log(searchBox)
+      searchBox!.addListener("places_changed", onPlacesChanged);
+      searchBox!.bindTo("bounds", map)
+    }
+
 
     // clean up
     return () => {
@@ -28,19 +56,22 @@ export const SearchBox: React.FC<ISearchBox> = props => {
         mapsApi: { event },
       } = props;
   
-      event.clearInstanceListeners(searchBox);
+      event.clearInstanceListeners(searchInput);
     }
 
-  });
+  }, [searchInput]);
 
 //   <TextField id="filled-basic" label="Filled" variant="filled" />
 
   return(
     <TextField
-      ref={searchInput}
+      id="place-search"
+      name="place-search"
+      onChange={handleTextChange}
       placeholder="Search..."
       type="text"
       variant="filled"
+      value={searchInput}
     />  
     // <input
     //   ref={searchInput}
