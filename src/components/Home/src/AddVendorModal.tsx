@@ -112,19 +112,25 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
               <div style={{ height: '60vh', width: '100%' }}>
 
                 <GoogleMapsReact
-                  bootstrapURLKeys={{key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!}}
+                  bootstrapURLKeys={{
+                    key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
+                    libraries: ['places', 'drawing'],
+
+                  }}
                   defaultCenter={coords}
                   defaultZoom={defaultProps.zoom}
                   yesIWantToUseGoogleMapApiInternals
                   options={{fullscreenControl: true, mapTypeControl: true}}
                   onGoogleApiLoaded={({map, maps}) => {
-                      setMapsApiLoaded(true);
+                      console.log(map);
+                      console.log(maps);
                       setMapInstance(map);
                       setMapsApi(maps);
+                      setMapsApiLoaded(true);
                     }
                   }
                 >
-                  {mapsApiLoaded && <SearchBox map={mapInstance} mapsApi={mapsApi}/>}
+                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!}/>}
                 </GoogleMapsReact>
               </div>
             </form>
