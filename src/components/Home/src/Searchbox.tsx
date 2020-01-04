@@ -1,5 +1,8 @@
-import React, { useEffect, useState, ChangeEvent, SyntheticEvent } from "react";
+import React, { useEffect, useState, ChangeEvent, SyntheticEvent, useMemo } from "react";
 import { TextField } from "@material-ui/core";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import throttle from 'lodash/throttle';
+
 interface ISearchBox {
   map: any;
   mapsApi: any;
@@ -7,82 +10,66 @@ interface ISearchBox {
   placeHolder?: string;
 }
 
+interface PlaceType {
+  structured_formatting: {
+    secondary_text: string;
+    main_text_matched_substrings: [
+      {
+        offset: number;
+        length: number;
+      }
+    ];
+  };
+}
+
+const autocompleteService = { current: null };
+
 export const SearchBox: React.FC<ISearchBox> = props => {
   const [searchInput, setSearchInput] = useState("");
-  const [searchBox, setSearchBox] = useState<any | null>(null);
-  function onPlacesChanged({map, addPlace} = props) {
-    const selected = searchBox.getPlaces();
-    console.log(selected);
-    const { 0: place } = selected;
+  const [options, setOptions] = useState<PlaceType[]>([]);
 
-    if (!place.geometry) return;
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);
-    }
+  const { mapsApi } = props; 
 
-    addPlace!(selected);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(event.target.value);
   }
 
-  function clearSearchBox() {
-    setSearchInput("");
-  }
-
-  const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const val = event.target.value;
-    setSearchInput(val);
-  }
+  const fetch = useMemo(() =>
+      throttle((input: any, callback: any) => {
+        (autocompleteService.current as any).getPlacePredictions(input, callback);
+      }, 200), 
+    [],
+  );
 
   useEffect(() => {
-    const {
-      mapsApi: { places },
-      map
-    } = props;
+    let active = true;
 
-    setSearchBox(new places.SearchBox(searchInput));
-
-    if (searchBox !== null) {
-      console.log(searchBox)
-      searchBox!.addListener("places_changed", onPlacesChanged);
-      searchBox!.bindTo("bounds", map)
+    if (!autocompleteService.current && mapsApi) {
+      autocompleteService.current = mapsApi.places.AutoCompleteService();
     }
 
+    if (!autocompleteService.current) return undefined;
 
-    // clean up
+    if (searchInput === "") {
+      setOptions([]);
+      return undefined;
+    }
+
+    fetch({input: searchInput}, (results?: PlaceType[]) => {
+      if (active) {
+        setOptions(results || []);
+      }
+    });
+
     return () => {
-      const {
-        mapsApi: { event },
-      } = props;
-  
-      event.clearInstanceListeners(searchInput);
-    }
-
-  }, [searchInput]);
-
-//   <TextField id="filled-basic" label="Filled" variant="filled" />
+      active = false;
+    };
+  }, [searchInput, fetch]);
 
   return(
     <TextField
       id="place-search"
       name="place-search"
-      onChange={handleTextChange}
-      placeholder="Search..."
-      type="text"
-      variant="filled"
-      value={searchInput}
     />  
-    // <input
-    //   ref={searchInput}
-    //   placeholder="Search..."
-    //   type="text"
-    //   style={{
-    //     width: '392px',
-    //     height: '48px',
-    //     fontSize: '20px',
-    //     padding: '12px 104px 11px 64px',
-    //   }}
-    // />
   )
 }
