@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Modal, Card, CardContent, makeStyles, createStyles, Theme } from "@material-ui/core";
+import React, { useState, createRef } from "react";
+import { Modal, Card, CardContent, makeStyles, createStyles, Theme, CardHeader, IconButton } from "@material-ui/core";
 import { useSpring, animated } from "react-spring";
 import GoogleMapsReact from "google-map-react";
 import { SearchBox } from "./Searchbox";
+import CloseIcon from "@material-ui/icons/Close";
 
 interface IAddVendorModal {
   open: boolean;
@@ -99,6 +100,8 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   }
 
+  const searchBar = createRef<HTMLInputElement>();
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Fade
@@ -106,6 +109,13 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
       >
       
         <Card className={styles.card}>
+          <CardHeader
+            action={
+              <IconButton onClick={handleClose}>
+                <CloseIcon/>
+              </IconButton>
+            }
+          />
           <CardContent>
             <form>
               <h1>Add Business</h1>
@@ -115,13 +125,14 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                   bootstrapURLKeys={{
                     key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
                     libraries: ['places', 'drawing'],
-
                   }}
                   defaultCenter={coords}
                   defaultZoom={defaultProps.zoom}
                   yesIWantToUseGoogleMapApiInternals
-                  options={{fullscreenControl: true, mapTypeControl: true}}
+                  options={{fullscreenControl: true}}
                   onGoogleApiLoaded={({map, maps}) => {
+                    map.controls[maps.ControlPosition.TOP_LEFT].push(searchBar.current);
+
                       console.log(map);
                       console.log(maps);
                       setMapInstance(map);
@@ -130,8 +141,12 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     }
                   }
                 >
-                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!}/>}
+
+
                 </GoogleMapsReact>
+                <div ref={searchBar}>
+                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!}/>}
+                </div>
               </div>
             </form>
           </CardContent>
