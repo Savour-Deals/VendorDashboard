@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Modal, Card, CardContent, makeStyles, createStyles, Theme } from "@material-ui/core";
+import React, { useState, createRef } from "react";
+import { Modal, Card, CardContent, makeStyles, createStyles, Theme, CardHeader, IconButton } from "@material-ui/core";
 import { useSpring, animated } from "react-spring";
 import GoogleMapsReact from "google-map-react";
-
+import { SearchBox } from "./Searchbox";
+import CloseIcon from "@material-ui/icons/Close";
 
 interface IAddVendorModal {
   open: boolean;
@@ -72,7 +73,12 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     lat: 59.95,
     lng: 30.33
   });
+  const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [mapsApi, setMapsApi] = useState(null);
+
   const styles = useStyles();
+  
   let defaultProps = {
     center: {
       lat: 59.95,
@@ -94,6 +100,8 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   }
 
+  const searchBar = createRef<HTMLInputElement>();
+
   return (
     <Modal open={open} onClose={handleClose}>
       <Fade
@@ -101,18 +109,44 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
       >
       
         <Card className={styles.card}>
+          <CardHeader
+            action={
+              <IconButton onClick={handleClose}>
+                <CloseIcon/>
+              </IconButton>
+            }
+          />
           <CardContent>
             <form>
-              <h1>Create Vendor</h1>
+              <h1>Add Business</h1>
               <div style={{ height: '60vh', width: '100%' }}>
 
                 <GoogleMapsReact
-                  bootstrapURLKeys={{key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!}}
+                  bootstrapURLKeys={{
+                    key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
+                    libraries: ['places', 'drawing'],
+                  }}
                   defaultCenter={coords}
                   defaultZoom={defaultProps.zoom}
+                  yesIWantToUseGoogleMapApiInternals
+                  options={{fullscreenControl: true}}
+                  onGoogleApiLoaded={({map, maps}) => {
+                    map.controls[maps.ControlPosition.TOP_LEFT].push(searchBar.current);
+
+                      console.log(map);
+                      console.log(maps);
+                      setMapInstance(map);
+                      setMapsApi(maps);
+                      setMapsApiLoaded(true);
+                    }
+                  }
                 >
 
+
                 </GoogleMapsReact>
+                <div ref={searchBar}>
+                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!}/>}
+                </div>
               </div>
             </form>
           </CardContent>

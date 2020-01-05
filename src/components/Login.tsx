@@ -25,8 +25,6 @@ export const Login: React.FC<any> = (props) => {
       card: {
         margin: theme.spacing(3),
         display: "inline-block",
-  
-  
       },
       root: {
         textAlign: "center",
@@ -62,8 +60,6 @@ export const Login: React.FC<any> = (props) => {
     }),
   );
 
-  // const {auth, signIn} = useContext(AuthContext);
-
   const springProps = useSpring({opacity: 1, from: {opacity: 0}});
   const styles = useStyles();
   const history = useHistory();
@@ -86,9 +82,6 @@ export const Login: React.FC<any> = (props) => {
     const password: string = event.target.value;
     setPassword(password);
   }
-
-
-  // if (auth) return <Redirect to="/index" />;
 
   return(
     <animated.div className={styles.root} style={springProps}>

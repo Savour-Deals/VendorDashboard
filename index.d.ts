@@ -19,3 +19,11 @@ declare interface MapCoordinates {
   lat: number;
   lng: number;
 }
+
+declare interface MapAPI {
+  places: {searchBox: Function};
+  event: {clearInstanceListeners: Function};
+}
+
+declare interface MapAPIEvent {
+}
