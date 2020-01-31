@@ -27,3 +27,17 @@ declare interface MapAPI {
 
 declare interface MapAPIEvent {
 }
+
+declare interface Subscriber {
+
+}
+
+declare interface Vendor {
+  placeId: string;
+  vendorName: string;
+  primaryAddress: string;
+  secondaryAddress: string;
+  vendorDescription?: string;
+  onboardDeal?: string;
+  subscribers?: Subscriber[];
+}
