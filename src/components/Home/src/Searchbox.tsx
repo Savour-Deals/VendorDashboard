@@ -27,9 +27,7 @@ interface PlaceType {
   };
 }
 
-const getPlaceInformation = (options: any) => {
-  console.log(options);
-}
+
 
 const autocompleteService = { current: null };
 
@@ -48,6 +46,10 @@ export const SearchBox: React.FC<ISearchBox> = props => {
 
   const { mapsApi } = props; 
 
+  const getPlaceInformation = (options: any, part?: any) => {
+    console.log(options);
+    setSearchInput(options.description);
+  }
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     console.log(event.target.value);
     setSearchInput(event.target.value);
@@ -124,7 +126,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
             </Grid>
             <Grid item xs>
               {parts.map((part: any, index: any) => (
-                <span onClick={() => getPlaceInformation(option)} key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
+                <span onClick={() => getPlaceInformation(option, part)} key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
                   {part.text}
                 </span>
               ))}
