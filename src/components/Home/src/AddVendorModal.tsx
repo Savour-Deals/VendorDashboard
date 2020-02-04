@@ -55,16 +55,12 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
     },
   });
 
-
-
   return (
     <animated.div ref={ref} style={style} {...other} className={layout.root}>
       {children}
     </animated.div>
   );
 });
-
-
 
 export const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
@@ -76,6 +72,11 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
+  const [vendorName, setVendorName] = useState("");
+  const [placeId, setPlaceId] = useState("");
+  const [onboardDeal, setOnboardDeal] = useState("");
+  const [doubleClickDeal, setDoubleClickDeal] = useState("");
+  const [twilioNumber, setTwilioNumber] = useState("");
 
   const styles = useStyles();
   
@@ -119,7 +120,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
           <CardContent>
             <form>
               <h1>Add Business</h1>
-              <div style={{ height: '60vh', width: '100%' }}>
+              <div style={{ height: '45vh ', width: '100%' }}>
 
                 <GoogleMapsReact
                   bootstrapURLKeys={{
@@ -132,12 +133,9 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                   options={{fullscreenControl: true}}
                   onGoogleApiLoaded={({map, maps}) => {
                     map.controls[maps.ControlPosition.TOP_LEFT].push(searchBar.current);
-
-                      console.log(map);
-                      console.log(maps);
-                      setMapInstance(map);
-                      setMapsApi(maps);
-                      setMapsApiLoaded(true);
+                    setMapInstance(map);
+                    setMapsApi(maps);
+                    setMapsApiLoaded(true);
                     }
                   }
                 >
@@ -147,6 +145,11 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                 <div ref={searchBar}>
                   {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!}/>}
                 </div>
+              </div>
+              <div>
+                  <h1>
+                    Other Info
+                  </h1>
               </div>
             </form>
           </CardContent>

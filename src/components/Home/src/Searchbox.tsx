@@ -8,7 +8,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import parse from 'autosuggest-highlight/parse';
 import throttle from 'lodash/throttle';
 
-
 interface ISearchBox {
   map: any;
   mapsApi: any;
@@ -28,17 +27,7 @@ interface PlaceType {
   };
 }
 
-function loadScript(src: string, position: HTMLElement | null, id: string) {
-  if (!position) {
-    return;
-  }
 
-  const script = document.createElement('script');
-  script.setAttribute('async', '');
-  script.setAttribute('id', id);
-  script.src = src;
-  position.appendChild(script);
-}
 
 const autocompleteService = { current: null };
 
@@ -54,22 +43,15 @@ export const SearchBox: React.FC<ISearchBox> = props => {
 
   const [searchInput, setSearchInput] = useState("");
   const [options, setOptions] = useState<PlaceType[]>([]);
-  const loaded = React.useRef(false);
 
-  if (typeof window !== 'undefined' && !loaded.current) {
-    if (!document.querySelector('#google-maps')) {
-      loadScript(
-        'https://maps.googleapis.com/maps/api/js?key=' +process.env.REACT_APP_GOOGLE_MAPS_API_KEY! +'&libraries=places',
-        document.querySelector('head'),
-        'google-maps',
-      );
-    }
+  const { mapsApi } = props; 
 
-    loaded.current = true;
+  const getPlaceInformation = (options: any, part?: any) => {
+    console.log(options);
+    setSearchInput(options.description);
   }
-  const { mapsApi, map } = props; 
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
     setSearchInput(event.target.value);
   }
 
@@ -79,6 +61,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
       }, 200), 
     [],
   );
+  
 
   useEffect(() => {
     let active = true;
@@ -118,13 +101,16 @@ export const SearchBox: React.FC<ISearchBox> = props => {
       freeSolo
       disableOpenOnFocus
       renderInput={params => (
-        <TextField
-          {...params}
-          label="Add a location"
-          variant="outlined"
-          fullWidth
-          onChange={handleChange}
-        />
+            <TextField
+              {...params}
+              label="Add a location"
+              variant="filled"
+              fullWidth
+              color="primary"
+              value={searchInput}
+              onChange={handleChange}
+            />
+ 
       )}
       renderOption={option => {
         const matches = option.structured_formatting.main_text_matched_substrings;
@@ -136,15 +122,15 @@ export const SearchBox: React.FC<ISearchBox> = props => {
         return (
           <Grid container alignItems="center">
             <Grid item>
-              <LocationOnIcon className={classes.icon} />
+              <LocationOnIcon className={classes.icon} onClick={() => getPlaceInformation(option)} />
             </Grid>
             <Grid item xs>
               {parts.map((part: any, index: any) => (
-                <span key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
+                <span onClick={() => getPlaceInformation(option, part)} key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
                   {part.text}
                 </span>
               ))}
-              <Typography variant="body2" color="textSecondary">
+              <Typography variant="body2" color="textSecondary"  onClick={() => getPlaceInformation(option)}>
                 {option.structured_formatting.secondary_text}
               </Typography>
             </Grid>
