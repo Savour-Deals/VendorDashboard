@@ -36,6 +36,9 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
     marginRight: theme.spacing(2),
   },
+  field: {
+    background: "white"
+  }
 }));
 
 export const SearchBox: React.FC<ISearchBox> = props => {
@@ -107,6 +110,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
               variant="filled"
               fullWidth
               color="primary"
+              className={classes.field}
               value={searchInput}
               onChange={handleChange}
             />
