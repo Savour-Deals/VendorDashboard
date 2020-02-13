@@ -1,5 +1,5 @@
-import React, { useState, createRef } from "react";
-import { Modal, Card, CardContent, makeStyles, createStyles, Theme, CardHeader, IconButton } from "@material-ui/core";
+import React, { useState, createRef, ChangeEvent } from "react";
+import { Modal, Card, CardContent, makeStyles, createStyles, Theme, CardHeader, IconButton, TextField } from "@material-ui/core";
 import { useSpring, animated } from "react-spring";
 import GoogleMapsReact from "google-map-react";
 import { SearchBox } from "./Searchbox";
@@ -74,6 +74,8 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [mapsApi, setMapsApi] = useState(null);
   const [vendorName, setVendorName] = useState("");
   const [placeId, setPlaceId] = useState("");
+  const [primaryAddress, setPrimaryAddress] = useState("");
+  const [secondaryAddress, setSecondaryAddress] = useState("");
   const [onboardDeal, setOnboardDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
   const [twilioNumber, setTwilioNumber] = useState("");
@@ -88,7 +90,21 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     zoom: 11
   };
 
-  
+  const searchBoxProps = {
+    setVendorName,
+    setPlaceId,
+    setPrimaryAddress,
+    setSecondaryAddress,
+  }
+
+  const handleVendorNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    
+  }
+
+  const handlePrimaryAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
+    
+  }
+
   const successCallback = (position: Position) => {
     setCoords({lat: position.coords.latitude, lng: position.coords.longitude});
   }
@@ -143,13 +159,20 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
                 </GoogleMapsReact>
                 <div ref={searchBar}>
-                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!}/>}
+                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!} {...searchBoxProps}/>}
                 </div>
               </div>
               <div>
-                  <h1>
-                    Other Info
-                  </h1>
+                  <TextField
+                    label="Business Name"
+                    value={vendorName}
+                    onChange={handleVendorNameChange}
+                  />
+                  <TextField
+                    label="Address"
+                    value={primaryAddress}
+                    onChange={handlePrimaryAddressChange}
+                  />
               </div>
             </form>
           </CardContent>
