@@ -1,4 +1,4 @@
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, ChangeEvent } from "react";
 import { Modal, Card, CardContent, makeStyles, createStyles, Theme, CardHeader, IconButton, TextField } from "@material-ui/core";
 import { useSpring, animated } from "react-spring";
 import GoogleMapsReact from "google-map-react";
@@ -97,6 +97,10 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     setSecondaryAddress,
   }
 
+  const handleVendorNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    
+  }
+
   const successCallback = (position: Position) => {
     setCoords({lat: position.coords.latitude, lng: position.coords.longitude});
   }
@@ -151,12 +155,14 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
                 </GoogleMapsReact>
                 <div ref={searchBar}>
-                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!}/>}
+                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!} {...searchBoxProps}/>}
                 </div>
               </div>
               <div>
                   <TextField
                     label="Business Name"
+                    value={vendorName}
+                    onChange={handleVendorNameChange}
                   />
               </div>
             </form>

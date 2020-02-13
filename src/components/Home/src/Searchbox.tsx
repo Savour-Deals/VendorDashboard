@@ -13,6 +13,10 @@ interface ISearchBox {
   mapsApi: any;
   addPlace?: Function;
   placeHolder?: string;
+  setVendorName: Function;
+  setPrimaryAddress: Function;
+  setSecondaryAddress: Function;
+  setPlaceId: Function;
 }
 
 interface PlaceType {
@@ -47,10 +51,13 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   const [searchInput, setSearchInput] = useState("");
   const [options, setOptions] = useState<PlaceType[]>([]);
 
-  const { mapsApi } = props; 
+  const { mapsApi, setVendorName } = props; 
 
   const getPlaceInformation = (options: any, part?: any) => {
     console.log(options);
+    const restaurantName: string = options.structured_formatting.main_text;
+
+    setVendorName(restaurantName);
     setSearchInput(options.description);
   }
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
