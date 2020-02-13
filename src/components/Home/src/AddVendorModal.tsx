@@ -101,6 +101,10 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     
   }
 
+  const handlePrimaryAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
+    
+  }
+
   const successCallback = (position: Position) => {
     setCoords({lat: position.coords.latitude, lng: position.coords.longitude});
   }
@@ -163,6 +167,11 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     label="Business Name"
                     value={vendorName}
                     onChange={handleVendorNameChange}
+                  />
+                  <TextField
+                    label="Address"
+                    value={primaryAddress}
+                    onChange={handlePrimaryAddressChange}
                   />
               </div>
             </form>

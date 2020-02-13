@@ -51,13 +51,15 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   const [searchInput, setSearchInput] = useState("");
   const [options, setOptions] = useState<PlaceType[]>([]);
 
-  const { mapsApi, setVendorName } = props; 
+  const { mapsApi, setVendorName,setPrimaryAddress } = props; 
 
   const getPlaceInformation = (options: any, part?: any) => {
     console.log(options);
     const restaurantName: string = options.structured_formatting.main_text;
+    const address: string = options.structured_formatting.secondary_text;
 
     setVendorName(restaurantName);
+    setPrimaryAddress(address);
     setSearchInput(options.description);
   }
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
