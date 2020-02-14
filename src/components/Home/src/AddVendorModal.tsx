@@ -1,9 +1,9 @@
-import React, { useState, createRef, ChangeEvent } from "react";
-import { Modal, Card, CardContent, makeStyles, createStyles, Theme, CardHeader, IconButton, TextField } from "@material-ui/core";
-import { useSpring, animated } from "react-spring";
-import GoogleMapsReact from "google-map-react";
-import { SearchBox } from "./Searchbox";
+import { Card, CardContent, CardHeader, createStyles, Grid, IconButton, Button, makeStyles, Modal, TextField, Theme } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import GoogleMapsReact from "google-map-react";
+import React, { ChangeEvent, createRef, useState } from "react";
+import { animated, useSpring } from "react-spring";
+import { SearchBox } from "./Searchbox";
 
 interface IAddVendorModal {
   open: boolean;
@@ -32,6 +32,20 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'fixed',
       width: '100%',
       height: '100%',
+    },
+    textInput: {
+      width: '100%'
+    },
+    inputGrid: {
+      margin: theme.spacing(3),
+    },
+    cardContent: {
+      alignItems: 'center',
+    },
+    button: {
+      backgroundColor: "#49ABAA",
+      color: "white",
+      margin: theme.spacing(2),
     },
   })
 );
@@ -105,6 +119,10 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     
   }
 
+  const createVendor = () => {
+
+  }
+
   const successCallback = (position: Position) => {
     setCoords({lat: position.coords.latitude, lng: position.coords.longitude});
   }
@@ -133,7 +151,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
               </IconButton>
             }
           />
-          <CardContent>
+          <CardContent className={styles.cardContent}>
             <form>
               <h1>Add Business</h1>
               <div style={{ height: '45vh ', width: '100%' }}>
@@ -163,16 +181,30 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                 </div>
               </div>
               <div>
-                  <TextField
-                    label="Business Name"
-                    value={vendorName}
-                    onChange={handleVendorNameChange}
-                  />
-                  <TextField
-                    label="Address"
-                    value={primaryAddress}
-                    onChange={handlePrimaryAddressChange}
-                  />
+                <Grid container spacing={4} className={styles.inputGrid}>
+                  <Grid item xs={3}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Business Name"
+                      value={vendorName}
+                      onChange={handleVendorNameChange}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Address"
+                      value={primaryAddress}
+                      onChange={handlePrimaryAddressChange}
+                    />
+                  </Grid>
+                </Grid>
+                <Button 
+                  variant="contained"   
+                  className={styles.button} 
+                  onClick={createVendor}>
+                    Create
+                </Button>
               </div>
             </form>
           </CardContent>
