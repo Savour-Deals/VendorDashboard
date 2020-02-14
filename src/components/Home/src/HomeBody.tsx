@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Button } from "@material-ui/core";
+import { Button, Card } from "@material-ui/core";
 import { AddVendorModal } from "./AddVendorModal";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,6 +36,16 @@ export const HomeBody: React.FC = () => {
 
   function handleClose() {
     setOpen(false);
+  }
+
+  function generateVendor(vendors: Vendor[]): JSX.Element[] {
+    
+    return vendors.map((vendor : Vendor, index : number) => 
+      <Card>
+        
+      </Card>
+    );
+    
   }
 
   function toggleModal() {
