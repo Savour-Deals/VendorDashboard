@@ -72,9 +72,9 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
-  const [vendorName, setVendorName] = useState("");
+  const [vendorName, setVendorName] = useState("Select a business from the map above");
   const [placeId, setPlaceId] = useState("");
-  const [primaryAddress, setPrimaryAddress] = useState("");
+  const [primaryAddress, setPrimaryAddress] = useState("Select a business from the map above");
   const [secondaryAddress, setSecondaryAddress] = useState("");
   const [onboardDeal, setOnboardDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
@@ -95,14 +95,6 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     setPlaceId,
     setPrimaryAddress,
     setSecondaryAddress,
-  }
-
-  const handleVendorNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    
-  }
-
-  const handlePrimaryAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
-    
   }
 
   const successCallback = (position: Position) => {
@@ -137,7 +129,6 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
             <form>
               <h1>Add Business</h1>
               <div style={{ height: '45vh ', width: '100%' }}>
-
                 <GoogleMapsReact
                   bootstrapURLKeys={{
                     key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
@@ -152,27 +143,26 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     setMapInstance(map);
                     setMapsApi(maps);
                     setMapsApiLoaded(true);
-                    }
-                  }
-                >
-
-
+                  }}
+                > 
                 </GoogleMapsReact>
                 <div ref={searchBar}>
                   {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!} {...searchBoxProps}/>}
                 </div>
               </div>
+              <br></br>
               <div>
-                  <TextField
-                    label="Business Name"
-                    value={vendorName}
-                    onChange={handleVendorNameChange}
-                  />
-                  <TextField
-                    label="Address"
-                    value={primaryAddress}
-                    onChange={handlePrimaryAddressChange}
-                  />
+                <TextField
+                  label="Business Name"
+                  value={vendorName}
+                  disabled
+                />
+                <br></br>
+                <TextField
+                  label="Address"
+                  value={primaryAddress}
+                  disabled
+                />
               </div>
             </form>
           </CardContent>
