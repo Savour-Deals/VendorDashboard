@@ -8,7 +8,7 @@ import { SearchBox } from "./Searchbox";
 interface IAddVendorModal {
   open: boolean;
   handleClose: () => void;
-  addVendor: () => void;
+  addVendor: (vendor: Vendor) => void;
 }
 
 interface FadeProps {
@@ -120,7 +120,11 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
   }
 
   const createVendor = () => {
-
+    const vendor: Vendor = {
+      placeId,
+      vendorName,
+      primaryAddress
+    }
   }
 
   const successCallback = (position: Position) => {
@@ -161,7 +165,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
                     libraries: ['places', 'drawing'],
                   }}
-                  defaultCenter={coords}
+                  center={coords}
                   defaultZoom={defaultProps.zoom}
                   yesIWantToUseGoogleMapApiInternals
                   options={{fullscreenControl: true}}
@@ -188,6 +192,14 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       label="Business Name"
                       value={vendorName}
                       onChange={handleVendorNameChange}
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Address"
+                      value={primaryAddress}
+                      onChange={handlePrimaryAddressChange}
                     />
                   </Grid>
                   <Grid item xs={3}>

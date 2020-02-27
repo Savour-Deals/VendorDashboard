@@ -26,12 +26,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 export const HomeBody: React.FC = () => {
-  const [vendors, setVendors] = useState([]);
+  const [vendors, setVendors] = useState<Vendor[]>([]);
   const [open, setOpen] = useState(false);
   const styles = useStyles();
 
-  function handleAddVendor() {
-    setVendors([]);
+  function addVendor(vendor: Vendor) {
+
+    setVendors([...vendors, vendor]);
   }
 
   function handleClose() {
@@ -79,7 +80,7 @@ export const HomeBody: React.FC = () => {
         <AddVendorModal
           open={open}
           handleClose={handleClose}
-          addVendor={handleAddVendor}
+          addVendor={addVendor}
         />
     </div>
   );
