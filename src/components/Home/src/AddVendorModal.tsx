@@ -23,8 +23,19 @@ const useStyles = makeStyles((theme: Theme) =>
     card: {
       margin: theme.spacing(3),
       display: "inline-block",
-      width: "80%",
-      height: "80%",
+      width: "90%",
+      height: "90%",
+      '&::-webkit-scrollbar': {
+        width: '0.4em'
+      },
+      '&::-webkit-scrollbar-track': {
+        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+        webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.1)',
+        outline: '1px solid slategrey'
+      }
     },
     root: {
       textAlign: "center",
@@ -46,6 +57,19 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "#49ABAA",
       color: "white",
       margin: theme.spacing(2),
+    },
+    modal: {
+      '&::-webkit-scrollbar': {
+        width: '0.4em'
+      },
+      '&::-webkit-scrollbar-track': {
+        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+        webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.1)',
+        outline: '1px solid slategrey'
+      }
     },
   })
 );
@@ -86,9 +110,10 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
   const [mapsApi, setMapsApi] = useState(null);
-  const [vendorName, setVendorName] = useState("");
+  const [vendorName, setVendorName] = useState("Select a business from the map above");
   const [placeId, setPlaceId] = useState("");
-  const [primaryAddress, setPrimaryAddress] = useState("");
+  const [primaryAddress, setPrimaryAddress] = useState("Select a business from the map above");
+  const [locationSelected, setLocationSelected] = useState(false);
   const [secondaryAddress, setSecondaryAddress] = useState("");
   const [onboardDeal, setOnboardDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
@@ -142,7 +167,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const searchBar = createRef<HTMLInputElement>();
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} className={styles.modal} onClose={handleClose}>
       <Fade
         in={open}
       >
@@ -156,10 +181,9 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
             }
           />
           <CardContent className={styles.cardContent}>
-            <form>
+            <form className={styles.modal}>
               <h1>Add Business</h1>
               <div style={{ height: '45vh ', width: '100%' }}>
-
                 <GoogleMapsReact
                   bootstrapURLKeys={{
                     key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
@@ -174,16 +198,14 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     setMapInstance(map);
                     setMapsApi(maps);
                     setMapsApiLoaded(true);
-                    }
-                  }
-                >
-
-
+                  }}
+                > 
                 </GoogleMapsReact>
                 <div ref={searchBar}>
                   {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!} {...searchBoxProps}/>}
                 </div>
               </div>
+              <br></br>
               <div>
                 <Grid container spacing={4} className={styles.inputGrid}>
                   <Grid item xs={3}>
@@ -191,7 +213,9 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       className={styles.textInput}
                       label="Business Name"
                       value={vendorName}
+                      disabled={locationSelected}
                       onChange={handleVendorNameChange}
+                      
                     />
                   </Grid>
                   <Grid item xs={3}>
@@ -199,6 +223,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       className={styles.textInput}
                       label="Address"
                       value={primaryAddress}
+                      disabled={locationSelected}
                       onChange={handlePrimaryAddressChange}
                     />
                   </Grid>
@@ -207,6 +232,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       className={styles.textInput}
                       label="Address"
                       value={primaryAddress}
+                      disabled={locationSelected}
                       onChange={handlePrimaryAddressChange}
                     />
                   </Grid>

@@ -1,12 +1,13 @@
-import React, { useEffect, useState, ChangeEvent, SyntheticEvent, useMemo } from "react";
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import AutoComplete from '@material-ui/lab/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import throttle from 'lodash/throttle';
+import React, { ChangeEvent, useMemo } from "react";
+import CloseIcon from "@material-ui/icons/Close";
 
 interface ISearchBox {
   map: any;
@@ -20,7 +21,9 @@ interface ISearchBox {
 }
 
 interface PlaceType {
+  description: string;
   structured_formatting: {
+    main_text: string;
     secondary_text: string;
     main_text_matched_substrings: [
       {
@@ -48,22 +51,22 @@ const useStyles = makeStyles(theme => ({
 export const SearchBox: React.FC<ISearchBox> = props => {
   const classes = useStyles();
 
-  const [searchInput, setSearchInput] = useState("");
-  const [options, setOptions] = useState<PlaceType[]>([]);
+  const [searchInput, setSearchInput] = React.useState("");
 
-  const { mapsApi, setVendorName,setPrimaryAddress } = props; 
+  const [options, setOptions] = React.useState<PlaceType[]>([]);
+
+  const { mapsApi, setVendorName, setPrimaryAddress } = props; 
 
   const getPlaceInformation = (options: any, part?: any) => {
-    console.log(options);
     const restaurantName: string = options.structured_formatting.main_text;
     const address: string = options.structured_formatting.secondary_text;
-
+    console.log(options);
     setVendorName(restaurantName);
     setPrimaryAddress(address);
     setSearchInput(options.description);
   }
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
     setSearchInput(event.target.value);
   }
 
@@ -75,17 +78,16 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   );
   
 
-  useEffect(() => {
+  React.useEffect(() => {
     let active = true;
 
     if (!autocompleteService.current && (window as any).google) {
-      console.log(mapsApi.places);
       autocompleteService.current = new (window as any).google.maps.places.AutocompleteService();
     }
 
     if (!autocompleteService.current) return undefined;
 
-    if (searchInput === "") {
+    if (searchInput === '') {
       setOptions([]);
       return undefined;
     }
@@ -102,7 +104,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   }, [searchInput, fetch]);
 
   return(
-    <Autocomplete
+    <AutoComplete
       id="google-map-demo"
       style={{ width: 300 }}
       getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
@@ -111,19 +113,30 @@ export const SearchBox: React.FC<ISearchBox> = props => {
       autoComplete
       includeInputInList
       freeSolo
-      disableOpenOnFocus
+      closeIcon={
+        <CloseIcon
+          fontSize="small"
+          onClick={() => {
+            setSearchInput("");
+
+          }} 
+        />
+      }
+      autoSelect
+      inputValue={searchInput}
       renderInput={params => (
-            <TextField
-              {...params}
-              label="Add a location"
-              variant="filled"
-              fullWidth
-              color="primary"
-              className={classes.field}
-              value={searchInput}
-              onChange={handleChange}
-            />
- 
+        <TextField
+          {...params}
+          label="Add a location"
+          variant="filled"
+          fullWidth
+          multiline
+          value={searchInput}	
+          rowsMax="4"
+          color="primary"
+          className={classes.field}
+          onChange={handleChange}
+        />
       )}
       renderOption={option => {
         const matches = option.structured_formatting.main_text_matched_substrings;
