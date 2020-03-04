@@ -21,6 +21,7 @@ interface FadeProps {
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
     card: {
+      overflow: 'scroll',
       margin: theme.spacing(3),
       display: "inline-block",
       width: "90%",
@@ -51,7 +52,19 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(3),
     },
     cardContent: {
+      overflow: 'scroll',
       alignItems: 'center',
+      '&::-webkit-scrollbar': {
+        width: '0.4em'
+      },
+      '&::-webkit-scrollbar-track': {
+        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+        webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.1)',
+        outline: '1px solid slategrey'
+      }
     },
     button: {
       backgroundColor: "#49ABAA",
@@ -59,6 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
     },
     modal: {
+      overflow: 'scroll',
       '&::-webkit-scrollbar': {
         width: '0.4em'
       },
@@ -180,7 +194,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
               </IconButton>
             }
           />
-          <CardContent className={styles.cardContent}>
+          <CardContent className={styles.cardContent} >
             <form className={styles.modal}>
               <h1>Add Business</h1>
               <div style={{ height: '45vh ', width: '100%' }}>
@@ -207,34 +221,66 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
               </div>
               <br></br>
               <div>
-                <Grid container spacing={4} className={styles.inputGrid}>
-                  <Grid item xs={3}>
-                    <TextField
-                      className={styles.textInput}
-                      label="Business Name"
-                      value={vendorName}
-                      disabled={locationSelected}
-                      onChange={handleVendorNameChange}
-                      
-                    />
+                <Grid container spacing={2} direction="row">
+                  <Grid container item xs={6} spacing={4} className={styles.inputGrid} direction="column">
+                    <Grid item xs={3}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Business Name"
+                        value={vendorName}
+                        disabled={locationSelected}
+                        onChange={handleVendorNameChange}
+                        
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Address"
+                        value={primaryAddress}
+                        disabled={locationSelected}
+                        onChange={handlePrimaryAddressChange}
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Address"
+                        value={primaryAddress}
+                        disabled={locationSelected}
+                        onChange={handlePrimaryAddressChange}
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={3}>
-                    <TextField
-                      className={styles.textInput}
-                      label="Address"
-                      value={primaryAddress}
-                      disabled={locationSelected}
-                      onChange={handlePrimaryAddressChange}
-                    />
-                  </Grid>
-                  <Grid item xs={3}>
-                    <TextField
-                      className={styles.textInput}
-                      label="Address"
-                      value={primaryAddress}
-                      disabled={locationSelected}
-                      onChange={handlePrimaryAddressChange}
-                    />
+                  <Grid container item xs={6} spacing={4} className={styles.inputGrid} direction="column">
+                    <Grid item xs={3}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Business Name"
+                        value={vendorName}
+                        disabled={locationSelected}
+                        onChange={handleVendorNameChange}
+                        
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Address"
+                        value={primaryAddress}
+                        disabled={locationSelected}
+                        onChange={handlePrimaryAddressChange}
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Address"
+                        value={primaryAddress}
+                        disabled={locationSelected}
+                        onChange={handlePrimaryAddressChange}
+                      />
+                    </Grid>
                   </Grid>
                 </Grid>
                 <Button 
