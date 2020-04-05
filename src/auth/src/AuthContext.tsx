@@ -1,6 +1,5 @@
 import React, { createContext, useReducer } from "react";
-import { Auth } from "aws-amplify";
-import Amplify from 'aws-amplify';
+import Amplify, { Auth, API } from "aws-amplify";
 import awsconfig from '../../aws-exports';
 import { CognitoUser } from "amazon-cognito-identity-js";
 Amplify.configure(awsconfig);
@@ -45,6 +44,19 @@ export const AuthContextProvider = (props: any) => {
     try {
       const signupResult = await Auth.signUp({ username, password, attributes: { email }});
       const user: CognitoUser = signupResult.user;
+      const userName = user.getUsername();
+
+      // creating the DynamoDB user 
+
+      try {
+        await API.post("business_users", "/business_users", {
+          
+        });
+      } catch (error) {
+        console.log("Error, could not create user")
+        console.log(error.message);
+      }
+      
       return {
         user,
         isAuthenticated: true

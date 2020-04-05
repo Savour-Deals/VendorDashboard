@@ -6,7 +6,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import AutoComplete from '@material-ui/lab/Autocomplete';
 import parse from 'autosuggest-highlight/parse';
 import throttle from 'lodash/throttle';
-import React, { ChangeEvent, useMemo } from "react";
+import React, { ChangeEvent, useMemo, useEffect } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 
 interface ISearchBox {
@@ -16,7 +16,6 @@ interface ISearchBox {
   placeHolder?: string;
   setVendorName: Function;
   setPrimaryAddress: Function;
-  setSecondaryAddress: Function;
   setPlaceId: Function;
 }
 
@@ -78,7 +77,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   );
   
 
-  React.useEffect(() => {
+  useEffect(() => {
     let active = true;
 
     if (!autocompleteService.current && (window as any).google) {

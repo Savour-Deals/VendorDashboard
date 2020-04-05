@@ -4,6 +4,7 @@ import GoogleMapsReact from "google-map-react";
 import React, { ChangeEvent, createRef, useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { SearchBox } from "./Searchbox";
+import { useFormFields } from "../../CustomHooks/useFormField";
 
 interface IAddVendorModal {
   open: boolean;
@@ -72,18 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
     },
     modal: {
-      overflow: 'scroll',
-      '&::-webkit-scrollbar': {
-        width: '0.4em'
-      },
-      '&::-webkit-scrollbar-track': {
-        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-        webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: 'rgba(0,0,0,.1)',
-        outline: '1px solid slategrey'
-      }
+
     },
   })
 );
@@ -114,6 +104,7 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
   );
 });
 
+const TEXT_INPUT_SIZE = 4;
 export const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
   const { open, handleClose } = props;
@@ -127,35 +118,20 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [vendorName, setVendorName] = useState("Select a business from the map above");
   const [placeId, setPlaceId] = useState("");
   const [primaryAddress, setPrimaryAddress] = useState("Select a business from the map above");
+  const [secondaryAddress, setSecondaryAddress] = useState("Select a business from the map above");
   const [locationSelected, setLocationSelected] = useState(false);
-  const [secondaryAddress, setSecondaryAddress] = useState("");
   const [onboardDeal, setOnboardDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
   const [twilioNumber, setTwilioNumber] = useState("");
 
+
   const styles = useStyles();
-  
-  let defaultProps = {
-    center: {
-      lat: 59.95,
-      lng: 30.33
-    },
-    zoom: 11
-  };
+  const zoom = 11;
 
   const searchBoxProps = {
     setVendorName,
     setPlaceId,
     setPrimaryAddress,
-    setSecondaryAddress,
-  }
-
-  const handleVendorNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    
-  }
-
-  const handlePrimaryAddressChange = (event: ChangeEvent<HTMLInputElement>) => {
-    
   }
 
   const createVendor = () => {
@@ -165,6 +141,25 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
       primaryAddress
     }
   }
+
+  function vendorNameChange(event: ChangeEvent<HTMLInputElement>) {
+    const vendorName = event.target.value;
+
+    setVendorName(vendorName);
+  }
+
+  function primaryAddressChange(event: ChangeEvent<HTMLInputElement>) {
+    const primaryAddress = event.target.value;
+
+    setPrimaryAddress(primaryAddress);
+  }
+
+  function secondaryAddressChange(event: ChangeEvent<HTMLInputElement>) {
+    const secondaryAddress = event.target.value;
+
+    setSecondaryAddress(secondaryAddress);
+  }
+
 
   const successCallback = (position: Position) => {
     setCoords({lat: position.coords.latitude, lng: position.coords.longitude});
@@ -204,7 +199,7 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     libraries: ['places', 'drawing'],
                   }}
                   center={coords}
-                  defaultZoom={defaultProps.zoom}
+                  defaultZoom={zoom}
                   yesIWantToUseGoogleMapApiInternals
                   options={{fullscreenControl: true}}
                   onGoogleApiLoaded={({map, maps}) => {
@@ -221,73 +216,23 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
               </div>
               <br></br>
               <div>
-                <Grid container spacing={2} direction="row">
-                  <Grid container item xs={6} spacing={4} className={styles.inputGrid} direction="column">
-                    <Grid item xs={3}>
+                <Grid container spacing={4}>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
                       <TextField
                         className={styles.textInput}
                         label="Business Name"
                         value={vendorName}
-                        disabled={locationSelected}
-                        onChange={handleVendorNameChange}
-                        
+                        id="vendorName"
+                        onChange={vendorNameChange}
+
                       />
                     </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        className={styles.textInput}
-                        label="Address"
-                        value={primaryAddress}
-                        disabled={locationSelected}
-                        onChange={handlePrimaryAddressChange}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        className={styles.textInput}
-                        label="Address"
-                        value={primaryAddress}
-                        disabled={locationSelected}
-                        onChange={handlePrimaryAddressChange}
-                      />
-                    </Grid>
-                  </Grid>
-                  <Grid container item xs={6} spacing={4} className={styles.inputGrid} direction="column">
-                    <Grid item xs={3}>
-                      <TextField
-                        className={styles.textInput}
-                        label="Business Name"
-                        value={vendorName}
-                        disabled={locationSelected}
-                        onChange={handleVendorNameChange}
-                        
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        className={styles.textInput}
-                        label="Address"
-                        value={primaryAddress}
-                        disabled={locationSelected}
-                        onChange={handlePrimaryAddressChange}
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <TextField
-                        className={styles.textInput}
-                        label="Address"
-                        value={primaryAddress}
-                        disabled={locationSelected}
-                        onChange={handlePrimaryAddressChange}
-                      />
-                    </Grid>
-                  </Grid>
                 </Grid>
                 <Button 
                   variant="contained"   
                   className={styles.button} 
                   onClick={createVendor}>
-                    Create
+                    Create Vendor
                 </Button>
               </div>
             </form>
