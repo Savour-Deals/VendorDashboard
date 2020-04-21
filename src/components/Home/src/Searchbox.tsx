@@ -10,8 +10,6 @@ import React, { ChangeEvent, useMemo, useEffect } from "react";
 import CloseIcon from "@material-ui/icons/Close";
 
 interface ISearchBox {
-  map: any;
-  mapsApi: any;
   addPlace?: Function;
   placeHolder?: string;
   setVendorName: Function;
@@ -33,6 +31,17 @@ interface PlaceType {
   };
 }
 
+function loadScript(src: string, position: HTMLElement | null, id: string) {
+  if (!position) {
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.setAttribute('async', '');
+  script.setAttribute('id', id);
+  script.src = src;
+  position.appendChild(script);
+}
 
 
 const autocompleteService = { current: null };
@@ -51,17 +60,29 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   const classes = useStyles();
 
   const [searchInput, setSearchInput] = React.useState("");
-
+  const loaded = React.useRef(false);
   const [options, setOptions] = React.useState<PlaceType[]>([]);
 
-  const { mapsApi, setVendorName, setPrimaryAddress } = props; 
+  const { setVendorName, setPrimaryAddress } = props; 
+
+  if (typeof window !== 'undefined' && !loaded.current) {
+    if (!document.querySelector('#google-maps')) {
+      loadScript(
+        'https://maps.googleapis.com/maps/api/js?key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
+        document.querySelector('head'),
+        'google-maps',
+      );
+    }
+
+    loaded.current = true;
+  }
 
   const getPlaceInformation = (options: any, part?: any) => {
     const restaurantName: string = options.structured_formatting.main_text;
     const address: string = options.structured_formatting.secondary_text;
     console.log(options);
     setVendorName(restaurantName);
-    setPrimaryAddress(address);
+    setPrimaryAddress(options.description);
     setSearchInput(options.description);
   }
 

@@ -104,6 +104,18 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
   );
 });
 
+function loadScript(src: string, position: HTMLElement | null, id: string) {
+  if (!position) {
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.setAttribute('async', '');
+  script.setAttribute('id', id);
+  script.src = src;
+  position.appendChild(script);
+}
+
 const TEXT_INPUT_SIZE = 4;
 export const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
@@ -207,25 +219,9 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
             <form className={styles.modal}>
               <h1>Add Business</h1>
               <div style={{ height: '45vh ', width: '100%' }}>
-                <GoogleMapsReact
-                  bootstrapURLKeys={{
-                    key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
-                    libraries: ['places', 'drawing'],
-                  }}
-                  center={coords}
-                  defaultZoom={zoom}
-                  yesIWantToUseGoogleMapApiInternals
-                  options={{fullscreenControl: true}}
-                  onGoogleApiLoaded={({map, maps}) => {
-                    map.controls[maps.ControlPosition.TOP_LEFT].push(searchBar.current);
-                    setMapInstance(map);
-                    setMapsApi(maps);
-                    setMapsApiLoaded(true);
-                  }}
-                > 
-                </GoogleMapsReact>
+
                 <div ref={searchBar}>
-                  {mapsApiLoaded && <SearchBox map={mapInstance!} mapsApi={mapsApi!} {...searchBoxProps}/>}
+                  {mapsApiLoaded && <SearchBox {...searchBoxProps}/>}
                 </div>
               </div>
               <br></br>
@@ -248,16 +244,6 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                         value={primaryAddress}
                         id="primaryAddress"
                         onChange={primaryAddressChange}
-
-                      />
-                    </Grid>
-                    <Grid item xs={TEXT_INPUT_SIZE}>
-                      <TextField
-                        className={styles.textInput}
-                        label="Secondary Address"
-                        value={secondaryAddress}
-                        id="primaryAddress"
-                        onChange={secondaryAddressChange}
 
                       />
                     </Grid>
