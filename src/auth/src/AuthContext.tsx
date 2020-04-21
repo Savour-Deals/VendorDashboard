@@ -1,14 +1,12 @@
 import React, { createContext, useReducer } from "react";
-import Amplify, { Auth, API } from "aws-amplify";
-import awsconfig from '../../aws-exports';
-import { CognitoUser } from "amazon-cognito-identity-js";
-Amplify.configure(awsconfig);
+import { Auth, API } from "aws-amplify";
+import { CognitoUser, UserData } from "amazon-cognito-identity-js";
 
 const INITIAL_AUTH: IAuthContext = {
   isAuthenticated: false,
   user: null,
   handleLogin: (email: string, password: string) => {},
-  handleSignUp: (email: string, password: string) => new Promise(res => ({
+  handleSignUp: (signupData: SignUpData) => new Promise(res => ({
     user: null,
     isAuthenticated: false
   })),
@@ -16,10 +14,6 @@ const INITIAL_AUTH: IAuthContext = {
 }
 
 export const AuthContext = createContext<IAuthContext>(INITIAL_AUTH);
-
-
-
-
 
 function reducer(state: IAuthContext, action: any) {
   switch(action.type) {
@@ -34,27 +28,37 @@ function reducer(state: IAuthContext, action: any) {
   }
 }  
 
-
 export const AuthContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
 
-  async function handleSignUp(email: string, password: string): Promise<IUserAuth> {
-    const username = email;
+  async function handleSignUp(signupData: SignUpData): Promise<IUserAuth> {
     try {
-      const signupResult = await Auth.signUp({ username, password, attributes: { email }});
-      const user: CognitoUser = signupResult.user;
-      const userName = user.getUsername();
+      const { email, password, firstName, lastName, phoneNumber } = signupData;
+      const signupResult = await Auth.signUp({ username: email, password, attributes: { email }});
+
+      const user = signupResult.user;
 
       // creating the DynamoDB user 
 
       try {
-        await API.post("business_users", "/business_users", {
-          
-        });
+        const userName = signupResult.userSub;
+
+        await API.post("business_users", "/business_users", 
+        { 
+          body: {
+            uid: userName,
+            email,
+            first_name: firstName,
+            mobile_number: phoneNumber,
+            last_name: lastName,
+            businesses: []
+        }
+        }
+        );
       } catch (error) {
-        console.log("Error, could not create user")
-        console.log(error.message);
+        console.log(error);
+        alert(`Error, could not create user. ${error.message}`);
       }
       
       return {
@@ -62,7 +66,8 @@ export const AuthContextProvider = (props: any) => {
         isAuthenticated: true
       };
     } catch (error) {
-      debugger;
+      console.log(error);
+      console.log("BALLS")
       alert(`Sorry! ${error.message}`);
     }  
     return {
@@ -95,6 +100,7 @@ export const AuthContextProvider = (props: any) => {
         payload: {}
       });
     } catch (error) {
+      console.log(error)
       alert(`Sorry! ${error.message}`);
     }
   }
@@ -105,9 +111,10 @@ export const AuthContextProvider = (props: any) => {
       user: null,
       isAuthenticated: false,
     };
-  
+    debugger;
     try {
       const authenticatedUser = await Auth.signIn(email,password);
+      console.log(authenticatedUser);
       if (authenticatedUser.challengeName === "SMS_MFA" || authenticatedUser.challengeName === "SOFTWARE_TOKEN_MFA") {
         console.log("SMS_MFA or SOFTWARE_TOKEN_MFA")
       } else if (authenticatedUser.challengeName === "NEW_PASSWORD_REQUIRED") {

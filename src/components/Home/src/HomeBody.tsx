@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Button, Card } from "@material-ui/core";
+import { Button, Card, CardContent } from "@material-ui/core";
 import { AddVendorModal } from "./AddVendorModal";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,11 +39,13 @@ export const HomeBody: React.FC = () => {
     setOpen(false);
   }
 
-  function generateVendor(vendors: Vendor[]): JSX.Element[] {
+  function generateVendors(vendors: Vendor[]): JSX.Element[] {
     
     return vendors.map((vendor : Vendor, index : number) => 
       <Card>
-        
+        <CardContent>
+          
+        </CardContent>
       </Card>
     );
     
@@ -53,23 +55,10 @@ export const HomeBody: React.FC = () => {
     setOpen(!open);
   }
 
-  function renderVendors(vendors: Vendor[]): JSX.Element[] {
-    const renderedVendors: JSX.Element[] = [];
-
-    for (let i = 0; i < vendors.length; i++) {
-      renderedVendors.push(
-        <h1>Vendor {i}</h1>
-      );
-    }
-
-    return renderedVendors;
-  }
-
-
   return ( 
     <div className={styles.root}>
       {(vendors.length > 0) 
-      ? renderVendors(vendors)
+      ? generateVendors(vendors)
       : <Button 
         variant="contained"   
         className={styles.button} 

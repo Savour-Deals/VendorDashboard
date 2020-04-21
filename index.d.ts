@@ -6,7 +6,7 @@ declare interface IAuthContext {
   isAuthenticated: boolean;
   user: CognitoUser | null;
   handleLogin: (email: string, password: string) => void;
-  handleSignUp: (email: string, password: string) => Promise<IUserAuth>;
+  handleSignUp: (signupData: SignUpData) => Promise<IUserAuth>;
   handleLogout: () => void;
 }
 
@@ -40,4 +40,12 @@ declare interface Vendor {
   vendorDescription?: string;
   onboardDeal?: string;
   subscribers?: Subscriber[];
+}
+
+declare interface SignUpData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
 }

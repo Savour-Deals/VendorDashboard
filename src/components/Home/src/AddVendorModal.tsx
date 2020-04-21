@@ -107,7 +107,7 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
 const TEXT_INPUT_SIZE = 4;
 export const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
-  const { open, handleClose } = props;
+  const { open, handleClose, addVendor } = props;
   const [coords, setCoords] = useState<MapCoordinates>({
     lat: 59.95,
     lng: 30.33
@@ -140,6 +140,9 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
       vendorName,
       primaryAddress
     }
+
+    addVendor(vendor);
+    handleClose();
   }
 
   function vendorNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -160,6 +163,17 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     setSecondaryAddress(secondaryAddress);
   }
 
+  function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const onboardDeal = event.target.value;
+
+    setOnboardDeal(onboardDeal);
+  }
+
+  function doubleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const doubleClickDeal = event.target.value;
+    
+    setDoubleClickDeal(doubleClickDeal);
+  }
 
   const successCallback = (position: Position) => {
     setCoords({lat: position.coords.latitude, lng: position.coords.longitude});
@@ -224,6 +238,26 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                         value={vendorName}
                         id="vendorName"
                         onChange={vendorNameChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Primary Address"
+                        value={primaryAddress}
+                        id="primaryAddress"
+                        onChange={primaryAddressChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Secondary Address"
+                        value={secondaryAddress}
+                        id="primaryAddress"
+                        onChange={secondaryAddressChange}
 
                       />
                     </Grid>
