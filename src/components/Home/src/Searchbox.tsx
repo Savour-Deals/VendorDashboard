@@ -8,6 +8,8 @@ import parse from 'autosuggest-highlight/parse';
 import throttle from 'lodash/throttle';
 import React, { ChangeEvent, useMemo, useEffect } from "react";
 import CloseIcon from "@material-ui/icons/Close";
+import { InputAdornment } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search'
 
 interface ISearchBox {
   addPlace?: Function;
@@ -67,8 +69,9 @@ export const SearchBox: React.FC<ISearchBox> = props => {
 
   if (typeof window !== 'undefined' && !loaded.current) {
     if (!document.querySelector('#google-maps')) {
+      console.log(process.env);
       loadScript(
-        'https://maps.googleapis.com/maps/api/js?key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
+        'https://maps.googleapis.com/maps/api/js?key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY! +  "&libraries=places",
         document.querySelector('head'),
         'google-maps',
       );
@@ -126,7 +129,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   return(
     <AutoComplete
       id="google-map-demo"
-      style={{ width: 300 }}
+      style={{ width: "75%", textAlign: 'center', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
       getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
       filterOptions={x => x}
       options={options}
@@ -147,10 +150,20 @@ export const SearchBox: React.FC<ISearchBox> = props => {
       renderInput={params => (
         <TextField
           {...params}
-          label="Add a location"
-          variant="filled"
+          label="Business Address Look-up"
+          variant="outlined"
           fullWidth
-          multiline
+          // InputProps={{
+          //   ...params.inputProps,
+          //   startAdornment: (
+          //     <>
+          //     <InputAdornment position="start">
+          //       <SearchIcon />
+          //     </InputAdornment>
+          //     {params.InputProps.startAdornment}
+          //   </>
+          //   )
+          // }}
           value={searchInput}	
           rowsMax="4"
           color="primary"

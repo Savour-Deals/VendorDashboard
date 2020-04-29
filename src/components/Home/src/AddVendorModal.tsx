@@ -72,6 +72,12 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "white",
       margin: theme.spacing(2),
     },
+    search: {
+      textAlign: 'center',
+      display: 'block',
+      marginLeft: 'auto',
+      marginRight: 'auto'
+    },
     modal: {
 
     },
@@ -103,18 +109,6 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
     </animated.div>
   );
 });
-
-function loadScript(src: string, position: HTMLElement | null, id: string) {
-  if (!position) {
-    return;
-  }
-
-  const script = document.createElement('script');
-  script.setAttribute('async', '');
-  script.setAttribute('id', id);
-  script.src = src;
-  position.appendChild(script);
-}
 
 const TEXT_INPUT_SIZE = 4;
 export const AddVendorModal: React.FC<IAddVendorModal> = props => {
@@ -199,6 +193,19 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   }
 
+  /**
+   * place_id: string
+business_name: string
+btn_id: string
+single_click_deal: string
+double_click_deal: string
+long_click_deal: string
+onboard_deal: string
+subscriber_dict: empty map
+twilio_number: string
+payment_method: PaymentMethod (string)
+business_user: string (Cognito ID)
+   */
   const searchBar = createRef<HTMLInputElement>();
 
   return (
@@ -218,10 +225,10 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
           <CardContent className={styles.cardContent} >
             <form className={styles.modal}>
               <h1>Add Business</h1>
-              <div style={{ height: '45vh ', width: '100%' }}>
+              <div>
 
                 <div ref={searchBar}>
-                  {mapsApiLoaded && <SearchBox {...searchBoxProps}/>}
+                  <SearchBox {...searchBoxProps}/>
                 </div>
               </div>
               <br></br>
@@ -234,6 +241,46 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
                         value={vendorName}
                         id="vendorName"
                         onChange={vendorNameChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Address"
+                        value={primaryAddress}
+                        id="primaryAddress"
+                        onChange={primaryAddressChange}
+
+                      />
+                    </Grid>
+                                        <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Primary Address"
+                        value={primaryAddress}
+                        id="primaryAddress"
+                        onChange={primaryAddressChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Primary Address"
+                        value={primaryAddress}
+                        id="primaryAddress"
+                        onChange={primaryAddressChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Primary Address"
+                        value={primaryAddress}
+                        id="primaryAddress"
+                        onChange={primaryAddressChange}
 
                       />
                     </Grid>
