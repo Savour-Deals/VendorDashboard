@@ -1,10 +1,8 @@
 import { Card, CardContent, CardHeader, createStyles, Grid, IconButton, Button, makeStyles, Modal, TextField, Theme } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import GoogleMapsReact from "google-map-react";
 import React, { ChangeEvent, createRef, useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { SearchBox } from "./Searchbox";
-import { useFormFields } from "../../CustomHooks/useFormField";
 
 interface IAddVendorModal {
   open: boolean;
@@ -26,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(3),
       display: "inline-block",
       width: "90%",
-      height: "90%",
       '&::-webkit-scrollbar': {
         width: '0.4em'
       },
@@ -78,9 +75,14 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 'auto',
       marginRight: 'auto'
     },
-    modal: {
-
-    },
+    formFields: {
+      margin: '25px',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      width: '75%',
+      outline: '1px solid slategrey',
+      boxShadow: '5px 5px 5px #888888'
+    }
   })
 );
 
@@ -114,25 +116,18 @@ const TEXT_INPUT_SIZE = 4;
 export const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
   const { open, handleClose, addVendor } = props;
-  const [coords, setCoords] = useState<MapCoordinates>({
-    lat: 59.95,
-    lng: 30.33
-  });
-  const [mapsApiLoaded, setMapsApiLoaded] = useState(false);
-  const [mapInstance, setMapInstance] = useState(null);
-  const [mapsApi, setMapsApi] = useState(null);
-  const [vendorName, setVendorName] = useState("Select a business from the map above");
+
+  const [vendorName, setVendorName] = useState("");
   const [placeId, setPlaceId] = useState("");
-  const [primaryAddress, setPrimaryAddress] = useState("Select a business from the map above");
-  const [secondaryAddress, setSecondaryAddress] = useState("Select a business from the map above");
+  const [primaryAddress, setPrimaryAddress] = useState("");
   const [locationSelected, setLocationSelected] = useState(false);
   const [onboardDeal, setOnboardDeal] = useState("");
+  const [singleClickDeal, setSingleClickDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
   const [twilioNumber, setTwilioNumber] = useState("");
 
 
   const styles = useStyles();
-  const zoom = 11;
 
   const searchBoxProps = {
     setVendorName,
@@ -163,12 +158,6 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     setPrimaryAddress(primaryAddress);
   }
 
-  function secondaryAddressChange(event: ChangeEvent<HTMLInputElement>) {
-    const secondaryAddress = event.target.value;
-
-    setSecondaryAddress(secondaryAddress);
-  }
-
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
     const onboardDeal = event.target.value;
 
@@ -181,16 +170,10 @@ export const AddVendorModal: React.FC<IAddVendorModal> = props => {
     setDoubleClickDeal(doubleClickDeal);
   }
 
-  const successCallback = (position: Position) => {
-    setCoords({lat: position.coords.latitude, lng: position.coords.longitude});
-  }
-
-  const errorCallback = () => {
-
-  }
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+  function singleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const singleClickDeal = event.target.value;
+    
+    setSingleClickDeal(singleClickDeal);
   }
 
   /**
@@ -209,7 +192,7 @@ business_user: string (Cognito ID)
   const searchBar = createRef<HTMLInputElement>();
 
   return (
-    <Modal open={open} className={styles.modal} onClose={handleClose}>
+    <Modal open={open} onClose={handleClose}>
       <Fade
         in={open}
       >
@@ -223,7 +206,7 @@ business_user: string (Cognito ID)
             }
           />
           <CardContent className={styles.cardContent} >
-            <form className={styles.modal}>
+            <form>
               <h1>Add Business</h1>
               <div>
 
@@ -233,7 +216,10 @@ business_user: string (Cognito ID)
               </div>
               <br></br>
               <div>
-                <Grid container spacing={4}>
+                <h2>
+                  Vendor Info
+                </h2>
+                <Grid container spacing={4} className={styles.formFields}>
                     <Grid item xs={TEXT_INPUT_SIZE}>
                       <TextField
                         className={styles.textInput}
@@ -254,10 +240,54 @@ business_user: string (Cognito ID)
 
                       />
                     </Grid>
-                                        <Grid item xs={TEXT_INPUT_SIZE}>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
                       <TextField
                         className={styles.textInput}
-                        label="Primary Address"
+                        label="Onboard Deal"
+                        value={onboardDeal}
+                        id="primaryAddress"
+                        onChange={onboardDealChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Single Click Deal"
+                        value={singleClickDeal}
+                        id="primaryAddress"
+                        onChange={singleClickDealChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Double Click Deal"
+                        value={doubleClickDeal}
+                        id="primaryAddress"
+                        onChange={doubleClickDealChange}
+                      />
+                    </Grid>
+                </Grid>
+                <h2>
+                  Billing Info
+                </h2>
+                <Grid container spacing={4}  className={styles.formFields}>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Business Name"
+                        value={vendorName}
+                        id="vendorName"
+                        onChange={vendorNameChange}
+
+                      />
+                    </Grid>
+                    <Grid item xs={TEXT_INPUT_SIZE}>
+                      <TextField
+                        className={styles.textInput}
+                        label="Address"
                         value={primaryAddress}
                         id="primaryAddress"
                         onChange={primaryAddressChange}
@@ -267,31 +297,30 @@ business_user: string (Cognito ID)
                     <Grid item xs={TEXT_INPUT_SIZE}>
                       <TextField
                         className={styles.textInput}
-                        label="Primary Address"
-                        value={primaryAddress}
+                        label="Onboard Deal"
+                        value={onboardDeal}
                         id="primaryAddress"
-                        onChange={primaryAddressChange}
+                        onChange={onboardDealChange}
 
                       />
                     </Grid>
                     <Grid item xs={TEXT_INPUT_SIZE}>
                       <TextField
                         className={styles.textInput}
-                        label="Primary Address"
-                        value={primaryAddress}
+                        label="Single Click Deal"
+                        value={singleClickDeal}
                         id="primaryAddress"
-                        onChange={primaryAddressChange}
+                        onChange={singleClickDealChange}
 
                       />
                     </Grid>
                     <Grid item xs={TEXT_INPUT_SIZE}>
                       <TextField
                         className={styles.textInput}
-                        label="Primary Address"
-                        value={primaryAddress}
+                        label="Double Click Deal"
+                        value={doubleClickDeal}
                         id="primaryAddress"
-                        onChange={primaryAddressChange}
-
+                        onChange={doubleClickDealChange}
                       />
                     </Grid>
                 </Grid>

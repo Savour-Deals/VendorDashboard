@@ -85,7 +85,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
     const address: string = options.structured_formatting.secondary_text;
     console.log(options);
     setVendorName(restaurantName);
-    setPrimaryAddress(options.description);
+    setPrimaryAddress(address);
     setSearchInput(options.description);
   }
 
@@ -167,6 +167,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
           value={searchInput}	
           rowsMax="4"
           color="primary"
+          
           className={classes.field}
           onChange={handleChange}
         />
@@ -179,7 +180,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
         );
 
         return (
-          <Grid container alignItems="center">
+          <Grid container alignItems="center" onClick={() => getPlaceInformation(option)}>
             <Grid item>
               <LocationOnIcon className={classes.icon} onClick={() => getPlaceInformation(option)} />
             </Grid>

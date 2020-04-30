@@ -36,9 +36,10 @@ declare interface Vendor {
   placeId: string;
   vendorName: string;
   primaryAddress: string;
-  secondaryAddress?: string;
   vendorDescription?: string;
   onboardDeal?: string;
+  singleClickDeal?: string;
+  doubleClickDeal?: string;
   subscribers?: Subscriber[];
 }
 
