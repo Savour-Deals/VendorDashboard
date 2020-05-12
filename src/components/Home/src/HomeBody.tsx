@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Button, Card, CardContent } from "@material-ui/core";
-import { AddVendorModal } from "./AddVendorModal";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React, { useState, useEffect } from "react";
+import  AddVendorModal  from "./AddVendorModal";
+import { StripeProvider, Elements } from "react-stripe-elements";
+import config from "../../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,7 +30,13 @@ const useStyles = makeStyles((theme: Theme) =>
 export const HomeBody: React.FC = () => {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [stripe, setStripe] = useState(null);
   const styles = useStyles();
+
+  useEffect(() => {
+    setStripe((window as any).Stripe(config.STRIPE_KEY));
+  }, [])
 
   function addVendor(vendor: Vendor) {
 
@@ -56,21 +64,28 @@ export const HomeBody: React.FC = () => {
   }
 
   return ( 
-    <div className={styles.root}>
-      {(vendors.length > 0) 
-      ? generateVendors(vendors)
-      : <Button 
-        variant="contained"   
-        className={styles.button} 
-        onClick={toggleModal}>
-          Add Vendor
-        </Button>}
+    <StripeProvider stripe={stripe}>
 
-        <AddVendorModal
-          open={open}
-          handleClose={handleClose}
-          addVendor={addVendor}
-        />
+    <div className={styles.root}>
+
+        {(vendors.length > 0) 
+        ? generateVendors(vendors)
+        : <Button 
+          variant="contained"   
+          className={styles.button} 
+          onClick={toggleModal}>
+            Add Vendor
+          </Button>}
+          <Elements>
+            <AddVendorModal
+              open={open}
+              handleClose={handleClose}
+              addVendor={addVendor}
+              isLoading={isLoading}
+            />
+          </Elements>
     </div>
+    </StripeProvider>
+
   );
 }

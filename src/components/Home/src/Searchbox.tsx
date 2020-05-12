@@ -153,17 +153,6 @@ export const SearchBox: React.FC<ISearchBox> = props => {
           label="Business Address Look-up"
           variant="outlined"
           fullWidth
-          // InputProps={{
-          //   ...params.inputProps,
-          //   startAdornment: (
-          //     <>
-          //     <InputAdornment position="start">
-          //       <SearchIcon />
-          //     </InputAdornment>
-          //     {params.InputProps.startAdornment}
-          //   </>
-          //   )
-          // }}
           value={searchInput}	
           rowsMax="4"
           color="primary"
