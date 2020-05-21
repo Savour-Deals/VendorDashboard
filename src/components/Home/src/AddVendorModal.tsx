@@ -1,14 +1,17 @@
 import { Card, CardContent, CardHeader, createStyles, Grid, IconButton, Button, makeStyles, Modal, TextField, Theme } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { ChangeEvent, createRef, useState, useEffect } from "react";
+import React, { ChangeEvent, createRef, useState } from "react";
 import { animated, useSpring } from "react-spring";
 import { SearchBox } from "./Searchbox";
 import { CardElement, injectStripe } from "react-stripe-elements";
+import { API } from "aws-amplify";
+
 interface IAddVendorModal {
   open: boolean;
   isLoading: boolean;
   handleClose: () => void;
   addVendor: (vendor: Vendor) => void;
+  stripe?: any;
 }
 
 interface FadeProps {
@@ -115,7 +118,7 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
 const TEXT_INPUT_SIZE = 4;
 const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
-  const { open, handleClose, addVendor} = props;
+  const { open, handleClose, addVendor, stripe } = props;
 
   const [isLoading, setIsLoading] = useState(false);
   const [vendorName, setVendorName] = useState("");
@@ -128,6 +131,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [twilioNumber, setTwilioNumber] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCardComplete, setIsCardComplete] = useState(false);
+  const [cardName, setCardName] = useState("");
   const styles = useStyles();
 
 
@@ -144,6 +148,22 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       primaryAddress
     }
 
+    setIsProcessing(true);
+
+    const { token, error } = await stripe.createToken({ name: cardName});
+    await API.get(
+      "twilio",
+      "",
+      {}
+    );
+    await API.post(
+      "businesses",
+      "/businesses",
+      {
+        
+      }
+    );
+    console.log(token);
     addVendor(vendor);
     handleClose();
   }
@@ -176,6 +196,12 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     const singleClickDeal = event.target.value;
     
     setSingleClickDeal(singleClickDeal);
+  }
+
+  function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
+    const cardName = event.target.value;
+
+    setCardName(cardName);
   }
 
   const searchBar = createRef<HTMLInputElement>();
@@ -269,6 +295,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       variant="outlined"
                       label="Name on Card"
                       fullWidth
+                      onChange={cardNameChange}
                     />
 
                     </Grid>

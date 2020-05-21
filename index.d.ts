@@ -1,7 +1,3 @@
-declare interface Vendor {
-
-}
-
 declare interface IAuthContext {
   isAuthenticated: boolean;
   user: CognitoUser | null;

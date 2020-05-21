@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
 import Background from "../assets/img/brand/vendorbackground.jpg";
-import {useSpring, animated} from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../auth";
 
