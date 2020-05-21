@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
 import Background from "../assets/img/brand/vendorbackground.jpg";
-import {useSpring, animated} from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../auth";
 
@@ -66,21 +66,68 @@ export const CreateAccount: React.FC = () => {
   const styles = useStyles();
   const history = useHistory();
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const { handleSignUp, handleLogin } = useContext<IAuthContext>(AuthContext);
-  async function handleCreateAccount() {
-    const creationSucess = await handleSignUp(email, password);
-    if (creationSucess.isAuthenticated){
-      await handleLogin(email, password);//this should not fail?
-      history.push("/index");
-    }//else an error was displayed from auth object
+
+  function validateForm(): boolean {
+    if (confirmPassword !== password) {
+      alert("Sorry, but the passwords do not match.")
+      return false;
+    }
+
+    if (firstName === "") {
+      alert("Please enter a first name.");
+      return false;
+    }
+
+    return true;
   }
 
+  async function handleCreateAccount() {
+
+
+    const isValidated = validateForm();
+
+    if (!isValidated) return;
+
+    const creationSucess = await handleSignUp({
+      email,
+      firstName,  
+      lastName,
+      phoneNumber,
+      password
+    });
+
+    history.push("/login");
+    alert("Please check your email to confirm your account.")
+  }
+
+  function handlePhoneNumberChange(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const phoneNumber: string = event.target.value;
+    setPhoneNumber(phoneNumber);
+  }
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
     const email: string = event.target.value;
     setEmail(email);
+  }
+
+  function handleFirstNameChange(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const firstName: string = event.target.value;
+    setFirstName(firstName);
+  }
+
+  function handleLastNameChange(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const lastName: string = event.target.value;
+    setLastName(lastName);
   }
 
   function handlePasswordChange(event: ChangeEvent<HTMLInputElement>) {
@@ -89,14 +136,16 @@ export const CreateAccount: React.FC = () => {
     setPassword(password);
   }
 
+  function handleConfirmPasswordChange(event: ChangeEvent<HTMLInputElement>) {
+    event.preventDefault();
+    const confirmPassword: string = event.target.value;
+    setConfirmPassword(confirmPassword);
+  }
 
-  // if (auth) return <Redirect to="/index" />;
 
   return(
     <animated.div className={styles.root} style={springProps}>
       <Card className={styles.card}>
-        {/* <CardHeader
-        /> */}
         <CardMedia
           className={styles.img}
           image={LogoWhite}
@@ -116,10 +165,39 @@ export const CreateAccount: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  id="first-name"
+                  label="First Name"
+                  onChange={handleFirstNameChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="last-name"
+                  label="Last Name"
+                  onChange={handleLastNameChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="phone-number"
+                  label="Phone Number"
+                  onChange={handlePhoneNumberChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
                   id="password"
                   label="Password"
                   type="password"
                   onChange={handlePasswordChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  id="confirm-password"
+                  label="Confirm Password"
+                  type="password"
+                  onChange={handleConfirmPasswordChange}
                 />
               </Grid>
               <Grid item xs={12}>
