@@ -67,7 +67,6 @@ export const AuthContextProvider = (props: any) => {
       };
     } catch (error) {
       console.log(error);
-      console.log("BALLS")
       alert(`Sorry! ${error.message}`);
     }  
     return {

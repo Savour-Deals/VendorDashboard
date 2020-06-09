@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, createStyles, Grid, IconButton, Button, makeStyles, Modal, TextField, Theme } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { ChangeEvent, createRef, useState } from "react";
+import React, { ChangeEvent, createRef, useState, useContext } from "react";
+import { AuthContext } from "../../../auth";
 import { animated, useSpring } from "react-spring";
 import { SearchBox } from "./Searchbox";
 import { CardElement, injectStripe } from "react-stripe-elements";
@@ -128,7 +129,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [onboardDeal, setOnboardDeal] = useState("");
   const [singleClickDeal, setSingleClickDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
-  const [twilioNumber, setTwilioNumber] = useState("");
+  const [longClickDeal, setLongClickDeal] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCardComplete, setIsCardComplete] = useState(false);
   const [cardName, setCardName] = useState("");
@@ -140,7 +141,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     setPlaceId,
     setPrimaryAddress,
   }
-
+  
   const createVendor = async () => {
     const vendor: Vendor = {
       placeId,
@@ -150,20 +151,76 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
     setIsProcessing(true);
 
-    const { token, error } = await stripe.createToken({ name: cardName});
-    await API.get(
-      "twilio",
-      "",
+    const { token, error } = await stripe.createToken({ name: cardName });
+
+    if (error) {
+      alert("Uh oh! " + error);
+      return;
+    }
+
+    const cardId = token.card.id;
+    let buttons: Array<VendorButton> = [];
+    try {
+      buttons = await API.get(
+        "unclaimed_buttons",
+        "/unclaimed_buttons",
+        {}
+      )
+    } catch (unclaimedButtonError) {
+      alert("Sorry, could not retrieve an unclaimed button: " + unclaimedButtonError);
+      return;
+    }
+
+    const buttonId = buttons[1].button_id;
+
+    const isDev = (process.env.NODE_ENV == "development");
+
+    try {
+      const twilioResult: TwilioCreateResponse = await API.post(
+        "message_service",
+        "/message_service/twilio_number/" + placeId, 
+        {
+          body: {
+            place_id: placeId,
+            isDev,
+          }
+        }
+      );
+    } catch (twilioError) {
+      alert("Sorry, an error occurred when creating a twilio number: " + twilioError);
+      return;
+    }
+
+    try {
+      const createBusinessResponse = await API.post(
+        "businesses",
+        "/businesses",
+        {
+          body: {
+            place_id: placeId,
+            btn_id: buttonId,
+            business_name: vendorName,
+            single_click_deal: singleClickDeal,
+            double_click_deal: doubleClickDeal,
+            long_click_deal: longClickDeal,
+            onboard_deal: onboardDeal,
+            stripe_customer_id: cardId,
+            subscriber_dict: {}
+          }
+        }
+      );
+    } catch (createBusinessError) {
+      alert("Sorry, an error occurred when creating the business: " + createBusinessError);
+      return;
+    }
+
+
+    const updateBusinessUserResponse = await API.put(
+      "business_users",
+      "/usiness_users",
       {}
-    );
-    await API.post(
-      "businesses",
-      "/businesses",
-      {
-        
-      }
-    );
-    console.log(token);
+    )
+
     addVendor(vendor);
     handleClose();
   }
@@ -196,6 +253,12 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     const singleClickDeal = event.target.value;
     
     setSingleClickDeal(singleClickDeal);
+  }
+
+  function longClickDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const longClickDeal = event.target.value;
+
+    setLongClickDeal(longClickDeal);
   }
 
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -282,6 +345,15 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                           value={doubleClickDeal}
                           id="primaryAddress"
                           onChange={doubleClickDealChange}
+                        />
+                      </Grid>
+                      <Grid item xs={TEXT_INPUT_SIZE}>
+                        <TextField
+                          className={styles.textInput}
+                          label="Long Click Deal"
+                          value={longClickDeal}
+                          id="primaryAddress"
+                          onChange={longClickDealChange}
                         />
                       </Grid>
                   </Grid>
