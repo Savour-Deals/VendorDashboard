@@ -215,9 +215,6 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
           }
         }
       );
-      console.log(createBusinessResponse);
-
-
     } catch (createBusinessError) {
       alert("Sorry, an error occurred when creating the business: " + createBusinessError);
       return;
@@ -306,7 +303,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
             />
             <CardContent className={styles.cardContent} >
               <Dialog open={isLoading}>
-                <Loader type="ThreeDots" color="#2BAD60" height={100} width={100}/>
+                <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
               </Dialog>
               <form>
                 <h1>Add Business</h1>
