@@ -5,7 +5,9 @@ import { AuthContext } from "../../../auth";
 import { animated, useSpring } from "react-spring";
 import { SearchBox } from "./Searchbox";
 import { CardElement, injectStripe } from "react-stripe-elements";
-import { API } from "aws-amplify";
+import { API, Auth } from "aws-amplify";
+import Loader from "react-loader-spinner";
+import Dialog from '@material-ui/core/Dialog';
 
 interface IAddVendorModal {
   open: boolean;
@@ -146,11 +148,12 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     const vendor: Vendor = {
       placeId,
       vendorName,
-      primaryAddress
+      primaryAddress,
+      key: placeId
     }
 
     setIsProcessing(true);
-
+    setIsLoading(true);
     const { token, error } = await stripe.createToken({ name: cardName });
 
     if (error) {
@@ -173,8 +176,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
     const buttonId = buttons[1].button_id;
 
-    const isDev = (process.env.NODE_ENV == "development");
-
+    const isDev = (process.env.NODE_ENV === "development");
+    let twilioNumber = "";
     try {
       const twilioResult: TwilioCreateResponse = await API.post(
         "message_service",
@@ -186,6 +189,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
           }
         }
       );
+
+      twilioNumber = twilioResult.twilioNumber;
     } catch (twilioError) {
       alert("Sorry, an error occurred when creating a twilio number: " + twilioError);
       return;
@@ -205,22 +210,37 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
             long_click_deal: longClickDeal,
             onboard_deal: onboardDeal,
             stripe_customer_id: cardId,
+            twilio_number: twilioNumber,
             subscriber_dict: {}
           }
         }
       );
+      console.log(createBusinessResponse);
+
+
     } catch (createBusinessError) {
       alert("Sorry, an error occurred when creating the business: " + createBusinessError);
       return;
     }
 
+    // identityId I believe is equivalent to userSub https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser();
+      const userName = currentUser.username;
+      const updateBusinessUserResponse = await API.put(
+        "business_users",
+        "/business_users/" + userName,
+        {
+          body: {
+            "businesses": placeId,
+          }
+        } 
+      ) 
+    } catch (updateBusinessError) {
+      alert("Uh oh! " + updateBusinessError); 
+    }
 
-    const updateBusinessUserResponse = await API.put(
-      "business_users",
-      "/usiness_users",
-      {}
-    )
-
+    setIsLoading(false);
     addVendor(vendor);
     handleClose();
   }
@@ -271,6 +291,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
   return (
       <Modal open={open} onClose={handleClose}>
+
         <Fade
           in={open}
         >
@@ -284,6 +305,9 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
               }
             />
             <CardContent className={styles.cardContent} >
+              <Dialog open={isLoading}>
+                <Loader type="ThreeDots" color="#2BAD60" height={100} width={100}/>
+              </Dialog>
               <form>
                 <h1>Add Business</h1>
                 <div>

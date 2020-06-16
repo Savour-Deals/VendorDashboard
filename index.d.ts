@@ -36,6 +36,7 @@ declare interface Vendor {
   placeId: string;
   vendorName: string;
   primaryAddress: string;
+  key: string;
   vendorDescription?: string;
   onboardDeal?: string;
   singleClickDeal?: string;

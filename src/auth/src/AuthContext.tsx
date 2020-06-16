@@ -53,7 +53,7 @@ export const AuthContextProvider = (props: any) => {
             mobile_number: phoneNumber,
             last_name: lastName,
             businesses: []
-        }
+          }
         }
         );
       } catch (error) {
@@ -84,6 +84,7 @@ export const AuthContextProvider = (props: any) => {
       const user = await Auth.currentAuthenticatedUser();
       payload["user"] = user;
       payload["isAuthenticated"] = true;
+      console.log(user);
     } catch (error) {
       console.log(`No Currently authenticated user`);
     }
@@ -113,7 +114,6 @@ export const AuthContextProvider = (props: any) => {
     debugger;
     try {
       const authenticatedUser = await Auth.signIn(email,password);
-      console.log(authenticatedUser);
       if (authenticatedUser.challengeName === "SMS_MFA" || authenticatedUser.challengeName === "SOFTWARE_TOKEN_MFA") {
         console.log("SMS_MFA or SOFTWARE_TOKEN_MFA")
       } else if (authenticatedUser.challengeName === "NEW_PASSWORD_REQUIRED") {
