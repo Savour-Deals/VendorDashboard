@@ -28,15 +28,25 @@ declare interface Subscriber {
 
 }
 
+declare interface VendorButton {
+  button_id: string;
+}
+
 declare interface Vendor {
   placeId: string;
   vendorName: string;
   primaryAddress: string;
+  key: string;
   vendorDescription?: string;
   onboardDeal?: string;
   singleClickDeal?: string;
   doubleClickDeal?: string;
   subscribers?: Subscriber[];
+}
+
+declare interface TwilioCreateResponse {
+  status: boolean;
+  twilioNumber: string;
 }
 
 declare interface SignUpData {

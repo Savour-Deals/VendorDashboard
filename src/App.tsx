@@ -33,7 +33,12 @@ Amplify.configure({
         name: "businesses",
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
-      }
+      },
+      {
+        name: "message_service",
+        endpoint: config.apiGateway.URL,
+        region: config.apiGateway.REGION
+      },
     ]
   }
 });
@@ -41,8 +46,6 @@ Amplify.configure({
 const loginProps = { isAuthenticated: false };
 
 const App: React.FC =  () => {
-
-
   return (
   <AuthContextProvider >
     <AuthContext.Consumer>
@@ -59,7 +62,6 @@ const App: React.FC =  () => {
       }
       </AuthContext.Consumer>
     </AuthContextProvider>
-
   );
 }
 

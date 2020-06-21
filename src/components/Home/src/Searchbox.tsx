@@ -65,7 +65,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   const loaded = React.useRef(false);
   const [options, setOptions] = React.useState<PlaceType[]>([]);
 
-  const { setVendorName, setPrimaryAddress } = props; 
+  const { setVendorName, setPrimaryAddress, setPlaceId } = props; 
 
   if (typeof window !== 'undefined' && !loaded.current) {
     if (!document.querySelector('#google-maps')) {
@@ -84,6 +84,7 @@ export const SearchBox: React.FC<ISearchBox> = props => {
     const restaurantName: string = options.structured_formatting.main_text;
     const address: string = options.structured_formatting.secondary_text;
     console.log(options);
+    setPlaceId(options.place_id);
     setVendorName(restaurantName);
     setPrimaryAddress(address);
     setSearchInput(options.description);
