@@ -1,9 +1,11 @@
 import { Button, Card, CardContent } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import  AddVendorModal  from "./AddVendorModal";
 import { StripeProvider, Elements } from "react-stripe-elements";
 import config from "../../../config";
+import { API } from "aws-amplify";
+import { AuthContext } from "../../../auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +35,20 @@ export const HomeBody: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const styles = useStyles();
+
+  const authInfo = useContext(AuthContext);
+  const userName = authInfo.user.username;
+  API.get(
+    "business_users",
+    `/business_users/${userName}`,
+    {}
+  )
+  .then(response => {
+    console.log(response);
+  })
+  .catch(error => {
+    console.log(error);
+  })
 
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));

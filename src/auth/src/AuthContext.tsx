@@ -1,6 +1,5 @@
 import React, { createContext, useReducer } from "react";
 import { Auth, API } from "aws-amplify";
-import { CognitoUser, UserData } from "amazon-cognito-identity-js";
 
 const INITIAL_AUTH: IAuthContext = {
   isAuthenticated: false,
@@ -32,7 +31,7 @@ export const AuthContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
 
-  async function handleSignUp(signupData: SignUpData): Promise<IUserAuth> {
+  async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;
       const signupResult = await Auth.signUp({ username: email, password, attributes: { email }});
