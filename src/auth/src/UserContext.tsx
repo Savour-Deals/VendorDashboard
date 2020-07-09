@@ -1,6 +1,5 @@
 import React, { createContext, useReducer } from "react";
 import { Auth, API } from "aws-amplify";
-
 const INITIAL_AUTH: IUserContext = {
   isAuthenticated: false,
   isLoading: true,
@@ -24,7 +23,11 @@ function reducer(state: IUserContext, action: any) {
         user: action.payload.user,
         isLoading: action.payload.isLoading,
         isAuthenticated: action.payload.isAuthenticated,
-        userData: action.payload.userData,
+      }
+    case "SET_DATA":
+      return {
+        ...state,
+        data: action.payload.data
       }
     case "stopLoading":
       return {
@@ -48,7 +51,6 @@ export const UserContextProvider = (props: any) => {
       "/business_users/" + userName,
       {});
   
-      console.log(getBusinessUserResponseData);
       dispatch({
         type: "SET_DATA",
         payload: {

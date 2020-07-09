@@ -1,6 +1,9 @@
+
+
 declare interface IUserContext {
   isAuthenticated: boolean;
   isLoading: boolean;
+  // user: import('amazon-cognito-identity-js').CognitoUser | null;
   user: any;
   data: any;
   handleLogin: (email: string, password: string) => void;

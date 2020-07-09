@@ -37,18 +37,7 @@ export const HomeBody: React.FC = () => {
   const styles = useStyles();
 
   const userContext: IUserContext = useContext(UserContext);
-  const userName = userContext.user.username;
-  API.get(
-    "business_users",
-    `/business_users/${userName}`,
-    {}
-  )
-  .then(response => {
-    console.log(response);
-  })
-  .catch(error => {
-    console.log(error);
-  })
+  console.log(userContext);
 
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
