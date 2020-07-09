@@ -1,10 +1,13 @@
 import { Card, CardContent, CardHeader, createStyles, Grid, IconButton, Button, makeStyles, Modal, TextField, Theme } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { ChangeEvent, createRef, useState } from "react";
+import React, { ChangeEvent, createRef, useState, useContext } from "react";
 import { animated, useSpring } from "react-spring";
 import { SearchBox } from "./Searchbox";
 import { CardElement, injectStripe } from "react-stripe-elements";
 import { API } from "aws-amplify";
+import Loader from "react-loader-spinner";
+import Dialog from '@material-ui/core/Dialog';
+import { UserContext } from "../../../auth";
 
 interface IAddVendorModal {
   open: boolean;
@@ -128,42 +131,114 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [onboardDeal, setOnboardDeal] = useState("");
   const [singleClickDeal, setSingleClickDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
-  const [twilioNumber, setTwilioNumber] = useState("");
+  const [longClickDeal, setLongClickDeal] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCardComplete, setIsCardComplete] = useState(false);
   const [cardName, setCardName] = useState("");
   const styles = useStyles();
-
+  const userContext: IUserContext = useContext(UserContext);
 
   const searchBoxProps = {
     setVendorName,
     setPlaceId,
     setPrimaryAddress,
   }
-
+  
   const createVendor = async () => {
     const vendor: Vendor = {
       placeId,
       vendorName,
-      primaryAddress
+      primaryAddress,
+      key: placeId
     }
 
     setIsProcessing(true);
+    setIsLoading(true);
+    const { token, error } = await stripe.createToken({ name: cardName });
 
-    const { token, error } = await stripe.createToken({ name: cardName});
-    await API.get(
-      "twilio",
-      "",
-      {}
-    );
-    await API.post(
-      "businesses",
-      "/businesses",
-      {
-        
-      }
-    );
-    console.log(token);
+    if (error) {
+      alert("Uh oh! " + error);
+      return;
+    }
+
+    const cardId = token.card.id;
+    let buttons: Array<VendorButton> = [];
+    try {
+      buttons = await API.get(
+        "unclaimed_buttons",
+        "/unclaimed_buttons",
+        {}
+      )
+    } catch (unclaimedButtonError) {
+      alert("Sorry, could not retrieve an unclaimed button: " + unclaimedButtonError);
+      return;
+    }
+
+    // CURRENTLY FOR TESTING ONLY! CHANGE FOR RELEASE
+    const buttonId = buttons[1].button_id;
+
+    const isDev = (process.env.NODE_ENV === "development");
+    let twilioNumber = "";
+    try {
+      const twilioResult: TwilioCreateResponse = await API.post(
+        "message_service",
+        "/message_service/twilio_number/" + placeId, 
+        {
+          body: {
+            place_id: placeId,
+            isDev,
+          }
+        }
+      );
+
+      twilioNumber = twilioResult.twilioNumber;
+    } catch (twilioError) {
+      alert("Sorry, an error occurred when creating a twilio number: " + twilioError);
+      return;
+    }
+
+    try {
+      const createBusinessResponse = await API.post(
+        "businesses",
+        "/businesses",
+        {
+          body: {
+            place_id: placeId,
+            btn_id: buttonId,
+            business_name: vendorName,
+            single_click_deal: singleClickDeal,
+            double_click_deal: doubleClickDeal,
+            long_click_deal: longClickDeal,
+            onboard_deal: onboardDeal,
+            stripe_customer_id: cardId,
+            twilio_number: twilioNumber,
+            subscriber_dict: {}
+          }
+        }
+      );
+    } catch (createBusinessError) {
+      alert("Sorry, an error occurred when creating the business: " + createBusinessError);
+      return;
+    }
+
+    // identityId I believe is equivalent to userSub https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
+    try {
+      const currentUser = userContext.user;
+      const userName = currentUser.username;
+      const updateBusinessUserResponse = await API.put(
+        "business_users",
+        "/business_users/" + userName,
+        {
+          body: {
+            "businesses": placeId,
+          }
+        } 
+      ) 
+    } catch (updateBusinessError) {
+      alert("Uh oh! " + updateBusinessError); 
+    }
+
+    setIsLoading(false);
     addVendor(vendor);
     handleClose();
   }
@@ -198,6 +273,12 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     setSingleClickDeal(singleClickDeal);
   }
 
+  function longClickDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const longClickDeal = event.target.value;
+
+    setLongClickDeal(longClickDeal);
+  }
+
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
     const cardName = event.target.value;
 
@@ -208,6 +289,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
   return (
       <Modal open={open} onClose={handleClose}>
+
         <Fade
           in={open}
         >
@@ -221,6 +303,9 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
               }
             />
             <CardContent className={styles.cardContent} >
+              <Dialog open={isLoading}>
+                <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
+              </Dialog>
               <form>
                 <h1>Add Business</h1>
                 <div>
@@ -282,6 +367,15 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                           value={doubleClickDeal}
                           id="primaryAddress"
                           onChange={doubleClickDealChange}
+                        />
+                      </Grid>
+                      <Grid item xs={TEXT_INPUT_SIZE}>
+                        <TextField
+                          className={styles.textInput}
+                          label="Long Click Deal"
+                          value={longClickDeal}
+                          id="primaryAddress"
+                          onChange={longClickDealChange}
                         />
                       </Grid>
                   </Grid>

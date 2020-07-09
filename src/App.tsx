@@ -1,13 +1,14 @@
 import React from "react";
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import  { Login }  from "./components/Login";
+import { Login }  from "./components/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { Home } from "./components/Home/";
 import { CreateAccount } from "./components/CreateAccount";
-import { AuthContextProvider, AuthContext } from "./auth";
-import  Amplify from 'aws-amplify';
+import { UserContextProvider, UserContext } from "./auth";
+import Amplify from 'aws-amplify';
 import config from "./config";
+import { LoadingDialog } from "./components/Home/src/LoadingDialog";
 
 Amplify.configure({
   Auth: {
@@ -33,7 +34,12 @@ Amplify.configure({
         name: "businesses",
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
-      }
+      },
+      {
+        name: "message_service",
+        endpoint: config.apiGateway.URL,
+        region: config.apiGateway.REGION
+      },
     ]
   }
 });
@@ -41,25 +47,28 @@ Amplify.configure({
 const loginProps = { isAuthenticated: false };
 
 const App: React.FC =  () => {
-
-
   return (
-  <AuthContextProvider >
-    <AuthContext.Consumer>
-      {(auth: IAuthContext) => 
+  <UserContextProvider >
+    <UserContext.Consumer>
+      {(auth: IUserContext) => 
             <BrowserRouter>
+            {console.log(auth.isLoading)}
+            <LoadingDialog isLoading={auth.isLoading}/>
+
             <Switch>
                 <Route path="/login" render={() => <Login {...loginProps} />}/>
                 <Route path="/create-account" render={() => <CreateAccount/>}/>
-                {/* Remove this fake auth prop being passed, should be retrieved by context */}
                 <PrivateRoute path="/index" auth={auth.isAuthenticated} component={Home} />
               </Switch>
-              {(auth.isAuthenticated) ? <Redirect to="/index" /> : <Redirect to="/login" />}
+              {
+                auth.isAuthenticated
+                ? <Redirect to="/index" />
+                : <Redirect to="/login" />
+              }
             </BrowserRouter>
       }
-      </AuthContext.Consumer>
-    </AuthContextProvider>
-
+      </UserContext.Consumer>
+    </UserContextProvider>
   );
 }
 

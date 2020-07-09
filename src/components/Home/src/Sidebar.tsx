@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import { AuthContext } from "../../../auth";
+import { UserContext } from "../../../auth";
 import { useHistory } from "react-router-dom";
 
 
@@ -29,7 +29,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const { open, toggleDrawer } = props;
   const history = useHistory();
 
-  const { handleLogout } = useContext<any>(AuthContext);
+  const { handleLogout } = useContext<any>(UserContext);
 
   async function handleSignOut(event: React.MouseEvent) {
     await handleLogout();

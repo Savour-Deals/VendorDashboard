@@ -1,10 +1,10 @@
 import React, { createContext, useReducer } from "react";
 import { Auth, API } from "aws-amplify";
-import { CognitoUser, UserData } from "amazon-cognito-identity-js";
-
-const INITIAL_AUTH: IAuthContext = {
+const INITIAL_AUTH: IUserContext = {
   isAuthenticated: false,
+  isLoading: true,
   user: null,
+  data: {},
   handleLogin: (email: string, password: string) => {},
   handleSignUp: (signupData: SignUpData) => new Promise(res => ({
     user: null,
@@ -13,33 +13,58 @@ const INITIAL_AUTH: IAuthContext = {
   handleLogout: () => {}
 }
 
-export const AuthContext = createContext<IAuthContext>(INITIAL_AUTH);
+export const UserContext = createContext<IUserContext>(INITIAL_AUTH);
 
-function reducer(state: IAuthContext, action: any) {
+function reducer(state: IUserContext, action: any) {
   switch(action.type) {
     case "loginUser":
       return {
         ...state,
         user: action.payload.user,
+        isLoading: action.payload.isLoading,
         isAuthenticated: action.payload.isAuthenticated,
+      }
+    case "SET_DATA":
+      return {
+        ...state,
+        data: action.payload.data
+      }
+    case "stopLoading":
+      return {
+        ...state,
+        isLoading: action.payload.isLoading
       }
     default:
       return state;
   }
 }  
 
-export const AuthContextProvider = (props: any) => {
+
+
+export const UserContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
 
-  async function handleSignUp(signupData: SignUpData): Promise<IUserAuth> {
+  async function getUserData(userName: string) {
+    const getBusinessUserResponseData = await API.get(
+      "business_users",
+      "/business_users/" + userName,
+      {});
+  
+      dispatch({
+        type: "SET_DATA",
+        payload: {
+          data: getBusinessUserResponseData
+        }
+      })
+      
+    }
+  async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;
       const signupResult = await Auth.signUp({ username: email, password, attributes: { email }});
 
       const user = signupResult.user;
-
-      // creating the DynamoDB user 
 
       try {
         const userName = signupResult.userSub;
@@ -53,7 +78,7 @@ export const AuthContextProvider = (props: any) => {
             mobile_number: phoneNumber,
             last_name: lastName,
             businesses: []
-        }
+          }
         }
         );
       } catch (error) {
@@ -63,28 +88,35 @@ export const AuthContextProvider = (props: any) => {
       
       return {
         user,
+        isLoading: false,
         isAuthenticated: true
       };
     } catch (error) {
       console.log(error);
-      console.log("BALLS")
       alert(`Sorry! ${error.message}`);
     }  
     return {
       user: null,
+      isLoading: false,
       isAuthenticated: false
     }
   }
   
-  async function handleAuthentication() {
+  async function handleAuthentication(): Promise<{
+    user: any;
+    isLoading: boolean;
+    isAuthenticated: boolean;
+  }> {
     const payload = {
       user: null,
+      isLoading: false,
       isAuthenticated: false,
     };
     try {
       const user = await Auth.currentAuthenticatedUser();
       payload["user"] = user;
       payload["isAuthenticated"] = true;
+      console.log(user);
     } catch (error) {
       console.log(`No Currently authenticated user`);
     }
@@ -97,7 +129,9 @@ export const AuthContextProvider = (props: any) => {
       await Auth.signOut();
       dispatch({
         type: "logoutUser",
-        payload: {}
+        payload: {
+          isLoading: false,
+        }
       });
     } catch (error) {
       console.log(error)
@@ -109,12 +143,12 @@ export const AuthContextProvider = (props: any) => {
   
     const payload = {
       user: null,
+      isLoading: false,
       isAuthenticated: false,
     };
     debugger;
     try {
       const authenticatedUser = await Auth.signIn(email,password);
-      console.log(authenticatedUser);
       if (authenticatedUser.challengeName === "SMS_MFA" || authenticatedUser.challengeName === "SOFTWARE_TOKEN_MFA") {
         console.log("SMS_MFA or SOFTWARE_TOKEN_MFA")
       } else if (authenticatedUser.challengeName === "NEW_PASSWORD_REQUIRED") {
@@ -126,6 +160,7 @@ export const AuthContextProvider = (props: any) => {
         payload["isAuthenticated"] = true;
         dispatch({
           type: "loginUser",
+          isLoading: false,
           payload
         }); 
   
@@ -139,22 +174,33 @@ export const AuthContextProvider = (props: any) => {
 
   if (!state.isAuthenticated) {
     handleAuthentication().then(payload => {
-
       if (payload.isAuthenticated) {
         dispatch({
           type: "loginUser",
           payload
         });
+
+        if (payload.user !== null) {
+          getUserData(payload.user.username);
+        }
+
+      }  else if (state.isLoading) {
+        dispatch({
+          type: "stopLoading",
+          payload: {
+            isLoading: false
+          }
+        })
       }
     });
   }
   
-  return <AuthContext.Provider value={{
+  return <UserContext.Provider value={{
     ...state,
     handleLogin: handleLogin,
     handleLogout: handleLogout,
     handleSignUp: handleSignUp
   }}>
     {props.children}
-  </AuthContext.Provider>
+  </UserContext.Provider>
 }

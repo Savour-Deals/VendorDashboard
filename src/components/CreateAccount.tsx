@@ -16,7 +16,7 @@ import LogoWhite from "../assets/img/brand/Savour_White.png";
 import Background from "../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
-import { AuthContext } from "../auth";
+import { UserContext } from "../auth";
 
 export const CreateAccount: React.FC = () => {
 
@@ -71,7 +71,7 @@ export const CreateAccount: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { handleSignUp, handleLogin } = useContext<IAuthContext>(AuthContext);
+  const { handleSignUp, handleLogin } = useContext<IUserContext>(UserContext);
 
   function validateForm(): boolean {
     if (confirmPassword !== password) {

@@ -1,13 +1,23 @@
-declare interface IAuthContext {
+
+
+declare interface IUserContext {
   isAuthenticated: boolean;
-  user: CognitoUser | null;
+  isLoading: boolean;
+  // user: import('amazon-cognito-identity-js').CognitoUser | null;
+  user: any;
+  data: any;
   handleLogin: (email: string, password: string) => void;
-  handleSignUp: (signupData: SignUpData) => Promise<IUserAuth>;
+  handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
 }
 
-declare interface IUserAuth {
+declare interface LoadingDialogProps {
+  isLoading: boolean;
+}
+
+declare interface UserAuth {
   user: CognitoUser | null;
+  isLoading: boolean;
   isAuthenticated: boolean;
 }
 
@@ -28,15 +38,25 @@ declare interface Subscriber {
 
 }
 
+declare interface VendorButton {
+  button_id: string;
+}
+
 declare interface Vendor {
   placeId: string;
   vendorName: string;
   primaryAddress: string;
+  key: string;
   vendorDescription?: string;
   onboardDeal?: string;
   singleClickDeal?: string;
   doubleClickDeal?: string;
   subscribers?: Subscriber[];
+}
+
+declare interface TwilioCreateResponse {
+  status: boolean;
+  twilioNumber: string;
 }
 
 declare interface SignUpData {
