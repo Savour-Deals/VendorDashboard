@@ -60,7 +60,6 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.3.0",
     "@typescript-eslint/parser": "^3.3.0",
-    "eslint": "^7.2.0",
     "husky": "^4.2.5",
     "prettier": "1.19.1",
     "pretty-quick": "^2.0.1"

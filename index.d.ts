@@ -1,17 +1,20 @@
-declare interface IAuthContext {
+declare interface IUserContext {
   isAuthenticated: boolean;
-  user: CognitoUser | null;
+  isLoading: boolean;
+  user: any;
+  data: any;
   handleLogin: (email: string, password: string) => void;
   handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
 }
 
-declare interface IUserContext {
-
+declare interface LoadingDialogProps {
+  isLoading: boolean;
 }
 
 declare interface UserAuth {
   user: CognitoUser | null;
+  isLoading: boolean;
   isAuthenticated: boolean;
 }
 

@@ -5,7 +5,7 @@ import  AddVendorModal  from "./AddVendorModal";
 import { StripeProvider, Elements } from "react-stripe-elements";
 import config from "../../../config";
 import { API } from "aws-amplify";
-import { AuthContext } from "../../../auth";
+import { UserContext } from "../../../auth";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,8 +36,8 @@ export const HomeBody: React.FC = () => {
   const [stripe, setStripe] = useState(null);
   const styles = useStyles();
 
-  const authInfo = useContext(AuthContext);
-  const userName = authInfo.user.username;
+  const userContext: IUserContext = useContext(UserContext);
+  const userName = userContext.user.username;
   API.get(
     "business_users",
     `/business_users/${userName}`,

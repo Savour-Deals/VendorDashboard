@@ -16,7 +16,7 @@ import LogoWhite from "../assets/img/brand/Savour_White.png";
 import Background from "../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
-import { AuthContext } from "../auth";
+import { UserContext } from "../auth";
 
 export const Login: React.FC<any> = (props) => {
 
@@ -65,7 +65,7 @@ export const Login: React.FC<any> = (props) => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {handleLogin} = useContext<any>(AuthContext);
+  const {handleLogin} = useContext<any>(UserContext);
   async function handleSignIn() {
     await handleLogin(email, password);
     history.push("/index");

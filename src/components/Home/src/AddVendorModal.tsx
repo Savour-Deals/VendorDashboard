@@ -7,7 +7,7 @@ import { CardElement, injectStripe } from "react-stripe-elements";
 import { API } from "aws-amplify";
 import Loader from "react-loader-spinner";
 import Dialog from '@material-ui/core/Dialog';
-import { AuthContext } from "../../../auth";
+import { UserContext } from "../../../auth";
 
 interface IAddVendorModal {
   open: boolean;
@@ -136,7 +136,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [isCardComplete, setIsCardComplete] = useState(false);
   const [cardName, setCardName] = useState("");
   const styles = useStyles();
-  const authInfo = useContext(AuthContext);
+  const userContext: IUserContext = useContext(UserContext);
 
   const searchBoxProps = {
     setVendorName,
@@ -174,6 +174,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       return;
     }
 
+    // CURRENTLY FOR TESTING ONLY! CHANGE FOR RELEASE
     const buttonId = buttons[1].button_id;
 
     const isDev = (process.env.NODE_ENV === "development");
@@ -222,7 +223,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
     // identityId I believe is equivalent to userSub https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
     try {
-      const currentUser = authInfo.user;
+      const currentUser = userContext.user;
       const userName = currentUser.username;
       const updateBusinessUserResponse = await API.put(
         "business_users",
