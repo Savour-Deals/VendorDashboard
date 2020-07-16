@@ -10,7 +10,8 @@ const INITIAL_AUTH: IUserContext = {
     user: null,
     isAuthenticated: false
   })),
-  handleLogout: () => {}
+  handleLogout: () => {},
+  addVendor: (vendor: Vendor) => {}
 }
 
 export const UserContext = createContext<IUserContext>(INITIAL_AUTH);
@@ -218,11 +219,20 @@ export const UserContextProvider = (props: any) => {
     });
   }
   
+  function addVendor(vendor: Vendor) {
+    const vendors = 'vendors' in state.data ? state.data.vendors : [];
+    dispatch({
+      type: "SET_DATA",
+      payload: {data: {...state.data,  vendors: [...vendors, vendor]}}
+    })
+  }
+
   return <UserContext.Provider value={{
     ...state,
     handleLogin: handleLogin,
     handleLogout: handleLogout,
-    handleSignUp: handleSignUp
+    handleSignUp: handleSignUp,
+    addVendor
   }}>
     {props.children}
   </UserContext.Provider>

@@ -32,24 +32,23 @@ const useStyles = makeStyles((theme: Theme) =>
 export const HomeBody: React.FC = () => {
   const userContext: IUserContext = useContext(UserContext);
   console.log(userContext);
-
-  const initialVendors = 'vendors' in userContext.data ? userContext.data.vendors : [];
-  console.log(initialVendors);
-  const [vendors, setVendors] = useState<Vendor[]>(initialVendors);
+  
+  const addVendors = userContext.addVendor;
+  const vendors = 'vendors' in userContext.data ? userContext.data.vendors: [];
+  
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const styles = useStyles();
 
+  console.log(vendors);
 
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
-  }, [])
 
-  function addVendor(vendor: Vendor) {
 
-    setVendors([...vendors, vendor]);
-  }
+  }, []);
+
 
   function handleClose() {
     setOpen(false);
@@ -60,7 +59,7 @@ export const HomeBody: React.FC = () => {
     return vendors.map((vendor : Vendor, index : number) => 
       <Card>
         <CardContent>
-          
+          {vendor.vendorName}
         </CardContent>
       </Card>
     );
@@ -75,20 +74,21 @@ export const HomeBody: React.FC = () => {
     <StripeProvider stripe={stripe}>
 
     <div className={styles.root}>
+        <div>
+        {generateVendors(vendors)}
+        </div>
 
-        {(vendors.length > 0) 
-        ? generateVendors(vendors)
-        : <Button 
+        <Button 
           variant="contained"   
           className={styles.button} 
           onClick={toggleModal}>
             Add Vendor
-          </Button>}
+          </Button>
           <Elements>
             <AddVendorModal
               open={open}
               handleClose={handleClose}
-              addVendor={addVendor}
+              addVendor={addVendors}
               isLoading={isLoading}
             />
           </Elements>

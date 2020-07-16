@@ -9,6 +9,7 @@ declare interface IUserContext {
   handleLogin: (email: string, password: string) => void;
   handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
+  addVendor: (vendor: Vendor) => void;
 }
 
 declare interface LoadingDialogProps {
