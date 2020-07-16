@@ -46,12 +46,12 @@ declare interface Vendor {
   placeId: string;
   vendorName: string;
   primaryAddress: string;
-  key: string;
+  buttonId?: string;
   vendorDescription?: string;
   onboardDeal?: string;
   singleClickDeal?: string;
   doubleClickDeal?: string;
-  subscribers?: Subscriber[];
+  subscribers?: object;
 }
 
 declare interface TwilioCreateResponse {

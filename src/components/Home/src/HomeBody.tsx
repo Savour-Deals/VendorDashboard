@@ -30,14 +30,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 export const HomeBody: React.FC = () => {
-  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const userContext: IUserContext = useContext(UserContext);
+  console.log(userContext);
+
+  const initialVendors = 'vendors' in userContext.data ? userContext.data.vendors : [];
+  console.log(initialVendors);
+  const [vendors, setVendors] = useState<Vendor[]>(initialVendors);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const styles = useStyles();
 
-  const userContext: IUserContext = useContext(UserContext);
-  console.log(userContext);
 
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
