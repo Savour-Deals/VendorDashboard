@@ -35,6 +35,11 @@ function reducer(state: IUserContext, action: any) {
         ...state,
         isLoading: action.payload.isLoading
       }
+    case "START_LOADING":
+      return {
+        ...state,
+        isLoading: true
+      }
     default:
       return state;
   }
@@ -65,9 +70,7 @@ export const UserContextProvider = (props: any) => {
           onboardDeal: vendorResponse.onboard_deal,
           singleClickDeal: vendorResponse.single_click_deal,
           doubleClickDeal: vendorResponse.double_click_deal,
-
         }
-
         vendors.push(vendor);
       }
 
@@ -79,10 +82,9 @@ export const UserContextProvider = (props: any) => {
       });
     } catch (error) {
       alert(error);
-    }
-
-      
+    }    
   }
+
   async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;
@@ -204,11 +206,8 @@ export const UserContextProvider = (props: any) => {
           payload
         });
 
-        if (payload.user !== null) {
-          getUserData(payload.user.username);
-        }
 
-      }  else if (state.isLoading) {
+      } else if (state.isLoading) {
         dispatch({
           type: "stopLoading",
           payload: {
