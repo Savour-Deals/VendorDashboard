@@ -10,7 +10,8 @@ const INITIAL_AUTH: IUserContext = {
     user: null,
     isAuthenticated: false
   })),
-  handleLogout: () => {}
+  handleLogout: () => {},
+  addVendor: (vendor: Vendor) => {}
 }
 
 export const UserContext = createContext<IUserContext>(INITIAL_AUTH);
@@ -34,6 +35,11 @@ function reducer(state: IUserContext, action: any) {
         ...state,
         isLoading: action.payload.isLoading
       }
+    case "START_LOADING":
+      return {
+        ...state,
+        isLoading: true
+      }
     default:
       return state;
   }
@@ -46,19 +52,39 @@ export const UserContextProvider = (props: any) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
 
   async function getUserData(userName: string) {
-    const getBusinessUserResponseData = await API.get(
-      "business_users",
-      "/business_users/" + userName,
-      {});
-  
+    try {
+      const getBusinessUserResponseData = await API.get(
+        "business_users",
+        "/business_users/" + userName,
+        {});
+        
+      const placeIds = getBusinessUserResponseData.businesses;
+      const vendors: Array<Vendor> = [];
+      for (const id of placeIds) {
+        const vendorResponse = await API.get("businesses", `/businesses/${id}`, {});
+        const vendor: Vendor = {
+          placeId: id,
+          vendorName: vendorResponse.business_name,
+          primaryAddress: vendorResponse.address,
+          buttonId: vendorResponse.btn_id,
+          onboardDeal: vendorResponse.onboard_deal,
+          singleClickDeal: vendorResponse.single_click_deal,
+          doubleClickDeal: vendorResponse.double_click_deal,
+        }
+        vendors.push(vendor);
+      }
+
       dispatch({
         type: "SET_DATA",
         payload: {
-          data: getBusinessUserResponseData
+          data: {...getBusinessUserResponseData, vendors}
         }
-      })
-      
-    }
+      });
+    } catch (error) {
+      alert(error);
+    }    
+  }
+
   async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;
@@ -180,11 +206,8 @@ export const UserContextProvider = (props: any) => {
           payload
         });
 
-        if (payload.user !== null) {
-          getUserData(payload.user.username);
-        }
 
-      }  else if (state.isLoading) {
+      } else if (state.isLoading) {
         dispatch({
           type: "stopLoading",
           payload: {
@@ -195,11 +218,20 @@ export const UserContextProvider = (props: any) => {
     });
   }
   
+  function addVendor(vendor: Vendor) {
+    const vendors = 'vendors' in state.data ? state.data.vendors : [];
+    dispatch({
+      type: "SET_DATA",
+      payload: {data: {...state.data,  vendors: [...vendors, vendor]}}
+    })
+  }
+
   return <UserContext.Provider value={{
     ...state,
     handleLogin: handleLogin,
     handleLogout: handleLogout,
-    handleSignUp: handleSignUp
+    handleSignUp: handleSignUp,
+    addVendor
   }}>
     {props.children}
   </UserContext.Provider>

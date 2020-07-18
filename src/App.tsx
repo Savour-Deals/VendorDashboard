@@ -52,7 +52,6 @@ const App: React.FC =  () => {
     <UserContext.Consumer>
       {(auth: IUserContext) => 
             <BrowserRouter>
-            {console.log(auth.isLoading)}
             <LoadingDialog isLoading={auth.isLoading}/>
 
             <Switch>
