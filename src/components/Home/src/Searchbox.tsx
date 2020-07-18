@@ -60,9 +60,9 @@ const useStyles = makeStyles(theme => ({
 
 export const SearchBox: React.FC<ISearchBox> = props => {
   const classes = useStyles();
+  const loaded = React.useRef(false);
 
   const [searchInput, setSearchInput] = React.useState("");
-  const loaded = React.useRef(false);
   const [options, setOptions] = React.useState<PlaceType[]>([]);
 
   const { setVendorName, setPrimaryAddress, setPlaceId } = props; 
@@ -83,7 +83,6 @@ export const SearchBox: React.FC<ISearchBox> = props => {
   const getPlaceInformation = (options: any, part?: any) => {
     const restaurantName: string = options.structured_formatting.main_text;
     const address: string = options.structured_formatting.secondary_text;
-    console.log(options);
     setPlaceId(options.place_id);
     setVendorName(restaurantName);
     setPrimaryAddress(address);

@@ -1,4 +1,4 @@
-import { Button, Card, CardContent } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import  AddVendorModal  from "./AddVendorModal";
@@ -28,10 +28,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+function loadScript(src: string, position: HTMLElement | null, id: string) {
+  if (!position) {
+    return;
+  }
 
+  const script = document.createElement('script');
+  script.setAttribute('async', '');
+  script.setAttribute('id', id);
+  script.src = src;
+  position.appendChild(script);
+}
 
 export const HomeBody: React.FC = () => {
   const userContext: IUserContext = useContext(UserContext);
+  const loaded = React.useRef(false);
+  
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
@@ -83,11 +95,17 @@ export const HomeBody: React.FC = () => {
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     
     return vendors.map((vendor : Vendor, index : number) => 
-      <Card key={vendor.placeId}>
-        <CardContent>
-          {vendor.vendorName}
-        </CardContent>
-      </Card>
+      <Grid key={vendor.placeId} item xs={4}>
+        <Card>
+          <CardHeader
+            title={vendor.vendorName}
+            subheader={vendor.primaryAddress}
+          />
+          <CardContent>
+            {vendor.onboardDeal}
+          </CardContent>
+        </Card>
+      </Grid>
     );
     
   }
@@ -102,9 +120,9 @@ export const HomeBody: React.FC = () => {
     <div className={styles.root}>
       <LoadingDialog isLoading={loading}/>
 
-        <div>
+        <Grid container spacing={4} >
         {generateVendors(vendors)}
-        </div>
+        </Grid>
 
         <Button 
           variant="contained"   
