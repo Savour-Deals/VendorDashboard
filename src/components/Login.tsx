@@ -65,12 +65,12 @@ export const Login: React.FC<any> = (props) => {
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {handleLogin} = useContext<any>(UserContext);
+  const { handleLogin } = useContext<any>(UserContext);
+
   async function handleSignIn() {
     await handleLogin(email, password);
     history.push("/index");
   }
-
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
