@@ -46,7 +46,7 @@ Amplify.configure({
 
 const loginProps = { isAuthenticated: false };
 
-const App: React.FC =  () => {
+const App: React.FC = () => {
   return (
   <UserContextProvider >
     <UserContext.Consumer>
