@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField, Modal } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import  AddVendorModal  from "./AddVendorModal";
@@ -51,6 +51,7 @@ export const HomeBody: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
+  const [vendorState, setVendorState] = useState<{[key: string]: boolean}>({});
   const styles = useStyles();
 
   const loadVendors = useCallback(async () => {
@@ -60,8 +61,11 @@ export const HomeBody: React.FC = () => {
       "business_users",
       "/business_users/" + userName,
       {});
-      const placeIds = getBusinessUserResponseData.businesses;
+      const placeIds: Array<string> = getBusinessUserResponseData.businesses;
       const vendors: Array<Vendor> = [];
+
+      const vendorState: {[key: string]: boolean} = {};
+
       for (const id of placeIds) {
         const vendorResponse = await API.get("businesses", `/businesses/${id}`, {});
         const vendor: Vendor = {
@@ -74,9 +78,11 @@ export const HomeBody: React.FC = () => {
           doubleClickDeal: vendorResponse.double_click_deal,
         }
         vendors.push(vendor);
+        vendorState[id] = false;
       }
 
     setVendors(vendors);
+    setVendorState(vendorState);
     setLoading(false);
   }, [setVendors]);
 
@@ -95,6 +101,14 @@ export const HomeBody: React.FC = () => {
     setOpen(false);
   }
 
+  function toggleVendorModal(placeId: string, isOpen: boolean) {
+    const res = {
+      ...vendorState,
+      [placeId]: isOpen
+    }
+    setVendorState(res);
+  }
+
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     
     return vendors.map((vendor : Vendor, index : number) => 
@@ -105,7 +119,9 @@ export const HomeBody: React.FC = () => {
             subheader={vendor.primaryAddress}
             action={
               <IconButton>
-                <EditIcon/>
+                <EditIcon
+                  onClick={() => toggleVendorModal(vendor.placeId, true)}
+                />
               </IconButton>
             }
           />
@@ -131,6 +147,13 @@ export const HomeBody: React.FC = () => {
                 }) : null}
               </Grid>
             </Grid>
+            <Modal 
+              open={vendorState[vendor.placeId]}
+              onClose={() => toggleVendorModal(vendor.placeId, false)}
+            >
+              <h1>{vendor.vendorName}</h1>
+            </Modal>
+
             
           </CardContent>
         </Card>
