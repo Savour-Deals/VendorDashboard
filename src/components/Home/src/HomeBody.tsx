@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField, Modal } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField, Modal, Fade } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import  AddVendorModal  from "./AddVendorModal";
@@ -151,8 +151,13 @@ export const HomeBody: React.FC = () => {
               open={vendorState[vendor.placeId]}
               onClose={() => toggleVendorModal(vendor.placeId, false)}
             >
-              <h1>{vendor.vendorName}</h1>
-            </Modal>
+              <Fade in={vendorState[vendor.placeId]}>
+                <div>
+                  <h2 id="transition-modal-title">Transition modal</h2>
+                  <p id="transition-modal-description">react-transition-group animates me.</p>
+                </div>
+              </Fade>
+          </Modal>
 
             
           </CardContent>
