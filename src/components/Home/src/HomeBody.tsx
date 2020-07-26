@@ -8,6 +8,8 @@ import { API } from "aws-amplify";
 import { UserContext } from "../../../auth";
 import { LoadingDialog } from "./LoadingDialog";
 import EditIcon from "@material-ui/icons/Edit";
+import VendorModal from "./VendorModal";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -106,64 +108,13 @@ export const HomeBody: React.FC = () => {
       ...vendorState,
       [placeId]: isOpen
     }
+    console.log(placeId, isOpen);
     setVendorState(res);
   }
 
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     
-    return vendors.map((vendor : Vendor, index : number) => 
-      <Grid key={vendor.placeId} item xs={4} >
-        <Card>
-          <CardHeader
-            title={vendor.vendorName}
-            subheader={vendor.primaryAddress}
-            action={
-              <IconButton>
-                <EditIcon
-                  onClick={() => toggleVendorModal(vendor.placeId, true)}
-                />
-              </IconButton>
-            }
-          />
-          <CardContent>
-            <Grid container spacing={3}> 
-              <Grid item xs={4}>
-                Onboard Deal: {vendor.onboardDeal}
-              </Grid>
-              <Grid item xs={4}>
-                Single Click Deal: {vendor.singleClickDeal}
-              </Grid>
-              <Grid item xs={4}>
-                Double Click Deal: {vendor.doubleClickDeal}
-              </Grid>
-              <Grid item container xs={4}>
-                Current Subscribers:
-                { vendor.subscribers ? Object.keys(vendor.subscribers).map((key: string, index: number) =>{
-                  return (
-                    <Grid item xs={4} key={index}>
-                      {vendor.subscribers!}
-                    </Grid>
-                  )
-                }) : null}
-              </Grid>
-            </Grid>
-            <Modal 
-              open={vendorState[vendor.placeId]}
-              onClose={() => toggleVendorModal(vendor.placeId, false)}
-            >
-              <Fade in={vendorState[vendor.placeId]}>
-                <div>
-                  <h2 id="transition-modal-title">Transition modal</h2>
-                  <p id="transition-modal-description">react-transition-group animates me.</p>
-                </div>
-              </Fade>
-          </Modal>
-
-            
-          </CardContent>
-        </Card>
-      </Grid>
-    );
+    return vendors.map((vendor : Vendor, index : number) => <VendorModal key={vendor.placeId} vendor={vendor} vendorState={vendorState} toggleVendorModal={toggleVendorModal} />);
     
   }
 
