@@ -55,6 +55,19 @@ declare interface Vendor {
   subscribers?: object;
 }
 
+declare interface VendorState {
+  placeId: string;
+  vendorName: string;
+  primaryAddress: string;
+  isOpen: boolean;
+  buttonId?: string;
+  vendorDescription?: string;
+  onboardDeal?: string;
+  singleClickDeal?: string;
+  doubleClickDeal?: string;
+  subscribers?: object;
+}
+
 declare interface TwilioCreateResponse {
   status: boolean;
   twilioNumber: string;

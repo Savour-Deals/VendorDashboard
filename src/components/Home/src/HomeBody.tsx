@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField, Modal, Fade } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import  AddVendorModal  from "./AddVendorModal";
@@ -8,6 +8,8 @@ import { API } from "aws-amplify";
 import { UserContext } from "../../../auth";
 import { LoadingDialog } from "./LoadingDialog";
 import EditIcon from "@material-ui/icons/Edit";
+import VendorModal from "./VendorModal";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -51,6 +53,7 @@ export const HomeBody: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
+  const [vendorState, setVendorState] = useState<{[key: string]: boolean}>({});
   const styles = useStyles();
 
   const loadVendors = useCallback(async () => {
@@ -60,8 +63,11 @@ export const HomeBody: React.FC = () => {
       "business_users",
       "/business_users/" + userName,
       {});
-      const placeIds = getBusinessUserResponseData.businesses;
+      const placeIds: Array<string> = getBusinessUserResponseData.businesses;
       const vendors: Array<Vendor> = [];
+
+      const vendorState: {[key: string]: boolean} = {};
+
       for (const id of placeIds) {
         const vendorResponse = await API.get("businesses", `/businesses/${id}`, {});
         const vendor: Vendor = {
@@ -74,9 +80,11 @@ export const HomeBody: React.FC = () => {
           doubleClickDeal: vendorResponse.double_click_deal,
         }
         vendors.push(vendor);
+        vendorState[id] = false;
       }
 
     setVendors(vendors);
+    setVendorState(vendorState);
     setLoading(false);
   }, [setVendors]);
 
@@ -95,47 +103,18 @@ export const HomeBody: React.FC = () => {
     setOpen(false);
   }
 
+  function toggleVendorModal(placeId: string, isOpen: boolean) {
+    const res = {
+      ...vendorState,
+      [placeId]: isOpen
+    }
+    console.log(placeId, isOpen);
+    setVendorState(res);
+  }
+
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     
-    return vendors.map((vendor : Vendor, index : number) => 
-      <Grid key={vendor.placeId} item xs={4} >
-        <Card>
-          <CardHeader
-            title={vendor.vendorName}
-            subheader={vendor.primaryAddress}
-            action={
-              <IconButton>
-                <EditIcon/>
-              </IconButton>
-            }
-          />
-          <CardContent>
-            <Grid container spacing={3}> 
-              <Grid item xs={4}>
-                Onboard Deal: {vendor.onboardDeal}
-              </Grid>
-              <Grid item xs={4}>
-                Single Click Deal: {vendor.singleClickDeal}
-              </Grid>
-              <Grid item xs={4}>
-                Double Click Deal: {vendor.doubleClickDeal}
-              </Grid>
-              <Grid item container xs={4}>
-                Current Subscribers:
-                { vendor.subscribers ? Object.keys(vendor.subscribers).map((key: string, index: number) =>{
-                  return (
-                    <Grid item xs={4} key={index}>
-                      {vendor.subscribers!}
-                    </Grid>
-                  )
-                }) : null}
-              </Grid>
-            </Grid>
-            
-          </CardContent>
-        </Card>
-      </Grid>
-    );
+    return vendors.map((vendor : Vendor, index : number) => <VendorModal key={vendor.placeId} vendor={vendor} vendorState={vendorState} toggleVendorModal={toggleVendorModal} />);
     
   }
 
