@@ -1,15 +1,32 @@
-import React from 'react';
-import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField, Modal, Fade } from "@material-ui/core";
+import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, TextField } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+import React from 'react';
 
 interface IVendorModal {
   vendor: Vendor;
   vendorState: {[key:string]: boolean};
   toggleVendorModal: (placeId: string, isOpen: boolean) => void;
 }
+
+const useStyles = makeStyles((theme: Theme) => createStyles({
+  card: {
+    margin: theme.spacing(3),
+    display: "inline-block",
+    alignContent: "center",
+    alignItems: "center",
+    width: "70%",
+    height: "70%",
+  },
+  cardContent: {
+    alignItems: "center",
+  },
+}));
+
 const VendorModal: React.FC<IVendorModal> = props => {
   
   const { vendor, vendorState, toggleVendorModal } = props;
+
+  const styles = useStyles();
 
   return (
       <Grid key={vendor.placeId} item xs={4} >
@@ -50,10 +67,23 @@ const VendorModal: React.FC<IVendorModal> = props => {
             onClose={() => toggleVendorModal(vendor.placeId, false)}
           >
             <Fade in={vendorState[vendor.placeId]}>
-              <div>
-                <h2 id="transition-modal-title">Transition modal</h2>
-                <p id="transition-modal-description">react-transition-group animates me.</p>
-              </div>
+              <Card  className={styles.card}>
+                <CardContent className={styles.cardContent}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={4}>
+                      Onboard Deal: {vendor.onboardDeal}
+
+                      <TextField></TextField>
+                    </Grid>
+                    <Grid item xs={4}>
+                      Single Click Deal: {vendor.singleClickDeal}
+                    </Grid>
+                    <Grid item xs={4}>
+                      Double Click Deal: {vendor.doubleClickDeal}
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
             </Fade>
         </Modal>
 
