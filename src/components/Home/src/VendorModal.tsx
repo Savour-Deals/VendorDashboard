@@ -27,8 +27,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     backgroundColor: "#49ABAA",
     color: "white",
     margin: theme.spacing(2),
-    fontSize: '8px',
-    height: '3em'
   },
 
 }));
@@ -44,7 +42,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
   }
 
   return (
-      <Grid key={vendor.placeId} item xs={6}>
+      <Grid key={vendor.placeId} item xs={12}>
       <Card className={styles.cardContent}>
         <CardHeader
           title={vendor.vendorName}
@@ -137,6 +135,11 @@ const VendorModal: React.FC<IVendorModal> = props => {
                           value={vendor.onboardDeal}
                         />                    
                     </Grid>
+                    <Button 
+                      className={styles.button}
+                    >
+                      Save
+                    </Button>
                   </Grid>
                 </CardContent>
               </Card>
