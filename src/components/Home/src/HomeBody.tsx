@@ -108,7 +108,6 @@ export const HomeBody: React.FC = () => {
       ...vendorState,
       [placeId]: isOpen
     }
-    console.log(placeId, isOpen);
     setVendorState(res);
   }
 
