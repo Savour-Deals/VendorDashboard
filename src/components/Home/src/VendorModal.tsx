@@ -28,6 +28,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     color: "white",
     margin: theme.spacing(2),
   },
+  modal: {
+    margin: theme.spacing(3),
+    display: "inline-block",
+    alignContent: "center",
+    alignItems: "center",
+    width: "50%",
+    height: "50%",
+  }
 
 }));
 
@@ -105,7 +113,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
             onClose={() => toggleVendorModal(vendor.placeId, false)}
           >
             <Fade in={vendorState[vendor.placeId]}>
-              <Card  className={styles.card}>
+              <Card  className={styles.modal}>
                 <CardHeader
                     title={vendor.vendorName}
                     subheader={vendor.primaryAddress}
