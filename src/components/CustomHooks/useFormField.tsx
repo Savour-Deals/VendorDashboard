@@ -6,8 +6,6 @@ export function useFormFields(initialState: object): Array<any> {
   return [
     fields,
     function(event: ChangeEvent<HTMLInputElement>) {
-      console.log(event.target.id)
-      console.log(event.target.value)
       setValues({
         ...fields,
         [event.target.id]: event.target.value
