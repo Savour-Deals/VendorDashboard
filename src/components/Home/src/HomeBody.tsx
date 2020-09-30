@@ -93,15 +93,31 @@ export const HomeBody: React.FC = () => {
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
     try {
-      await API.put("businesses", `/businesses/${placeId}`, {
+      const  res = await API.put("businesses", `/businesses/${placeId}`, {
         body: {
-          ...updatedVendor,
+          single_click_deal: updatedVendor.singleClickDeal,
+          double_click_deal: updatedVendor.doubleClickDeal,
+          long_click_deal: updatedVendor.longClickDeal,
+          onboard_deal: updatedVendor.onboardDeal,
+
         }
       });
+      console.log(res);
     } catch(error) {
       alert(`Sorry! The use could not be updated: ${error}`);
+      toggleVendorModal(placeId, false);
+
+    }
+    const updatedVendorList = []
+    for (const index in vendors) {
+      if (vendors[index].placeId === placeId) {
+        updatedVendorList.push(updatedVendor)
+      } else {
+        updatedVendorList.push(vendors[index]);
+      }
     }
     toggleVendorModal(placeId, false);
+    setVendors(updatedVendorList) 
   }
 
   function addVendors(vendor: Vendor) {
