@@ -78,6 +78,7 @@ export const HomeBody: React.FC = () => {
           onboardDeal: vendorResponse.onboard_deal,
           singleClickDeal: vendorResponse.single_click_deal,
           doubleClickDeal: vendorResponse.double_click_deal,
+          longClickDeal: vendorResponse.long_click_deal,
         }
         vendors.push(vendor);
         vendorState[id] = false;
