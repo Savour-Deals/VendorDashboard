@@ -2,12 +2,13 @@ import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, ma
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
 
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 interface IVendorModal {
   vendor: Vendor;
   vendorState: {[key:string]: boolean};
   toggleVendorModal: (placeId: string, isOpen: boolean) => void;
+  updateVendor: (updatedVendor: Vendor) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -41,12 +42,42 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const VendorModal: React.FC<IVendorModal> = props => {
   
-  const { vendor, vendorState, toggleVendorModal } = props;
+  const { vendor, vendorState, toggleVendorModal, updateVendor } = props;
 
   const styles = useStyles();
 
+  const [onboardDeal, setOnboardDeal] = useState(vendor.onboardDeal);
+  const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal);
+  const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal);
+  const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal);
+
+  function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const onboardDeal = event.target.value;
+
+    setOnboardDeal(onboardDeal);
+  }
+
+  function doubleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const doubleClickDeal = event.target.value;
+    
+    setDoubleClickDeal(doubleClickDeal);
+  }
+
+  function singleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const singleClickDeal = event.target.value;
+    
+    setSingleClickDeal(singleClickDeal);
+  }
+
+  function longClickDealChange(event: ChangeEvent<HTMLInputElement>) {
+    const longClickDeal = event.target.value;
+
+    setLongClickDeal(longClickDeal);
+  }
+  
+  // TODO: pass in correct deal
   function runDeal(): void {
-    console.log(runDeal)
+    console.log(runDeal);
   }
 
   return (
@@ -65,16 +96,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
           <Grid container spacing={3}> 
             <Grid item xs={4}>
               Onboard Deal: {vendor.onboardDeal}
-           
-            </Grid>
-            <Grid item xs={4}>
-              Single Click Deal: {vendor.singleClickDeal}
-            </Grid>
-            <Grid item xs={4}>
-              Double Click Deal: {vendor.doubleClickDeal}
-            </Grid>
-            <Grid item xs={4}>
-            <Button 
+              <Button 
                     variant="contained"   
                     className={styles.button} 
                     onClick={runDeal}>
@@ -82,7 +104,8 @@ const VendorModal: React.FC<IVendorModal> = props => {
                   </Button> 
             </Grid>
             <Grid item xs={4}>
-            <Button 
+              Single Click Deal: {vendor.singleClickDeal}
+              <Button 
                     variant="contained"   
                     className={styles.button} 
                     onClick={runDeal}>
@@ -90,7 +113,17 @@ const VendorModal: React.FC<IVendorModal> = props => {
                   </Button> 
             </Grid>
             <Grid item xs={4}>
-            <Button 
+              Long Click Deal: {vendor.longClickDeal}
+              <Button 
+                    variant="contained"   
+                    className={styles.button} 
+                    onClick={runDeal}>
+                      Run Long-click Deal
+                  </Button> 
+            </Grid>
+            <Grid item xs={4}>
+              Double-click Deal: {vendor.onboardDeal}
+              <Button 
                     variant="contained"   
                     className={styles.button} 
                     onClick={runDeal}>
@@ -128,23 +161,40 @@ const VendorModal: React.FC<IVendorModal> = props => {
                     <Grid item xs={4}>
                       <TextField 
                         label="Onboard Deal"
-                        value={vendor.onboardDeal}
+                        value={onboardDeal}
+                        onChange={onboardDealChange}
                       />
                     </Grid>
                     <Grid item xs={4}>
                       <TextField 
                           label="Single-click Deal"
-                          value={vendor.singleClickDeal}
+                          value={singleClickDeal}
+                          onChange={singleClickDealChange}
                         />                    
                     </Grid>
                     <Grid item xs={4}>
                       <TextField 
-                          label="Onboard Deal"
-                          value={vendor.onboardDeal}
+                          label="Double-click Deal"
+                          value={doubleClickDeal}
+                          onChange={doubleClickDealChange}
+                        />                    
+                    </Grid>
+                    <Grid item xs={4}>
+                      <TextField 
+                          label="Long-click Deal"
+                          value={longClickDeal}
+                          onChange={longClickDealChange}
                         />                    
                     </Grid>
                     <Button 
                       className={styles.button}
+                      onClick={() => updateVendor({
+                        ...vendor, 
+                        singleClickDeal, 
+                        doubleClickDeal,
+                        longClickDeal,
+                        onboardDeal,
+                      })}
                     >
                       Save
                     </Button>

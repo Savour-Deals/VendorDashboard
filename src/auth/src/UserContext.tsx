@@ -51,40 +51,6 @@ export const UserContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
 
-  async function getUserData(userName: string) {
-    try {
-      const getBusinessUserResponseData = await API.get(
-        "business_users",
-        "/business_users/" + userName,
-        {});
-        
-      const placeIds = getBusinessUserResponseData.businesses;
-      const vendors: Array<Vendor> = [];
-      for (const id of placeIds) {
-        const vendorResponse = await API.get("businesses", `/businesses/${id}`, {});
-        const vendor: Vendor = {
-          placeId: id,
-          vendorName: vendorResponse.business_name,
-          primaryAddress: vendorResponse.address,
-          buttonId: vendorResponse.btn_id,
-          onboardDeal: vendorResponse.onboard_deal,
-          singleClickDeal: vendorResponse.single_click_deal,
-          doubleClickDeal: vendorResponse.double_click_deal,
-        }
-        vendors.push(vendor);
-      }
-
-      dispatch({
-        type: "SET_DATA",
-        payload: {
-          data: {...getBusinessUserResponseData, vendors}
-        }
-      });
-    } catch (error) {
-      alert(error);
-    }    
-  }
-
   async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;

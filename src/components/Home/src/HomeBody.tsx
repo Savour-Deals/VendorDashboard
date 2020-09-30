@@ -78,6 +78,7 @@ export const HomeBody: React.FC = () => {
           onboardDeal: vendorResponse.onboard_deal,
           singleClickDeal: vendorResponse.single_click_deal,
           doubleClickDeal: vendorResponse.double_click_deal,
+          longClickDeal: vendorResponse.long_click_deal,
         }
         vendors.push(vendor);
         vendorState[id] = false;
@@ -87,6 +88,37 @@ export const HomeBody: React.FC = () => {
     setVendorState(vendorState);
     setLoading(false);
   }, [setVendors]);
+
+
+  const updateVendor = async (updatedVendor: Vendor) => {
+    const placeId = updatedVendor.placeId;
+    try {
+      const  res = await API.put("businesses", `/businesses/${placeId}`, {
+        body: {
+          single_click_deal: updatedVendor.singleClickDeal,
+          double_click_deal: updatedVendor.doubleClickDeal,
+          long_click_deal: updatedVendor.longClickDeal,
+          onboard_deal: updatedVendor.onboardDeal,
+
+        }
+      });
+      console.log(res);
+    } catch(error) {
+      alert(`Sorry! The use could not be updated: ${error}`);
+      toggleVendorModal(placeId, false);
+
+    }
+    const updatedVendorList = []
+    for (const index in vendors) {
+      if (vendors[index].placeId === placeId) {
+        updatedVendorList.push(updatedVendor)
+      } else {
+        updatedVendorList.push(vendors[index]);
+      }
+    }
+    toggleVendorModal(placeId, false);
+    setVendors(updatedVendorList) 
+  }
 
   function addVendors(vendor: Vendor) {
     setVendors([...vendors, vendor]);
@@ -113,7 +145,13 @@ export const HomeBody: React.FC = () => {
 
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     
-    return vendors.map((vendor : Vendor, index : number) => <VendorModal key={vendor.placeId} vendor={vendor} vendorState={vendorState} toggleVendorModal={toggleVendorModal} />);
+    return vendors.map((vendor : Vendor, index : number) => <VendorModal 
+      key={vendor.placeId} 
+      vendor={vendor} 
+      vendorState={vendorState} 
+      toggleVendorModal={toggleVendorModal} 
+      updateVendor={updateVendor} />
+    );
     
   }
 

@@ -53,6 +53,7 @@ declare interface Vendor {
   singleClickDeal?: string;
   doubleClickDeal?: string;
   subscribers?: object;
+  longClickDeal?: string;
 }
 
 declare interface VendorState {
