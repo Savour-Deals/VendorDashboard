@@ -8,6 +8,7 @@ interface IVendorModal {
   vendor: Vendor;
   vendorState: {[key:string]: boolean};
   toggleVendorModal: (placeId: string, isOpen: boolean) => void;
+  updateVendor: (updatedVendor: Vendor) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -41,14 +42,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const VendorModal: React.FC<IVendorModal> = props => {
   
-  const { vendor, vendorState, toggleVendorModal } = props;
+  const { vendor, vendorState, toggleVendorModal, updateVendor } = props;
 
   const styles = useStyles();
 
   function runDeal(): void {
-    console.log(runDeal)
+    console.log(runDeal);
   }
 
+  function updateData(): boolean {
+    return false;
+  }
   return (
       <Grid key={vendor.placeId} item xs={12}>
       <Card className={styles.cardContent}>
@@ -65,7 +69,6 @@ const VendorModal: React.FC<IVendorModal> = props => {
           <Grid container spacing={3}> 
             <Grid item xs={4}>
               Onboard Deal: {vendor.onboardDeal}
-           
             </Grid>
             <Grid item xs={4}>
               Single Click Deal: {vendor.singleClickDeal}

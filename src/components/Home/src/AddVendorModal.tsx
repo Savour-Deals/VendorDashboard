@@ -225,7 +225,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     try {
       const currentUser = userContext.user;
       const userName = currentUser.username;
-      const updateBusinessUserResponse = await API.put(
+      await API.put(
         "business_users",
         "/business_users/" + userName,
         {

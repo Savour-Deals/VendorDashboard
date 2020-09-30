@@ -88,6 +88,17 @@ export const HomeBody: React.FC = () => {
     setLoading(false);
   }, [setVendors]);
 
+
+  const updateVendor = async (updatedVendor: Vendor) => {
+    const placeId = updatedVendor.placeId;
+
+    await API.put("businesses", `/businesses/${placeId}`, {
+      body: {
+        ...updatedVendor,
+      }
+    });
+  }
+
   function addVendors(vendor: Vendor) {
     setVendors([...vendors, vendor]);
   }  
@@ -113,7 +124,13 @@ export const HomeBody: React.FC = () => {
 
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     
-    return vendors.map((vendor : Vendor, index : number) => <VendorModal key={vendor.placeId} vendor={vendor} vendorState={vendorState} toggleVendorModal={toggleVendorModal} />);
+    return vendors.map((vendor : Vendor, index : number) => <VendorModal 
+      key={vendor.placeId} 
+      vendor={vendor} 
+      vendorState={vendorState} 
+      toggleVendorModal={toggleVendorModal} 
+      updateVendor={updateVendor} />
+    );
     
   }
 
