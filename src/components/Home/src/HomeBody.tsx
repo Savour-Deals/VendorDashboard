@@ -91,12 +91,16 @@ export const HomeBody: React.FC = () => {
 
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
-
-    await API.put("businesses", `/businesses/${placeId}`, {
-      body: {
-        ...updatedVendor,
-      }
-    });
+    try {
+      await API.put("businesses", `/businesses/${placeId}`, {
+        body: {
+          ...updatedVendor,
+        }
+      });
+    } catch(error) {
+      alert(`Sorry! The use could not be updated: ${error}`);
+    }
+    toggleVendorModal(placeId, false);
   }
 
   function addVendors(vendor: Vendor) {

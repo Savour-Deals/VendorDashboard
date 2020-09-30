@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, ma
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
 
-import React from 'react';
+import React, { useState } from 'react';
 
 interface IVendorModal {
   vendor: Vendor;
@@ -46,13 +46,15 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   const styles = useStyles();
 
+  const [onboardDeal, setOnboardDeal] = useState("");
+  const [singleClickDeal, setSingleClickDeal] = useState("");
+  const [doubleClickDeal, setDoubleClickDeal] = useState("");
+  const [longClickDeal, setLongClickDeal] = useState("");
+
   function runDeal(): void {
     console.log(runDeal);
   }
 
-  function updateData(): boolean {
-    return false;
-  }
   return (
       <Grid key={vendor.placeId} item xs={12}>
       <Card className={styles.cardContent}>
@@ -74,7 +76,10 @@ const VendorModal: React.FC<IVendorModal> = props => {
               Single Click Deal: {vendor.singleClickDeal}
             </Grid>
             <Grid item xs={4}>
-              Double Click Deal: {vendor.doubleClickDeal}
+              Long Click Deal: {vendor.doubleClickDeal}
+            </Grid>
+            <Grid item xs={4}>
+              Onboard Deal: {vendor.onboardDeal}
             </Grid>
             <Grid item xs={4}>
             <Button 
@@ -97,7 +102,15 @@ const VendorModal: React.FC<IVendorModal> = props => {
                     variant="contained"   
                     className={styles.button} 
                     onClick={runDeal}>
-                      Run Double-click Deal
+                      Run Long-click Deal
+                  </Button> 
+            </Grid>
+            <Grid item xs={4}>
+            <Button 
+                    variant="contained"   
+                    className={styles.button} 
+                    onClick={runDeal}>
+                      Run Onbord Deal
                   </Button> 
             </Grid>
             {/* <Grid item container xs={4}>
@@ -148,6 +161,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
                     </Grid>
                     <Button 
                       className={styles.button}
+                      onClick={() => updateVendor(vendor)}
                     >
                       Save
                     </Button>
