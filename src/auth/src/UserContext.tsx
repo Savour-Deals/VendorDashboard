@@ -94,6 +94,11 @@ export const UserContextProvider = (props: any) => {
     }
   }
   
+  async function confirmSignUp(username: string, code: number) {
+
+    
+  }
+
   async function handleAuthentication(): Promise<{
     user: any;
     isLoading: boolean;
