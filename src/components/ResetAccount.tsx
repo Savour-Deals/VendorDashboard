@@ -4,16 +4,11 @@ import Background from "../assets/img/brand/vendorbackground.jpg";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
 import { 
   Card, 
-  CardContent, 
-  Grid,
   makeStyles, 
   createStyles, 
   Theme, 
-  TextField,
   CardMedia,
-  Typography,
-  Button,
-  Dialog
+
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>

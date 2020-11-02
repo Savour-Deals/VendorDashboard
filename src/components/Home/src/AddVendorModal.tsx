@@ -127,7 +127,6 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [vendorName, setVendorName] = useState("");
   const [placeId, setPlaceId] = useState("");
   const [primaryAddress, setPrimaryAddress] = useState("");
-  const [locationSelected, setLocationSelected] = useState(false);
   const [onboardDeal, setOnboardDeal] = useState("");
   const [singleClickDeal, setSingleClickDeal] = useState("");
   const [doubleClickDeal, setDoubleClickDeal] = useState("");
@@ -195,9 +194,9 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       alert("Sorry, an error occurred when creating a twilio number: " + twilioError);
       return;
     }
-
+    console.log(isProcessing, isCardComplete);
     try {
-      const createBusinessResponse = await API.post(
+      await API.post(
         "businesses",
         "/businesses",
         {

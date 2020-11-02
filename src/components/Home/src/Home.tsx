@@ -1,10 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { HomeHeader } from "./HomeHeader";
 import { HomeBody } from "./HomeBody";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {useSpring, animated} from 'react-spring'
-import { API } from "aws-amplify";
-import { UserContext } from "../../../auth";
+import { useSpring, animated } from 'react-spring'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

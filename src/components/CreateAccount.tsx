@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent, useContext } from "react";
-
 import { 
   Card, 
   CardContent, 
@@ -75,6 +74,7 @@ const ConfirmAccountDialog: React.FC<IConfirmAccountDialog> = props => {
 
   function handleConfirmationCodeChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
+    console.log(confirmationCode);  
     setConfirmationCode(event.target.value);  
   }
 
@@ -130,13 +130,15 @@ export const CreateAccount: React.FC = () => {
 
     if (!isValidated) return;
 
-    const creationSucess = await handleSignUp({
+    const creationSuccess = await handleSignUp({
       email,
       firstName,  
       lastName,
       phoneNumber,
       password
     });
+
+    console.log(creationSuccess);
 
     alert("Please check your email to confirm your account.");
 

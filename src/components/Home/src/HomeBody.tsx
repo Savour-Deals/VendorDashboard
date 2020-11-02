@@ -73,7 +73,7 @@ export const HomeBody: React.FC = () => {
     setVendors(vendors);
     setVendorState(vendorState);
     setLoading(false);
-  }, [setVendors]);
+  }, [setVendors,setVendorState,setLoading, userContext.user]);
 
 
   const updateVendor = async (updatedVendor: Vendor) => {
