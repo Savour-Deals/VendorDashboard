@@ -8,6 +8,7 @@ import { UserContextProvider, UserContext } from "./auth";
 import Amplify from 'aws-amplify';
 import config from "./config";
 import { LoadingDialog } from "./components/Home/src/LoadingDialog";
+import ResetAccount from "./components/ResetAccount";
 
 Amplify.configure({
   Auth: {
@@ -56,6 +57,7 @@ const App: React.FC = () => {
             <Switch>
                 <Route path="/login" render={() => <Login {...loginProps} />}/>
                 <Route path="/create-account" render={() => <CreateAccount/>}/>
+                <Route path="/reset-account" render={() => <ResetAccount/>}/>
                 <PrivateRoute path="/index" auth={auth.isAuthenticated} component={Home} />
               </Switch>
               {

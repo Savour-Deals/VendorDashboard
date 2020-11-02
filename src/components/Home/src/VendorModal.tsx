@@ -40,6 +40,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 }));
 
+
+
 const VendorModal: React.FC<IVendorModal> = props => {
   
   const { vendor, vendorState, toggleVendorModal, updateVendor } = props;
@@ -75,14 +77,17 @@ const VendorModal: React.FC<IVendorModal> = props => {
     setLongClickDeal(longClickDeal);
   }
   
-  // TODO: pass in correct deal
-  function runDeal(): void {
-    console.log(runDeal);
+  function runDeal(deal: DealType): void {
+    switch(deal) {
+      case DealType.ONBOARD:
+        return;
+      default:
+        throw new Error("No deal type found");
+    }
   }
 
   return (
-      <Grid key={vendor.placeId} item xs={12}>
-      <Card className={styles.cardContent}>
+      <Card >
         <CardHeader
           title={vendor.vendorName}
           subheader={vendor.primaryAddress}
@@ -93,13 +98,13 @@ const VendorModal: React.FC<IVendorModal> = props => {
           }
         />
         <CardContent>
-          <Grid container spacing={3}> 
+          <Grid container spacing={1}> 
             <Grid item xs={4}>
               Onboard Deal: {vendor.onboardDeal}
               <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={runDeal}>
+                    onClick={() => runDeal(DealType.ONBOARD)}>
                       Run Onboard Deal
                   </Button> 
             </Grid>
@@ -108,7 +113,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
               <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={runDeal}>
+                    onClick={() => runDeal(DealType.ONBOARD)}>
                       Run Single-click Deal
                   </Button> 
             </Grid>
@@ -117,7 +122,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
               <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={runDeal}>
+                    onClick={() => runDeal(DealType.ONBOARD)}>
                       Run Long-click Deal
                   </Button> 
             </Grid>
@@ -126,27 +131,17 @@ const VendorModal: React.FC<IVendorModal> = props => {
               <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={runDeal}>
+                    onClick={() => runDeal(DealType.ONBOARD)}>
                       Run Double-click Deal
                   </Button> 
             </Grid>
-            {/* <Grid item container xs={4}>
-              Current Subscribers:
-              { vendor.subscribers ? Object.keys(vendor.subscribers).map((key: string, index: number) =>{
-                return (
-                  <Grid item xs={4} key={index}>
-                    {(vendor.subscribers) ? vendor.subscribers! : null}
-                  </Grid>
-                )
-              }) : null}
-            </Grid> */}
           </Grid>
           <Modal 
             open={vendorState[vendor.placeId]}
             onClose={() => toggleVendorModal(vendor.placeId, false)}
           >
             <Fade in={vendorState[vendor.placeId]}>
-              <Card  className={styles.modal}>
+              <Card className={styles.modal}>
                 <CardHeader
                     title={vendor.vendorName}
                     subheader={vendor.primaryAddress}
@@ -207,7 +202,6 @@ const VendorModal: React.FC<IVendorModal> = props => {
           
         </CardContent>
       </Card>
-    </Grid>
   );
 }
 

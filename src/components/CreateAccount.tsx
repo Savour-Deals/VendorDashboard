@@ -84,6 +84,7 @@ const ConfirmAccountDialog: React.FC<IConfirmAccountDialog> = props => {
       label="Confirmation Code"
       type="number"
       variant="filled"
+      onChange={handleConfirmationCodeChange}
     />
   </Dialog>
 }

@@ -8,8 +8,6 @@ import parse from 'autosuggest-highlight/parse';
 import throttle from 'lodash/throttle';
 import React, { ChangeEvent, useMemo, useEffect } from "react";
 import CloseIcon from "@material-ui/icons/Close";
-import { InputAdornment } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search'
 
 interface ISearchBox {
   addPlace?: Function;

@@ -46,6 +46,7 @@ const ResetAccount: React.FC = () => {
   return(
     <animated.div className={styles.root} style={springProps}>
       <Card className={styles.card}>
+      <h1>Reset Account</h1>
       <CardMedia
           className={styles.img}
           image={LogoWhite}
