@@ -74,7 +74,6 @@ export const SearchBox: React.FC<ISearchBox> = props => {
         'google-maps',
       );
     }
-
     loaded.current = true;
   }
 
@@ -139,7 +138,6 @@ export const SearchBox: React.FC<ISearchBox> = props => {
           fontSize="small"
           onClick={() => {
             setSearchInput("");
-
           }} 
         />
       }
