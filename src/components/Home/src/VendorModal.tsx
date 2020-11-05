@@ -1,8 +1,10 @@
-import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, TextField, Button } from "@material-ui/core";
+import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, TextField, Button, InputLabel } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
 
 import React, { ChangeEvent, useState } from 'react';
+import FormControl from "@material-ui/core/FormControl/FormControl";
+import Select from "@material-ui/core/Select/Select";
 
 interface IVendorModal {
   vendor: Vendor;
@@ -52,6 +54,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
   const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal);
   const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal);
   const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal);
+  const [selectedDeal, setSelectedDeal] = useState(vendor.onboardDeal);
 
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
     const onboardDeal = event.target.value;
@@ -76,10 +79,15 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
     setLongClickDeal(longClickDeal);
   }
+
+  const selectedDealChange = (event: ChangeEvent<HTMLInputElement>) => setSelectedDeal(event.target.value);
   
   function runDeal(deal: DealType): void {
     switch(deal) {
       case DealType.ONBOARD:
+      case DealType.SINGLE_CLICK:
+      case DealType.DOUBLE_CLICK:
+      case DealType.LONG_CLICK:
         return;
       default:
         throw new Error("No deal type found");
@@ -113,7 +121,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
               <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={() => runDeal(DealType.ONBOARD)}>
+                    onClick={() => runDeal(DealType.SINGLE_CLICK)}>
                       Run Single-click Deal
                   </Button> 
             </Grid>
@@ -122,7 +130,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
               <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={() => runDeal(DealType.ONBOARD)}>
+                    onClick={() => runDeal(DealType.LONG_CLICK)}>
                       Run Long-click Deal
                   </Button> 
             </Grid>
@@ -131,11 +139,19 @@ const VendorModal: React.FC<IVendorModal> = props => {
               <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={() => runDeal(DealType.ONBOARD)}>
+                    onClick={() => runDeal(DealType.DOUBLE_CLICK)}>
                       Run Double-click Deal
                   </Button> 
             </Grid>
           </Grid>
+          <FormControl>
+            <InputLabel id="deal-select-label">
+              Select Deal
+            </InputLabel>
+            <Select>
+
+            </Select>
+          </FormControl>
           <Modal 
             open={vendorState[vendor.placeId]}
             onClose={() => toggleVendorModal(vendor.placeId, false)}
