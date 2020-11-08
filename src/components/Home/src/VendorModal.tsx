@@ -5,6 +5,8 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import React, { ChangeEvent, useState } from 'react';
 import FormControl from "@material-ui/core/FormControl/FormControl";
 import Select from "@material-ui/core/Select/Select";
+import MenuItem from "@material-ui/core/MenuItem/MenuItem";
+import { DealType } from "../../../domain/DealType";
 
 interface IVendorModal {
   vendor: Vendor;
@@ -43,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 
-
 const VendorModal: React.FC<IVendorModal> = props => {
   
   const { vendor, vendorState, toggleVendorModal, updateVendor } = props;
@@ -54,7 +55,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
   const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal);
   const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal);
   const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal);
-  const [selectedDeal, setSelectedDeal] = useState(vendor.onboardDeal);
+  const [selectedDeal, setSelectedDeal] = useState(DealType.ONBOARD);
 
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
     const onboardDeal = event.target.value;
@@ -80,7 +81,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
     setLongClickDeal(longClickDeal);
   }
 
-  const selectedDealChange = (event: ChangeEvent<HTMLInputElement>) => setSelectedDeal(event.target.value);
+  const selectedDealChange = (event: ChangeEvent<{value: unknown}>) => setSelectedDeal(event.target.value as DealType);
   
   function runDeal(deal: DealType): void {
     switch(deal) {
@@ -109,48 +110,36 @@ const VendorModal: React.FC<IVendorModal> = props => {
           <Grid container spacing={1}> 
             <Grid item xs={4}>
               Onboard Deal: {vendor.onboardDeal}
-              <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={() => runDeal(DealType.ONBOARD)}>
-                      Run Onboard Deal
-                  </Button> 
             </Grid>
             <Grid item xs={4}>
               Single Click Deal: {vendor.singleClickDeal}
-              <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={() => runDeal(DealType.SINGLE_CLICK)}>
-                      Run Single-click Deal
-                  </Button> 
             </Grid>
             <Grid item xs={4}>
               Long Click Deal: {vendor.longClickDeal}
-              <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={() => runDeal(DealType.LONG_CLICK)}>
-                      Run Long-click Deal
-                  </Button> 
             </Grid>
             <Grid item xs={4}>
               Double-click Deal: {vendor.onboardDeal}
-              <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={() => runDeal(DealType.DOUBLE_CLICK)}>
-                      Run Double-click Deal
-                  </Button> 
             </Grid>
           </Grid>
           <FormControl>
             <InputLabel id="deal-select-label">
               Select Deal
             </InputLabel>
-            <Select>
-
+            <Select
+              value={selectedDeal}
+              onChange={selectedDealChange}
+            >
+              <MenuItem value={DealType.ONBOARD}>Onboard Deal</MenuItem>
+              <MenuItem value={DealType.SINGLE_CLICK}>Single Click Deal</MenuItem>
+              <MenuItem value={DealType.DOUBLE_CLICK}>Double Click Deal</MenuItem>
+              <MenuItem value={DealType.LONG_CLICK}>Long Click Deal</MenuItem>
             </Select>
+            <Button 
+                    variant="contained"   
+                    className={styles.button} 
+                    onClick={() => runDeal(selectedDeal)}>
+                      Run Deal
+              </Button> 
           </FormControl>
           <Modal 
             open={vendorState[vendor.placeId]}

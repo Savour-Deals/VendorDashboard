@@ -82,10 +82,3 @@ declare interface SignUpData {
   lastName: string;
   phoneNumber: string;
 }
-
-enum DealType {
-  ONBOARD,
-  SINGLE_CLICK,
-  DOUBLE_CLICK,
-  LONG_CLICK
-}
