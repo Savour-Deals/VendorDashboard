@@ -21,12 +21,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     display: "inline-block",
     alignContent: "center",
     alignItems: "center",
-    width: "100%",
-    height: "100%",
+    width: "inherit",
+    height: "inherit",
   },
   cardContent: {
     alignItems: "center",
-    width: "100%"
+    width: "inherit",
   },
   button: {
     backgroundColor: "#49ABAA",
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     display: "inline-block",
     alignContent: "center",
     alignItems: "center",
-    width: "100%",
-    height: "100%",
+    width: "inherit",
+    height: "inherit",
   }
 }));
 

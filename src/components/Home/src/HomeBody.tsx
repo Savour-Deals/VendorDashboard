@@ -131,7 +131,7 @@ export const HomeBody: React.FC = () => {
 
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     return vendors.map((vendor : Vendor, index : number) => 
-    <Grid item xs={8}>
+    <Grid item key={vendor.placeId}>
       <VendorModal       
         key={vendor.placeId} 
         vendor={vendor} 
@@ -151,23 +151,27 @@ export const HomeBody: React.FC = () => {
 
     <div className={styles.root}>
       <LoadingDialog isLoading={loading}/>
-        <Grid container spacing={3} direction="column" alignItems="center"> 
+      <Grid container spacing={3} direction="column" alignItems="center"> 
+        <Grid item xs={12}>
+          <Grid container justify="center" direction="column" spacing={3}>
             {generateVendors(vendors)}
           </Grid>
-        <Button 
-          variant="contained"   
-          className={styles.button} 
-          onClick={toggleModal}>
-            Add Vendor
-        </Button>
-        <Elements>
-          <AddVendorModal
-            open={open}
-            handleClose={handleClose}
-            addVendor={addVendors}
-            isLoading={loading}
-          />
-        </Elements>
+        </Grid>
+      </Grid>
+      <Button 
+        variant="contained"   
+        className={styles.button} 
+        onClick={toggleModal}>
+          Add Vendor
+      </Button>
+      <Elements>
+        <AddVendorModal
+          open={open}
+          handleClose={handleClose}
+          addVendor={addVendors}
+          isLoading={loading}
+        />
+      </Elements>
     </div>
     </StripeProvider>
 
