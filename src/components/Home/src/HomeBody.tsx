@@ -130,15 +130,16 @@ export const HomeBody: React.FC = () => {
   }
 
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
-    
-    return vendors.map((vendor : Vendor, index : number) => <VendorModal 
-      key={vendor.placeId} 
-      vendor={vendor} 
-      vendorState={vendorState} 
-      toggleVendorModal={toggleVendorModal} 
-      updateVendor={updateVendor} />
+    return vendors.map((vendor : Vendor, index : number) => 
+    <Grid item xs={8}>
+      <VendorModal       
+        key={vendor.placeId} 
+        vendor={vendor} 
+        vendorState={vendorState} 
+        toggleVendorModal={toggleVendorModal} 
+        updateVendor={updateVendor} />
+      </Grid>
     );
-    
   }
 
   function toggleModal() {
@@ -150,11 +151,9 @@ export const HomeBody: React.FC = () => {
 
     <div className={styles.root}>
       <LoadingDialog isLoading={loading}/>
-        <Grid container spacing={4} direction="column" alignItems="center"> 
-          <Grid item xs={6}>
+        <Grid container spacing={3} direction="column" alignItems="center"> 
             {generateVendors(vendors)}
           </Grid>
-        </Grid>
         <Button 
           variant="contained"   
           className={styles.button} 

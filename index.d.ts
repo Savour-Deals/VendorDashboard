@@ -84,5 +84,6 @@ declare interface SignUpData {
 }
 
 declare interface DealMessage {
-  
+  dealType: string;
+  dealInfo: string;
 }

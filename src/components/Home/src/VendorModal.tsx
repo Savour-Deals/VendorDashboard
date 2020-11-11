@@ -22,11 +22,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     alignContent: "center",
     alignItems: "center",
     width: "100%",
-    height: "70%",
+    height: "100%",
   },
   cardContent: {
     alignItems: "center",
-    width: "80%"
+    width: "100%"
   },
   button: {
     backgroundColor: "#49ABAA",
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     display: "inline-block",
     alignContent: "center",
     alignItems: "center",
-    width: "50%",
-    height: "50%",
+    width: "100%",
+    height: "100%",
   }
 }));
 
