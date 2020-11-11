@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, TextField, Button, InputLabel } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
-
+import { API } from "aws-amplify";
 import React, { ChangeEvent, useState } from 'react';
 import FormControl from "@material-ui/core/FormControl/FormControl";
 import Select from "@material-ui/core/Select/Select";
@@ -41,9 +41,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     width: "50%",
     height: "50%",
   }
-
 }));
-
 
 const VendorModal: React.FC<IVendorModal> = props => {
   
@@ -51,10 +49,10 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   const styles = useStyles();
 
-  const [onboardDeal, setOnboardDeal] = useState(vendor.onboardDeal);
-  const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal);
-  const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal);
-  const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal);
+  const [onboardDeal, setOnboardDeal] = useState(vendor.onboardDeal || "");
+  const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal || "");
+  const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal || "");
+  const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal || "");
   const [selectedDeal, setSelectedDeal] = useState(DealType.ONBOARD);
 
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
@@ -83,13 +81,35 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   const selectedDealChange = (event: ChangeEvent<{value: unknown}>) => setSelectedDeal(event.target.value as DealType);
   
-  function runDeal(deal: DealType): void {
+  async function createDeal(dealString: string, dealInfo: string): Promise<void> {
+    try {
+      await API.post("message_service","/message_service/send_number", {
+        body:{
+          dealType: dealString,
+          dealInfo,
+        },
+      });
+    } catch (e) {
+      console.log(`Whoops! Error with ${dealString} type. Here are some more details: \n ${e}`);
+    }
+
+  }
+
+  async function runDeal(deal: DealType): Promise<void> {
+    console.log(deal);
     switch(deal) {
       case DealType.ONBOARD:
+        createDeal("ONBOARD", onboardDeal);
+        break;
       case DealType.SINGLE_CLICK:
+        createDeal("SINGLE_CLICK", singleClickDeal);
+        break;
       case DealType.DOUBLE_CLICK:
+        createDeal("DOUBLE_CLICK", doubleClickDeal);
+        break;
       case DealType.LONG_CLICK:
-        return;
+        createDeal("LONG_CLICK", longClickDeal);
+        break;
       default:
         throw new Error("No deal type found");
     }

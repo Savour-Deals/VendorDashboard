@@ -82,3 +82,7 @@ declare interface SignUpData {
   lastName: string;
   phoneNumber: string;
 }
+
+declare interface DealMessage {
+  
+}
