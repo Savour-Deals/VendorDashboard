@@ -81,12 +81,13 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   const selectedDealChange = (event: ChangeEvent<{value: unknown}>) => setSelectedDeal(event.target.value as DealType);
   
-  async function createDeal(dealString: string, dealInfo: string): Promise<void> {
+  async function createDeal(dealString: string, dealInfo: string, vendorName: string): Promise<void> {
     try {
       await API.post("message_service","/message_service/send_number", {
         body:{
           dealType: dealString,
           dealInfo,
+          vendorName,
         },
       });
     } catch (e) {
@@ -99,16 +100,16 @@ const VendorModal: React.FC<IVendorModal> = props => {
     console.log(deal);
     switch(deal) {
       case DealType.ONBOARD:
-        createDeal("ONBOARD", onboardDeal);
+        createDeal("ONBOARD", onboardDeal, vendor.vendorName);
         break;
       case DealType.SINGLE_CLICK:
-        createDeal("SINGLE_CLICK", singleClickDeal);
+        createDeal("SINGLE_CLICK", singleClickDeal, vendor.vendorName);
         break;
       case DealType.DOUBLE_CLICK:
-        createDeal("DOUBLE_CLICK", doubleClickDeal);
+        createDeal("DOUBLE_CLICK", doubleClickDeal, vendor.vendorName);
         break;
       case DealType.LONG_CLICK:
-        createDeal("LONG_CLICK", longClickDeal);
+        createDeal("LONG_CLICK", longClickDeal, vendor.vendorName);
         break;
       default:
         throw new Error("No deal type found");
