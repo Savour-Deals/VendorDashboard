@@ -8,8 +8,6 @@ import parse from 'autosuggest-highlight/parse';
 import throttle from 'lodash/throttle';
 import React, { ChangeEvent, useMemo, useEffect } from "react";
 import CloseIcon from "@material-ui/icons/Close";
-import { InputAdornment } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search'
 
 interface ISearchBox {
   addPlace?: Function;
@@ -76,7 +74,6 @@ export const SearchBox: React.FC<ISearchBox> = props => {
         'google-maps',
       );
     }
-
     loaded.current = true;
   }
 
@@ -141,7 +138,6 @@ export const SearchBox: React.FC<ISearchBox> = props => {
           fontSize="small"
           onClick={() => {
             setSearchInput("");
-
           }} 
         />
       }

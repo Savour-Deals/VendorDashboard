@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CardHeader, Grid, IconButton, TextField, Modal, Fade } from "@material-ui/core";
+import { Button, Grid} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import  AddVendorModal  from "./AddVendorModal";
@@ -7,7 +7,6 @@ import config from "../../../config";
 import { API } from "aws-amplify";
 import { UserContext } from "../../../auth";
 import { LoadingDialog } from "./LoadingDialog";
-import EditIcon from "@material-ui/icons/Edit";
 import VendorModal from "./VendorModal";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1),
       textAlign: "center",
       alignItems: "center",
-      alignContent: "center   "
+      alignContent: "center"
     },
 
     img: {
@@ -33,21 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function loadScript(src: string, position: HTMLElement | null, id: string) {
-  if (!position) {
-    return;
-  }
-
-  const script = document.createElement('script');
-  script.setAttribute('async', '');
-  script.setAttribute('id', id);
-  script.src = src;
-  position.appendChild(script);
-}
-
 export const HomeBody: React.FC = () => {
   const userContext: IUserContext = useContext(UserContext);
-  const loaded = React.useRef(false);
   
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -87,7 +73,7 @@ export const HomeBody: React.FC = () => {
     setVendors(vendors);
     setVendorState(vendorState);
     setLoading(false);
-  }, [setVendors]);
+  }, [setVendors,setVendorState,setLoading, userContext.user]);
 
 
   const updateVendor = async (updatedVendor: Vendor) => {
@@ -144,15 +130,16 @@ export const HomeBody: React.FC = () => {
   }
 
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
-    
-    return vendors.map((vendor : Vendor, index : number) => <VendorModal 
-      key={vendor.placeId} 
-      vendor={vendor} 
-      vendorState={vendorState} 
-      toggleVendorModal={toggleVendorModal} 
-      updateVendor={updateVendor} />
+    return vendors.map((vendor : Vendor, index : number) => 
+    <Grid item key={vendor.placeId}>
+      <VendorModal       
+        key={vendor.placeId} 
+        vendor={vendor} 
+        vendorState={vendorState} 
+        toggleVendorModal={toggleVendorModal} 
+        updateVendor={updateVendor} />
+      </Grid>
     );
-    
   }
 
   function toggleModal() {
@@ -164,25 +151,27 @@ export const HomeBody: React.FC = () => {
 
     <div className={styles.root}>
       <LoadingDialog isLoading={loading}/>
-
-        <Grid container spacing={4} direction="column" alignItems="center">
-        {generateVendors(vendors)}
+      <Grid container spacing={3} direction="column" alignItems="center"> 
+        <Grid item xs={12}>
+          <Grid container justify="center" direction="column" spacing={3}>
+            {generateVendors(vendors)}
+          </Grid>
         </Grid>
-
-        <Button 
-          variant="contained"   
-          className={styles.button} 
-          onClick={toggleModal}>
-            Add Vendor
-          </Button>
-          <Elements>
-            <AddVendorModal
-              open={open}
-              handleClose={handleClose}
-              addVendor={addVendors}
-              isLoading={loading}
-            />
-          </Elements>
+      </Grid>
+      <Button 
+        variant="contained"   
+        className={styles.button} 
+        onClick={toggleModal}>
+          Add Vendor
+      </Button>
+      <Elements>
+        <AddVendorModal
+          open={open}
+          handleClose={handleClose}
+          addVendor={addVendors}
+          isLoading={loading}
+        />
+      </Elements>
     </div>
     </StripeProvider>
 

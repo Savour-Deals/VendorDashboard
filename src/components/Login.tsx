@@ -125,6 +125,7 @@ export const Login: React.FC<any> = (props) => {
             </Grid>
           </form>
         <Typography className={styles.createAccount} onClick={() => history.push("/create-account")}>Don't Have an Account? Click Here!</Typography>
+        <Typography className={styles.createAccount} onClick={() => history.push("/reset-account")}>Reset Password</Typography>
         </CardContent>
       </Card>
     </animated.div>

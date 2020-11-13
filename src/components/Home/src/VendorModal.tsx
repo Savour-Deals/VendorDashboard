@@ -1,8 +1,12 @@
-import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, TextField, Button } from "@material-ui/core";
+import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, TextField, Button, InputLabel } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
-
+import { API } from "aws-amplify";
 import React, { ChangeEvent, useState } from 'react';
+import FormControl from "@material-ui/core/FormControl/FormControl";
+import Select from "@material-ui/core/Select/Select";
+import MenuItem from "@material-ui/core/MenuItem/MenuItem";
+import { DealType } from "../../../domain/DealType";
 
 interface IVendorModal {
   vendor: Vendor;
@@ -17,12 +21,12 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     display: "inline-block",
     alignContent: "center",
     alignItems: "center",
-    width: "100%",
-    height: "70%",
+    width: "inherit",
+    height: "inherit",
   },
   cardContent: {
     alignItems: "center",
-    width: "80%"
+    width: "inherit",
   },
   button: {
     backgroundColor: "#49ABAA",
@@ -34,10 +38,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     display: "inline-block",
     alignContent: "center",
     alignItems: "center",
-    width: "50%",
-    height: "50%",
+    width: "inherit",
+    height: "inherit",
   }
-
 }));
 
 const VendorModal: React.FC<IVendorModal> = props => {
@@ -46,10 +49,11 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   const styles = useStyles();
 
-  const [onboardDeal, setOnboardDeal] = useState(vendor.onboardDeal);
-  const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal);
-  const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal);
-  const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal);
+  const [onboardDeal, setOnboardDeal] = useState(vendor.onboardDeal || "");
+  const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal || "");
+  const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal || "");
+  const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal || "");
+  const [selectedDeal, setSelectedDeal] = useState(DealType.ONBOARD);
 
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
     const onboardDeal = event.target.value;
@@ -74,15 +78,46 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
     setLongClickDeal(longClickDeal);
   }
+
+  const selectedDealChange = (event: ChangeEvent<{value: unknown}>) => setSelectedDeal(event.target.value as DealType);
   
-  // TODO: pass in correct deal
-  function runDeal(): void {
-    console.log(runDeal);
+  async function createDeal(dealString: string, dealInfo: string, vendorName: string): Promise<void> {
+    try {
+      await API.post("message_service","/message_service/send_number", {
+        body:{
+          dealType: dealString,
+          dealInfo,
+          vendorName,
+        },
+      });
+    } catch (e) {
+      console.log(`Whoops! Error with ${dealString} type. Here are some more details: \n ${e}`);
+    }
+
+  }
+
+  async function runDeal(deal: DealType): Promise<void> {
+    console.log(deal);
+    switch(deal) {
+      case DealType.ONBOARD:
+        createDeal("ONBOARD", onboardDeal, vendor.vendorName);
+        break;
+      case DealType.SINGLE_CLICK:
+        createDeal("SINGLE_CLICK", singleClickDeal, vendor.vendorName);
+        break;
+      case DealType.DOUBLE_CLICK:
+        createDeal("DOUBLE_CLICK", doubleClickDeal, vendor.vendorName);
+        break;
+      case DealType.LONG_CLICK:
+        createDeal("LONG_CLICK", longClickDeal, vendor.vendorName);
+        break;
+      default:
+        throw new Error("No deal type found");
+    }
   }
 
   return (
-      <Grid key={vendor.placeId} item xs={12}>
-      <Card className={styles.cardContent}>
+      <Card >
         <CardHeader
           title={vendor.vendorName}
           subheader={vendor.primaryAddress}
@@ -93,60 +128,46 @@ const VendorModal: React.FC<IVendorModal> = props => {
           }
         />
         <CardContent>
-          <Grid container spacing={3}> 
+          <Grid container spacing={1}> 
             <Grid item xs={4}>
               Onboard Deal: {vendor.onboardDeal}
-              <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={runDeal}>
-                      Run Onboard Deal
-                  </Button> 
             </Grid>
             <Grid item xs={4}>
               Single Click Deal: {vendor.singleClickDeal}
-              <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={runDeal}>
-                      Run Single-click Deal
-                  </Button> 
             </Grid>
             <Grid item xs={4}>
               Long Click Deal: {vendor.longClickDeal}
-              <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={runDeal}>
-                      Run Long-click Deal
-                  </Button> 
             </Grid>
             <Grid item xs={4}>
               Double-click Deal: {vendor.onboardDeal}
-              <Button 
+            </Grid>
+          </Grid>
+          <FormControl>
+            <InputLabel id="deal-select-label">
+              Select Deal
+            </InputLabel>
+            <Select
+              value={selectedDeal}
+              onChange={selectedDealChange}
+            >
+              <MenuItem value={DealType.ONBOARD}>Onboard Deal</MenuItem>
+              <MenuItem value={DealType.SINGLE_CLICK}>Single Click Deal</MenuItem>
+              <MenuItem value={DealType.DOUBLE_CLICK}>Double Click Deal</MenuItem>
+              <MenuItem value={DealType.LONG_CLICK}>Long Click Deal</MenuItem>
+            </Select>
+            <Button 
                     variant="contained"   
                     className={styles.button} 
-                    onClick={runDeal}>
-                      Run Double-click Deal
-                  </Button> 
-            </Grid>
-            {/* <Grid item container xs={4}>
-              Current Subscribers:
-              { vendor.subscribers ? Object.keys(vendor.subscribers).map((key: string, index: number) =>{
-                return (
-                  <Grid item xs={4} key={index}>
-                    {(vendor.subscribers) ? vendor.subscribers! : null}
-                  </Grid>
-                )
-              }) : null}
-            </Grid> */}
-          </Grid>
+                    onClick={() => runDeal(selectedDeal)}>
+                      Run Deal
+              </Button> 
+          </FormControl>
           <Modal 
             open={vendorState[vendor.placeId]}
             onClose={() => toggleVendorModal(vendor.placeId, false)}
           >
             <Fade in={vendorState[vendor.placeId]}>
-              <Card  className={styles.modal}>
+              <Card className={styles.modal}>
                 <CardHeader
                     title={vendor.vendorName}
                     subheader={vendor.primaryAddress}
@@ -207,7 +228,6 @@ const VendorModal: React.FC<IVendorModal> = props => {
           
         </CardContent>
       </Card>
-    </Grid>
   );
 }
 

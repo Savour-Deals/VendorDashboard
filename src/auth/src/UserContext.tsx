@@ -11,6 +11,7 @@ const INITIAL_AUTH: IUserContext = {
     isAuthenticated: false
   })),
   handleLogout: () => {},
+  confirmSignUp: async (username: string, code: number) => {},
   addVendor: (vendor: Vendor) => {}
 }
 
@@ -94,6 +95,11 @@ export const UserContextProvider = (props: any) => {
     }
   }
   
+  async function confirmSignUp(username: string, code: number) {
+
+    
+  }
+
   async function handleAuthentication(): Promise<{
     user: any;
     isLoading: boolean;
@@ -194,9 +200,10 @@ export const UserContextProvider = (props: any) => {
 
   return <UserContext.Provider value={{
     ...state,
-    handleLogin: handleLogin,
-    handleLogout: handleLogout,
-    handleSignUp: handleSignUp,
+    handleLogin,
+    handleLogout,
+    handleSignUp,
+    confirmSignUp,
     addVendor
   }}>
     {props.children}
