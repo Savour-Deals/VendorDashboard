@@ -65,6 +65,7 @@ export const HomeBody: React.FC = () => {
           singleClickDeal: vendorResponse.single_click_deal,
           doubleClickDeal: vendorResponse.double_click_deal,
           longClickDeal: vendorResponse.long_click_deal,
+          twilioNumber: vendorResponse.twilio_number,
         }
         vendors.push(vendor);
         vendorState[id] = false;
@@ -85,7 +86,6 @@ export const HomeBody: React.FC = () => {
           double_click_deal: updatedVendor.doubleClickDeal,
           long_click_deal: updatedVendor.longClickDeal,
           onboard_deal: updatedVendor.onboardDeal,
-
         }
       });
       console.log(res);
@@ -94,7 +94,7 @@ export const HomeBody: React.FC = () => {
       toggleVendorModal(placeId, false);
 
     }
-    const updatedVendorList = []
+    const updatedVendorList = [];
     for (const index in vendors) {
       if (vendors[index].placeId === placeId) {
         updatedVendorList.push(updatedVendor)

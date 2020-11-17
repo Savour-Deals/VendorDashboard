@@ -55,6 +55,7 @@ declare interface Vendor {
   doubleClickDeal?: string;
   subscribers?: object;
   longClickDeal?: string;
+  twilioNumber?: string;
 }
 
 declare interface VendorState {

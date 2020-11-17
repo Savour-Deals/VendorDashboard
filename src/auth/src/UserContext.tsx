@@ -19,7 +19,7 @@ export const UserContext = createContext<IUserContext>(INITIAL_AUTH);
 
 function reducer(state: IUserContext, action: any) {
   switch(action.type) {
-    case "loginUser":
+    case "LOGIN_USER":
       return {
         ...state,
         user: action.payload.user,
@@ -31,7 +31,7 @@ function reducer(state: IUserContext, action: any) {
         ...state,
         data: action.payload.data
       }
-    case "stopLoading":
+    case "STOP_LOADING":
       return {
         ...state,
         isLoading: action.payload.isLoading
@@ -138,7 +138,6 @@ export const UserContextProvider = (props: any) => {
   }
 
   async function handleLogin(email: string, password: string) {
-  
     const payload = {
       user: null,
       isLoading: false,
@@ -157,7 +156,7 @@ export const UserContextProvider = (props: any) => {
         payload["user"] = authenticatedUser;
         payload["isAuthenticated"] = true;
         dispatch({
-          type: "loginUser",
+          type: "LOGIN_USER",
           isLoading: false,
           payload
         }); 
@@ -174,14 +173,14 @@ export const UserContextProvider = (props: any) => {
     handleAuthentication().then(payload => {
       if (payload.isAuthenticated) {
         dispatch({
-          type: "loginUser",
+          type: "LOGIN_USER",
           payload
         });
 
 
       } else if (state.isLoading) {
         dispatch({
-          type: "stopLoading",
+          type: "STOP_LOADING",
           payload: {
             isLoading: false
           }

@@ -54,6 +54,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
   const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal || "");
   const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal || "");
   const [selectedDeal, setSelectedDeal] = useState(DealType.ONBOARD);
+  const [loading, setLoading] = useState(false);
 
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
     const onboardDeal = event.target.value;
@@ -83,13 +84,15 @@ const VendorModal: React.FC<IVendorModal> = props => {
   
   async function createDeal(dealString: string, dealInfo: string, vendorName: string): Promise<void> {
     try {
-      await API.post("message_service","/message_service/send_number", {
+      const response = await API.post("message_service_API","/message_service/send_number", {
         body:{
           dealType: dealString,
           dealInfo,
           vendorName,
+          twilioNumber: vendor.twilioNumber,
         },
       });
+      console.log(response);
     } catch (e) {
       console.log(`Whoops! Error with ${dealString} type. Here are some more details: \n ${e}`);
     }
@@ -98,22 +101,25 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   async function runDeal(deal: DealType): Promise<void> {
     console.log(deal);
+    setLoading(true);
     switch(deal) {
       case DealType.ONBOARD:
-        createDeal("ONBOARD", onboardDeal, vendor.vendorName);
+        await createDeal("ONBOARD", onboardDeal, vendor.vendorName);
         break;
       case DealType.SINGLE_CLICK:
-        createDeal("SINGLE_CLICK", singleClickDeal, vendor.vendorName);
+        await createDeal("SINGLE_CLICK", singleClickDeal, vendor.vendorName);
         break;
       case DealType.DOUBLE_CLICK:
-        createDeal("DOUBLE_CLICK", doubleClickDeal, vendor.vendorName);
+        await createDeal("DOUBLE_CLICK", doubleClickDeal, vendor.vendorName);
         break;
       case DealType.LONG_CLICK:
-        createDeal("LONG_CLICK", longClickDeal, vendor.vendorName);
+        await createDeal("LONG_CLICK", longClickDeal, vendor.vendorName);
         break;
       default:
         throw new Error("No deal type found");
     }
+    console.log(loading);
+    setLoading(false);
   }
 
   return (
@@ -223,9 +229,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
                 </CardContent>
               </Card>
             </Fade>
-        </Modal>
-
-          
+        </Modal>          
         </CardContent>
       </Card>
   );
