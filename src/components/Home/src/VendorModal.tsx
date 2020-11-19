@@ -58,25 +58,21 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
     const onboardDeal = event.target.value;
-
     setOnboardDeal(onboardDeal);
   }
 
   function doubleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
     const doubleClickDeal = event.target.value;
-    
     setDoubleClickDeal(doubleClickDeal);
   }
 
   function singleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
     const singleClickDeal = event.target.value;
-    
     setSingleClickDeal(singleClickDeal);
   }
 
   function longClickDealChange(event: ChangeEvent<HTMLInputElement>) {
     const longClickDeal = event.target.value;
-
     setLongClickDeal(longClickDeal);
   }
 
@@ -90,6 +86,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
           dealInfo,
           vendorName,
           twilioNumber: vendor.twilioNumber,
+          subscribers: vendor.subscribers ? vendor.subscribers : [],
         },
       });
       console.log(response);
@@ -145,7 +142,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
               Long Click Deal: {vendor.longClickDeal}
             </Grid>
             <Grid item xs={4}>
-              Double-click Deal: {vendor.onboardDeal}
+              Double-click Deal: {vendor.doubleClickDeal}
             </Grid>
           </Grid>
           <FormControl>

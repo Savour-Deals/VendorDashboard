@@ -11,7 +11,7 @@ const INITIAL_AUTH: IUserContext = {
     isAuthenticated: false
   })),
   handleLogout: () => {},
-  confirmSignUp: async (username: string, code: number) => {},
+  confirmSignUp: async (username: string, code: string) => {},
   addVendor: (vendor: Vendor) => {}
 }
 
@@ -95,9 +95,8 @@ export const UserContextProvider = (props: any) => {
     }
   }
   
-  async function confirmSignUp(username: string, code: number) {
-
-    
+  async function confirmSignUp(username: string, code: string) {
+    return await Auth.confirmSignUp(username, code);
   }
 
   async function handleAuthentication(): Promise<{

@@ -9,7 +9,7 @@ declare interface IUserContext {
   handleLogin: (email: string, password: string) => void;
   handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
-  confirmSignUp: (username: string, code: number) => Promise<void>;
+  confirmSignUp: (username: string, code: string) => Promise<any>;
   addVendor: (vendor: Vendor) => void;
 }
 

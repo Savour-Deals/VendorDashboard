@@ -62,19 +62,21 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IConfirmAccountDialog {
   open: boolean;
   redirectToLogin: () => void;
+  confirmSignup: (username: string, code: string) => Promise<any>;
+  username: string;
 }
 
 const ConfirmAccountDialog: React.FC<IConfirmAccountDialog> = props => {
-  const { open, redirectToLogin } = props;
+  const { open, redirectToLogin, confirmSignup, username } = props;
 
   const [ confirmationCode, setConfirmationCode ] = useState("");
   function handleClose() {
+    confirmSignup(username, confirmationCode);
     redirectToLogin();
   }
 
   function handleConfirmationCodeChange(event: ChangeEvent<HTMLInputElement>) {
     event.preventDefault();
-    console.log(confirmationCode);  
     setConfirmationCode(event.target.value);  
   }
 
@@ -104,7 +106,7 @@ export const CreateAccount: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { handleSignUp } = useContext<IUserContext>(UserContext);
+  const { handleSignUp, confirmSignUp } = useContext<IUserContext>(UserContext);
 
   function redirectToLogin() {
     history.push("/login");
@@ -252,7 +254,12 @@ export const CreateAccount: React.FC = () => {
         <Typography className={styles.createAccount} onClick={() => history.push("/login")}>Already Have an Account? Click Here!</Typography>
         </CardContent>
       </Card>
-      <ConfirmAccountDialog open={dialogOpen} redirectToLogin={redirectToLogin}/>
+      <ConfirmAccountDialog 
+        open={dialogOpen} 
+        redirectToLogin={redirectToLogin} 
+        confirmSignup={confirmSignUp} 
+        username={email}
+      />
     </animated.div>
   );
 }
