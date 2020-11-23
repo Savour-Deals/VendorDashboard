@@ -13,6 +13,13 @@ declare interface IUserContext {
   addVendor: (vendor: Vendor) => void;
 }
 
+declare interface IConfirmAccountDialog {
+  open: boolean;
+  redirectToLogin: () => void;
+  confirmSignup: (username: string, code: string) => Promise<any>;
+  username: string;
+  style: string;
+}
 declare interface LoadingDialogProps {
   isLoading: boolean;
 }

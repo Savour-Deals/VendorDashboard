@@ -51,7 +51,6 @@ export const HomeBody: React.FC = () => {
       {});
       const placeIds: Array<string> = getBusinessUserResponseData.businesses;
       const vendors: Array<Vendor> = [];
-
       const vendorState: {[key: string]: boolean} = {};
 
       for (const id of placeIds) {
@@ -75,7 +74,6 @@ export const HomeBody: React.FC = () => {
     setVendorState(vendorState);
     setLoading(false);
   }, [setVendors,setVendorState,setLoading, userContext.user]);
-
 
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
@@ -147,33 +145,31 @@ export const HomeBody: React.FC = () => {
   }
 
   return ( 
-    <StripeProvider stripe={stripe}>
-
-    <div className={styles.root}>
-      <LoadingDialog isLoading={loading}/>
-      <Grid container spacing={3} direction="column" alignItems="center"> 
-        <Grid item xs={12}>
-          <Grid container justify="center" direction="column" spacing={3}>
-            {generateVendors(vendors)}
+    <StripeProvider stripe={stripe}>  
+      <div className={styles.root}>
+        <LoadingDialog isLoading={loading}/>
+        <Grid container spacing={3} direction="column" alignItems="center"> 
+          <Grid item xs={12}>
+            <Grid container justify="center" direction="column" spacing={3}>
+              {generateVendors(vendors)}
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-      <Button 
-        variant="contained"   
-        className={styles.button} 
-        onClick={toggleModal}>
-          Add Vendor
-      </Button>
-      <Elements>
-        <AddVendorModal
-          open={open}
-          handleClose={handleClose}
-          addVendor={addVendors}
-          isLoading={loading}
-        />
-      </Elements>
-    </div>
+        <Button 
+          variant="contained"   
+          className={styles.button} 
+          onClick={toggleModal}>
+            Add Vendor
+        </Button>
+        <Elements>
+          <AddVendorModal
+            open={open}
+            handleClose={handleClose}
+            addVendor={addVendors}
+            isLoading={loading}
+          />
+        </Elements>
+      </div>
     </StripeProvider>
-
   );
 }

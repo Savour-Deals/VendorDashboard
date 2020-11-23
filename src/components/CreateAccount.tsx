@@ -10,14 +10,13 @@ import {
   CardMedia,
   Typography,
   Button,
-  Dialog
 } from "@material-ui/core";
 import LogoWhite from "../assets/img/brand/Savour_White.png";
 import Background from "../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../auth";
-import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import { ConfirmAccountDialog } from "./ConfirmAccountDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,40 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
     },
 
+    confirmAccountDialog: {
+      padding: theme.spacing(6),
+    },
   }),
 );
-
-interface IConfirmAccountDialog {
-  open: boolean;
-  redirectToLogin: () => void;
-  confirmSignup: (username: string, code: string) => Promise<any>;
-  username: string;
-}
-
-const ConfirmAccountDialog: React.FC<IConfirmAccountDialog> = props => {
-  const { open, redirectToLogin, confirmSignup, username } = props;
-
-  const [ confirmationCode, setConfirmationCode ] = useState("");
-  function handleClose() {
-    confirmSignup(username, confirmationCode);
-    redirectToLogin();
-  }
-
-  function handleConfirmationCodeChange(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    setConfirmationCode(event.target.value);  
-  }
-
-  return <Dialog open={open} onClose={handleClose}>
-    <DialogTitle>Enter Confirmation Code</DialogTitle>
-    <TextField
-      label="Confirmation Code"
-      type="number"
-      variant="filled"
-      onChange={handleConfirmationCodeChange}
-    />
-  </Dialog>
-}
 
 export const CreateAccount: React.FC = () => {
 
@@ -259,6 +229,7 @@ export const CreateAccount: React.FC = () => {
         redirectToLogin={redirectToLogin} 
         confirmSignup={confirmSignUp} 
         username={email}
+        style={styles.confirmAccountDialog}
       />
     </animated.div>
   );
