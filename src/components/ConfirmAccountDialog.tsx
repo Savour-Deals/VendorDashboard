@@ -19,10 +19,11 @@ export const ConfirmAccountDialog: React.FC<IConfirmAccountDialog> = props => {
     try {
       const confirmationResult = await confirmSignup(username, confirmationCode);
       console.log(confirmationResult);
+      redirectToLogin();
     } catch (error) {
-      alert(error);
+      alert("Sorry, the confirmation code was incorrect");
+      console.log(error);
     }
-    redirectToLogin();
   }
 
   function handleConfirmationCodeChange(event: ChangeEvent<HTMLInputElement>): void {

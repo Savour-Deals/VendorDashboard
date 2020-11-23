@@ -148,6 +148,10 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       placeId,
       vendorName,
       primaryAddress,
+      singleClickDeal,
+      doubleClickDeal,
+      longClickDeal,
+      onboardDeal,
     }
 
     setIsProcessing(true);
