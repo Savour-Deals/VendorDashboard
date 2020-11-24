@@ -51,7 +51,6 @@ function reducer(state: IUserContext, action: any) {
 export const UserContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
-
   async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;
@@ -76,23 +75,22 @@ export const UserContextProvider = (props: any) => {
         );
       } catch (error) {
         console.log(error);
-        alert(`Error, could not create user. ${error.message}`);
       }
       
       return {
         user,
         isLoading: false,
-        isAuthenticated: true
+        isAuthenticated: true,
+        error: null
       };
     } catch (error) {
-      console.log(error);
-      alert(`Sorry! ${error.message}`);
+      return {
+        user: null,
+        isLoading: false,
+        isAuthenticated: false,
+        error,
+      }
     }  
-    return {
-      user: null,
-      isLoading: false,
-      isAuthenticated: false
-    }
   }
   
   async function confirmSignUp(username: string, code: string) {

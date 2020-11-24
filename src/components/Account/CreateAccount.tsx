@@ -11,11 +11,11 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
-import LogoWhite from "../assets/img/brand/Savour_White.png";
-import Background from "../assets/img/brand/vendorbackground.jpg";
+import LogoWhite from "../../assets/img/brand/Savour_White.png";
+import Background from "../../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
-import { UserContext } from "../auth";
+import { UserContext } from "../../auth";
 import { ConfirmAccountDialog } from "./ConfirmAccountDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -101,7 +101,6 @@ export const CreateAccount: React.FC = () => {
     const isValidated = validateForm();
 
     if (!isValidated) return;
-
     const creationSuccess = await handleSignUp({
       email,
       firstName,  
@@ -111,10 +110,14 @@ export const CreateAccount: React.FC = () => {
     });
 
     console.log(creationSuccess);
+    const error = creationSuccess.error;
 
-    alert("Please check your email to confirm your account.");
-
-    setDialogOpen(true);
+    if (!error) {
+      alert("Please check your email to confirm your account.");
+      setDialogOpen(true);
+    } else {
+      alert(`Error, could not create user. ${error.message}`);
+    }
   }
 
   function handlePhoneNumberChange(event: ChangeEvent<HTMLInputElement>) {

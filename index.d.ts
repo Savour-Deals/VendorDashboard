@@ -28,6 +28,7 @@ declare interface UserAuth {
   user: CognitoUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  error: any;
 }
 
 declare interface MapCoordinates {
