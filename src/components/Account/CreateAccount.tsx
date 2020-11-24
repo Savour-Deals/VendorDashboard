@@ -10,14 +10,13 @@ import {
   CardMedia,
   Typography,
   Button,
-  Dialog
 } from "@material-ui/core";
-import LogoWhite from "../assets/img/brand/Savour_White.png";
-import Background from "../assets/img/brand/vendorbackground.jpg";
+import LogoWhite from "../../assets/img/brand/Savour_White.png";
+import Background from "../../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
-import { UserContext } from "../auth";
-import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import { UserContext } from "../../auth";
+import { ConfirmAccountDialog } from "./ConfirmAccountDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,38 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(2),
     },
 
+    confirmAccountDialog: {
+      padding: theme.spacing(6),
+    },
   }),
 );
-
-interface IConfirmAccountDialog {
-  open: boolean;
-  redirectToLogin: () => void;
-}
-
-const ConfirmAccountDialog: React.FC<IConfirmAccountDialog> = props => {
-  const { open, redirectToLogin } = props;
-
-  const [ confirmationCode, setConfirmationCode ] = useState("");
-  function handleClose() {
-    redirectToLogin();
-  }
-
-  function handleConfirmationCodeChange(event: ChangeEvent<HTMLInputElement>) {
-    event.preventDefault();
-    console.log(confirmationCode);  
-    setConfirmationCode(event.target.value);  
-  }
-
-  return <Dialog open={open} onClose={handleClose}>
-    <DialogTitle>Enter Confirmation Code</DialogTitle>
-    <TextField
-      label="Confirmation Code"
-      type="number"
-      variant="filled"
-      onChange={handleConfirmationCodeChange}
-    />
-  </Dialog>
-}
 
 export const CreateAccount: React.FC = () => {
 
@@ -104,7 +76,7 @@ export const CreateAccount: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { handleSignUp } = useContext<IUserContext>(UserContext);
+  const { handleSignUp, confirmSignUp } = useContext<IUserContext>(UserContext);
 
   function redirectToLogin() {
     history.push("/login");
@@ -129,7 +101,6 @@ export const CreateAccount: React.FC = () => {
     const isValidated = validateForm();
 
     if (!isValidated) return;
-
     const creationSuccess = await handleSignUp({
       email,
       firstName,  
@@ -139,10 +110,14 @@ export const CreateAccount: React.FC = () => {
     });
 
     console.log(creationSuccess);
+    const error = creationSuccess.error;
 
-    alert("Please check your email to confirm your account.");
-
-    setDialogOpen(true);
+    if (!error) {
+      alert("Please check your email to confirm your account.");
+      setDialogOpen(true);
+    } else {
+      alert(`Error, could not create user. ${error.message}`);
+    }
   }
 
   function handlePhoneNumberChange(event: ChangeEvent<HTMLInputElement>) {
@@ -252,7 +227,13 @@ export const CreateAccount: React.FC = () => {
         <Typography className={styles.createAccount} onClick={() => history.push("/login")}>Already Have an Account? Click Here!</Typography>
         </CardContent>
       </Card>
-      <ConfirmAccountDialog open={dialogOpen} redirectToLogin={redirectToLogin}/>
+      <ConfirmAccountDialog 
+        open={dialogOpen} 
+        redirectToLogin={redirectToLogin} 
+        confirmSignup={confirmSignUp} 
+        username={email}
+        style={styles.confirmAccountDialog}
+      />
     </animated.div>
   );
 }

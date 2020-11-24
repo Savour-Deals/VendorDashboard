@@ -11,7 +11,7 @@ const INITIAL_AUTH: IUserContext = {
     isAuthenticated: false
   })),
   handleLogout: () => {},
-  confirmSignUp: async (username: string, code: number) => {},
+  confirmSignUp: async (username: string, code: string) => {},
   addVendor: (vendor: Vendor) => {}
 }
 
@@ -19,7 +19,7 @@ export const UserContext = createContext<IUserContext>(INITIAL_AUTH);
 
 function reducer(state: IUserContext, action: any) {
   switch(action.type) {
-    case "loginUser":
+    case "LOGIN_USER":
       return {
         ...state,
         user: action.payload.user,
@@ -31,7 +31,7 @@ function reducer(state: IUserContext, action: any) {
         ...state,
         data: action.payload.data
       }
-    case "stopLoading":
+    case "STOP_LOADING":
       return {
         ...state,
         isLoading: action.payload.isLoading
@@ -51,7 +51,6 @@ function reducer(state: IUserContext, action: any) {
 export const UserContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
-
   async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;
@@ -76,28 +75,26 @@ export const UserContextProvider = (props: any) => {
         );
       } catch (error) {
         console.log(error);
-        alert(`Error, could not create user. ${error.message}`);
       }
       
       return {
         user,
         isLoading: false,
-        isAuthenticated: true
+        isAuthenticated: true,
+        error: null
       };
     } catch (error) {
-      console.log(error);
-      alert(`Sorry! ${error.message}`);
+      return {
+        user: null,
+        isLoading: false,
+        isAuthenticated: false,
+        error,
+      }
     }  
-    return {
-      user: null,
-      isLoading: false,
-      isAuthenticated: false
-    }
   }
   
-  async function confirmSignUp(username: string, code: number) {
-
-    
+  async function confirmSignUp(username: string, code: string) {
+    return await Auth.confirmSignUp(username, code);
   }
 
   async function handleAuthentication(): Promise<{
@@ -138,7 +135,6 @@ export const UserContextProvider = (props: any) => {
   }
 
   async function handleLogin(email: string, password: string) {
-  
     const payload = {
       user: null,
       isLoading: false,
@@ -157,7 +153,7 @@ export const UserContextProvider = (props: any) => {
         payload["user"] = authenticatedUser;
         payload["isAuthenticated"] = true;
         dispatch({
-          type: "loginUser",
+          type: "LOGIN_USER",
           isLoading: false,
           payload
         }); 
@@ -174,14 +170,14 @@ export const UserContextProvider = (props: any) => {
     handleAuthentication().then(payload => {
       if (payload.isAuthenticated) {
         dispatch({
-          type: "loginUser",
+          type: "LOGIN_USER",
           payload
         });
 
 
       } else if (state.isLoading) {
         dispatch({
-          type: "stopLoading",
+          type: "STOP_LOADING",
           payload: {
             isLoading: false
           }

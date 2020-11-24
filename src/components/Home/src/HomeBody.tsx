@@ -51,7 +51,6 @@ export const HomeBody: React.FC = () => {
       {});
       const placeIds: Array<string> = getBusinessUserResponseData.businesses;
       const vendors: Array<Vendor> = [];
-
       const vendorState: {[key: string]: boolean} = {};
 
       for (const id of placeIds) {
@@ -65,6 +64,7 @@ export const HomeBody: React.FC = () => {
           singleClickDeal: vendorResponse.single_click_deal,
           doubleClickDeal: vendorResponse.double_click_deal,
           longClickDeal: vendorResponse.long_click_deal,
+          twilioNumber: vendorResponse.twilio_number,
         }
         vendors.push(vendor);
         vendorState[id] = false;
@@ -75,7 +75,6 @@ export const HomeBody: React.FC = () => {
     setLoading(false);
   }, [setVendors,setVendorState,setLoading, userContext.user]);
 
-
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
     try {
@@ -85,7 +84,6 @@ export const HomeBody: React.FC = () => {
           double_click_deal: updatedVendor.doubleClickDeal,
           long_click_deal: updatedVendor.longClickDeal,
           onboard_deal: updatedVendor.onboardDeal,
-
         }
       });
       console.log(res);
@@ -94,7 +92,7 @@ export const HomeBody: React.FC = () => {
       toggleVendorModal(placeId, false);
 
     }
-    const updatedVendorList = []
+    const updatedVendorList = [];
     for (const index in vendors) {
       if (vendors[index].placeId === placeId) {
         updatedVendorList.push(updatedVendor)
@@ -147,33 +145,31 @@ export const HomeBody: React.FC = () => {
   }
 
   return ( 
-    <StripeProvider stripe={stripe}>
-
-    <div className={styles.root}>
-      <LoadingDialog isLoading={loading}/>
-      <Grid container spacing={3} direction="column" alignItems="center"> 
-        <Grid item xs={12}>
-          <Grid container justify="center" direction="column" spacing={3}>
-            {generateVendors(vendors)}
+    <StripeProvider stripe={stripe}>  
+      <div className={styles.root}>
+        <LoadingDialog isLoading={loading}/>
+        <Grid container spacing={3} direction="column" alignItems="center"> 
+          <Grid item xs={12}>
+            <Grid container justify="center" direction="column" spacing={3}>
+              {generateVendors(vendors)}
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-      <Button 
-        variant="contained"   
-        className={styles.button} 
-        onClick={toggleModal}>
-          Add Vendor
-      </Button>
-      <Elements>
-        <AddVendorModal
-          open={open}
-          handleClose={handleClose}
-          addVendor={addVendors}
-          isLoading={loading}
-        />
-      </Elements>
-    </div>
+        <Button 
+          variant="contained"   
+          className={styles.button} 
+          onClick={toggleModal}>
+            Add Vendor
+        </Button>
+        <Elements>
+          <AddVendorModal
+            open={open}
+            handleClose={handleClose}
+            addVendor={addVendors}
+            isLoading={loading}
+          />
+        </Elements>
+      </div>
     </StripeProvider>
-
   );
 }

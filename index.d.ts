@@ -9,10 +9,17 @@ declare interface IUserContext {
   handleLogin: (email: string, password: string) => void;
   handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
-  confirmSignUp: (username: string, code: number) => Promise<void>;
+  confirmSignUp: (username: string, code: string) => Promise<any>;
   addVendor: (vendor: Vendor) => void;
 }
 
+declare interface IConfirmAccountDialog {
+  open: boolean;
+  redirectToLogin: () => void;
+  confirmSignup: (username: string, code: string) => Promise<any>;
+  username: string;
+  style: string;
+}
 declare interface LoadingDialogProps {
   isLoading: boolean;
 }
@@ -21,6 +28,7 @@ declare interface UserAuth {
   user: CognitoUser | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  error: any;
 }
 
 declare interface MapCoordinates {
@@ -55,6 +63,7 @@ declare interface Vendor {
   doubleClickDeal?: string;
   subscribers?: object;
   longClickDeal?: string;
+  twilioNumber?: string;
 }
 
 declare interface VendorState {
