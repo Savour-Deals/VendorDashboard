@@ -51,6 +51,7 @@ function reducer(state: IUserContext, action: any) {
 export const UserContextProvider = (props: any) => {
 
   const [state, dispatch] = useReducer(reducer, INITIAL_AUTH);
+
   async function handleSignUp(signupData: SignUpData): Promise<UserAuth> {
     try {
       const { email, password, firstName, lastName, phoneNumber } = signupData;
@@ -123,7 +124,7 @@ export const UserContextProvider = (props: any) => {
     try {
       await Auth.signOut();
       dispatch({
-        type: "logoutUser",
+        type: "LOGOUT_USER",
         payload: {
           isLoading: false,
         }
