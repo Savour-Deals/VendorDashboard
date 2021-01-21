@@ -112,9 +112,8 @@ export const UserContextProvider = (props: any) => {
       const user = await Auth.currentAuthenticatedUser();
       payload["user"] = user;
       payload["isAuthenticated"] = true;
-      console.log(user);
     } catch (error) {
-      console.log(`No Currently authenticated user`);
+      alert(`No Currently authenticated user`);
     }
   
     return payload;
