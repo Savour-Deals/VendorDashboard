@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "vendordashboardee9393e1_identitypool_ee9393e1",
+    "identityPoolName": "vendordashboard7276d438_identitypool_7276d438",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "vendoree9393e1",
-    "userPoolName": "vendordashboardee9393e1_userpool_ee9393e1",
+    "resourceNameTruncated": "vendor7276d438",
+    "userPoolName": "vendordashboard7276d438_userpool_7276d438",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,9 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "vendoree9393e1_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "vendor7276d438_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "resourceName": "vendordashboardee9393e1",
+    "sharedId": "7276d438",
+    "resourceName": "vendordashboard7276d438",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -49,5 +50,7 @@
         "email"
     ],
     "userPoolGroupList": [],
+    "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
     "dependsOn": []
 }
