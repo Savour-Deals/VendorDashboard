@@ -1,6 +1,6 @@
 {
   "auth": {
-    "vendordashboard7276d438": {
+    "vendordashboard972ec46c": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

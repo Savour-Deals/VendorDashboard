@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "vendordashboard7276d438_identitypool_7276d438",
+    "identityPoolName": "vendordashboard972ec46c_identitypool_972ec46c",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "vendor7276d438",
-    "userPoolName": "vendordashboard7276d438_userpool_7276d438",
+    "resourceNameTruncated": "vendor972ec46c",
+    "userPoolName": "vendordashboard972ec46c_userpool_972ec46c",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "vendor7276d438_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "vendor972ec46c_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "7276d438",
-    "resourceName": "vendordashboard7276d438",
+    "sharedId": "972ec46c",
+    "resourceName": "vendordashboard972ec46c",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
