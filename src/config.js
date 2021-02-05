@@ -2,12 +2,12 @@ const dev = {
   cognito: {
     REGION: "us-east-1",
     USER_POOL_ID: "us-east-1_00vE68jU0",
-    APP_CLIENT_ID: "3ksbmcacv0dbadrr38v1b8tdjn",
-    IDENTITY_POOL_ID: "us-east-1:0f84b6c4-8395-4b67-83cb-2982c30368e1"
+    APP_CLIENT_ID: "1olalmrrmqjrr2c81p57pnk6s6",
+    IDENTITY_POOL_ID: "us-east-1:bf7e302d-4473-4af1-9c1e-d90adb31facc"
   },
   apiGateway: {
     REGION: "us-east-1",
-    URL: "https://6s71kv10hk.execute-api.us-east-1.amazonaws.com/dev"
+    URL: "https://j4bm0f2gx1.execute-api.us-east-1.amazonaws.com/dev"
   },
   STRIPE_KEY: "pk_test_PvociWFfxr6L1cjqbkYXVhkm003Rm6oZNW"
 }
@@ -16,12 +16,12 @@ const prod = {
   cognito: {
     REGION: "us-east-1",
     USER_POOL_ID: "us-east-1_00vE68jU0",
-    APP_CLIENT_ID: "3ksbmcacv0dbadrr38v1b8tdjn",
-    IDENTITY_POOL_ID: "us-east-1:0f84b6c4-8395-4b67-83cb-2982c30368e1"
+    APP_CLIENT_ID: "1olalmrrmqjrr2c81p57pnk6s6",
+    IDENTITY_POOL_ID: "us-east-1:bf7e302d-4473-4af1-9c1e-d90adb31facc"
   },
   apiGateway: {
     REGION: "us-east-1",
-    URL: "https://6s71kv10hk.execute-api.us-east-1.amazonaws.com/dev"
+    URL: "https://j4bm0f2gx1.execute-api.us-east-1.amazonaws.com/dev"
   },
   STRIPE_KEY: "pk_test_PvociWFfxr6L1cjqbkYXVhkm003Rm6oZNW"
 }
