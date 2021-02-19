@@ -6,36 +6,41 @@ import { StripeProvider, Elements } from "react-stripe-elements";
 import config from "../../../config";
 import { API } from "aws-amplify";
 import { UserContext } from "../../../auth";
-import { LoadingDialog } from "./LoadingDialog";
 import VendorModal from "./VendorModal";
+import Alert from "@material-ui/lab/Alert/Alert";
+import { Loading } from "./Loading";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      padding: theme.spacing(1),
       textAlign: "center",
       alignItems: "center",
-      alignContent: "center"
+      alignContent: "center",
+      paddingLeft: 250,
+      [theme.breakpoints.only('sm')]: {
+        paddingLeft: theme.spacing(1),
+      },
+      padding: theme.spacing(1),
+      ...theme.mixins.toolbar
     },
-
     img: {
-      maxWidth:"15%",
-      height:"auto",
-      
-  },
-  button: {
-    backgroundColor: "#49ABAA",
-    color: "white",
-    margin: theme.spacing(2),
-  },
+        maxWidth:"15%",
+        height:"auto",
+    },
+    button: {
+      backgroundColor: "#49ABAA",
+      color: "white",
+      margin: theme.spacing(2),
+    },
   }),
 );
 
 export const HomeBody: React.FC = () => {
   const userContext: IUserContext = useContext(UserContext);
-  
+  const [error, setError] = useState<string>();
   const [open, setOpen] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
@@ -45,34 +50,38 @@ export const HomeBody: React.FC = () => {
   const loadVendors = useCallback(async () => {
     const userName = userContext.user ? userContext.user.username : "";
 
-    const getBusinessUserResponseData = await API.get(
-      "business_users",
-      "/business_users/" + userName,
-      {});
-      const placeIds: Array<string> = getBusinessUserResponseData.businesses;
-      const vendors: Array<Vendor> = [];
-      const vendorState: {[key: string]: boolean} = {};
-
-      for (const id of placeIds) {
-        const vendorResponse = await API.get("businesses", `/businesses/${id}`, {});
-        const vendor: Vendor = {
-          placeId: id,
-          vendorName: vendorResponse.business_name,
-          primaryAddress: vendorResponse.address,
-          buttonId: vendorResponse.btn_id,
-          onboardDeal: vendorResponse.onboard_deal,
-          singleClickDeal: vendorResponse.single_click_deal,
-          doubleClickDeal: vendorResponse.double_click_deal,
-          longClickDeal: vendorResponse.long_click_deal,
-          twilioNumber: vendorResponse.twilio_number,
-        }
-        vendors.push(vendor);
-        vendorState[id] = false;
-      }
-
-    setVendors(vendors);
-    setVendorState(vendorState);
-    setLoading(false);
+    API.get(
+      "business_user",
+      "/business_user/" + userName,
+    {}).then((response) => {
+      let vendorPromises = response.businesses.map((id: String) => API.get("business", `/business/${id}`, {}));
+      return Promise.all(vendorPromises);
+    }).then((responses) => {
+      responses.forEach((vendor: any) => {
+        vendors.push({
+          placeId: vendor.id,
+          vendorName: vendor.business_name,
+          primaryAddress: vendor.address,
+          buttonId: vendor.btn_id,
+          onboardDeal: vendor.onboard_deal,
+          singleClickDeal: vendor.single_click_deal,
+          doubleClickDeal: vendor.double_click_deal,
+          longClickDeal: vendor.long_click_deal,
+          twilioNumber: vendor.twilio_number,
+        });
+        vendorState[vendor.id] = false;
+      });
+  
+      setVendors(vendors);
+      setVendorState(vendorState);
+      setLoading(false);
+      setError(undefined);
+    }).catch((e) => {
+      console.log(e);
+      setLoading(false);
+      setError("Failed to load your profile");
+      setErrorOpen(true);
+    });
   }, [setVendors,setVendorState,setLoading, userContext.user]);
 
   const updateVendor = async (updatedVendor: Vendor) => {
@@ -88,9 +97,9 @@ export const HomeBody: React.FC = () => {
       });
       console.log(res);
     } catch(error) {
-      alert(`Sorry! The use could not be updated: ${error}`);
+      setError("Your profile could not be updated");
+      setErrorOpen(true);
       toggleVendorModal(placeId, false);
-
     }
     const updatedVendorList = [];
     for (const index in vendors) {
@@ -145,31 +154,48 @@ export const HomeBody: React.FC = () => {
   }
 
   return ( 
-    <StripeProvider stripe={stripe}>  
-      <div className={styles.root}>
-        <LoadingDialog isLoading={loading}/>
-        <Grid container spacing={3} direction="column" alignItems="center"> 
-          <Grid item xs={12}>
-            <Grid container justify="center" direction="column" spacing={3}>
-              {generateVendors(vendors)}
+    <div className={styles.root}>
+    <StripeProvider stripe={stripe}>
+      <>
+      
+      {loading &&
+        <Loading />
+      }
+      {!loading && 
+        <>
+        {error && 
+         
+            <Alert severity="error">
+              {error}
+            </Alert>
+        }  
+        <div className={styles.root}>
+          <Grid container spacing={3} direction="column" alignItems="center"> 
+            <Grid item xs={12}>
+              <Grid container justify="center" direction="column" spacing={3}>
+                {generateVendors(vendors)}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Button 
-          variant="contained"   
-          className={styles.button} 
-          onClick={toggleModal}>
-            Add Vendor
-        </Button>
-        <Elements>
-          <AddVendorModal
-            open={open}
-            handleClose={handleClose}
-            addVendor={addVendors}
-            isLoading={loading}
-          />
-        </Elements>
-      </div>
+          <Button 
+            variant="contained"   
+            className={styles.button} 
+            onClick={toggleModal}>
+              Add Vendor
+          </Button>
+          <Elements>
+            <AddVendorModal
+              open={open}
+              handleClose={handleClose}
+              addVendor={addVendors}
+              isLoading={loading}
+            />
+          </Elements>
+        </div>
+        </>
+      }
+      </>
     </StripeProvider>
+    </div>
   );
 }

@@ -8,25 +8,35 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import { UserContext } from "../../../auth";
 import { useHistory } from "react-router-dom";
+import { Toolbar } from "@material-ui/core";
 
+const drawerWidth = 240;
 
 const useStyles = makeStyles({
-  list: {
-    width: 250,
-  },
   fullList: {
     width: 'auto',
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  drawerContainer: {
+    overflow: 'auto',
   },
 });
 
 interface SidebarProps {
   open: boolean;
-  toggleDrawer: (event: React.MouseEvent) => void;
+  variant?: 'permanent' | 'persistent' | 'temporary';
+  onClose?: (event: React.MouseEvent) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = (props) => {
   const styles = useStyles();
-  const { open, toggleDrawer } = props;
+  const { open, onClose } = props;
   const history = useHistory();
 
   const { handleLogout } = useContext<any>(UserContext);
@@ -37,23 +47,39 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   }
   const sideList = () => (
     <div
-      className={styles.list}
       role="presentation"
-      onClick={toggleDrawer}
+      onClick={onClose}
     >
       <List>
-      <ListItem button key={"logout"} onClick={handleSignOut}>
-            <ListItemIcon><InboxIcon/></ListItemIcon>
-            <ListItemText primary={"Log Out"} />
-          </ListItem>
+        <ListItem button key={"logout"} onClick={handleSignOut}>
+          <ListItemIcon>
+            <InboxIcon/>
+          </ListItemIcon>
+          <ListItemText primary={"Log Out"} />
+        </ListItem>
       </List>
     </div>
   );
 
 
   return(
-    <Drawer open={open} onClose={toggleDrawer}>
-      {sideList()}
+    <Drawer 
+      open={open} 
+      onClose={onClose}
+      variant={props.variant}
+      className={styles.drawer}
+      classes={{
+        paper: styles.drawerPaper,
+      }}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
+    >
+      {/* Add space for header if on desktop */}
+      {props.variant === "permanent" && <Toolbar/>} 
+      <div className={styles.drawerContainer}>
+        {sideList()}
+      </div>
     </Drawer>
   );
 }

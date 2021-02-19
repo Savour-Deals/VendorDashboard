@@ -7,7 +7,7 @@ import { CreateAccount } from "./components/Account/CreateAccount";
 import { UserContextProvider, UserContext } from "./auth";
 import Amplify from 'aws-amplify';
 import config from "./config";
-import { LoadingDialog } from "./components/Home/src/LoadingDialog";
+import { Loading } from "./components/Home/src/Loading";
 import ResetAccount from "./components/Account/ResetAccount";
 
 Amplify.configure({
@@ -21,7 +21,7 @@ Amplify.configure({
   API: {
     endpoints: [
       {
-        name: "business_users",
+        name: "business_user",
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
@@ -31,7 +31,7 @@ Amplify.configure({
         region: config.apiGateway.REGION
       },
       {
-        name: "businesses",
+        name: "business",
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
@@ -52,8 +52,9 @@ const App: React.FC = () => {
     <UserContext.Consumer>
       {(auth: IUserContext) => 
             <BrowserRouter>
-            <LoadingDialog isLoading={auth.isLoading}/>
-
+            {auth.isLoading && 
+              <Loading/>
+            }
             <Switch>
                 <Route path="/login" render={() => <Login {...loginProps} />}/>
                 <Route path="/create-account" render={() => <CreateAccount/>}/>

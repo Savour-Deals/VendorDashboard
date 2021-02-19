@@ -201,8 +201,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     console.log(isProcessing, isCardComplete);
     try {
       await API.post(
-        "businesses",
-        "/businesses",
+        "business",
+        "/business",
         {
           body: {
             place_id: placeId,
@@ -229,8 +229,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       const currentUser = userContext.user;
       const userName = currentUser.username;
       await API.put(
-        "business_users",
-        "/business_users/" + userName,
+        "business_user",
+        "/business_user/" + userName,
         {
           body: {
             "businesses": placeId,
