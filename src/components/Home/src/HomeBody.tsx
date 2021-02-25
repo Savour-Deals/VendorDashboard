@@ -9,6 +9,8 @@ import { UserContext } from "../../../auth";
 import VendorModal from "./VendorModal";
 import Alert from "@material-ui/lab/Alert/Alert";
 import { Loading } from "./Loading";
+import { GetBusinessUser } from "../../../accessor/BusinessUser";
+import { GetBusiness } from "../../../accessor/Business";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,13 +50,9 @@ export const HomeBody: React.FC = () => {
   const styles = useStyles();
 
   const loadVendors = useCallback(async () => {
-    const userName = userContext.user ? userContext.user.username : "";
-
-    API.get(
-      "business_user",
-      "/business_user/" + userName,
-    {}).then((response) => {
-      let vendorPromises = response.businesses.map((id: String) => API.get("business", `/business/${id}`, {}));
+    GetBusinessUser(userContext.user.username)
+    .then((response) => {
+      let vendorPromises = response.businesses.map((id: string) => GetBusiness(id));
       return Promise.all(vendorPromises);
     }).then((responses) => {
       responses.forEach((vendor: any) => {
@@ -64,9 +62,7 @@ export const HomeBody: React.FC = () => {
           primaryAddress: vendor.address,
           buttonId: vendor.btn_id,
           onboardDeal: vendor.onboard_deal,
-          singleClickDeal: vendor.single_click_deal,
-          doubleClickDeal: vendor.double_click_deal,
-          longClickDeal: vendor.long_click_deal,
+          presetDeals: vendor.preset_deals,
           twilioNumber: vendor.twilio_number,
         });
         vendorState[vendor.id] = false;
@@ -89,9 +85,7 @@ export const HomeBody: React.FC = () => {
     try {
       const  res = await API.put("businesses", `/businesses/${placeId}`, {
         body: {
-          single_click_deal: updatedVendor.singleClickDeal,
-          double_click_deal: updatedVendor.doubleClickDeal,
-          long_click_deal: updatedVendor.longClickDeal,
+          preset_deals: updatedVendor.presetDeals,
           onboard_deal: updatedVendor.onboardDeal,
         }
       });

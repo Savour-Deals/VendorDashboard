@@ -9,6 +9,7 @@ import Amplify from 'aws-amplify';
 import config from "./config";
 import { Loading } from "./components/Home/src/Loading";
 import ResetAccount from "./components/Account/ResetAccount";
+import { PATHS } from "./accessor/paths";
 
 Amplify.configure({
   Auth: {
@@ -21,22 +22,17 @@ Amplify.configure({
   API: {
     endpoints: [
       {
-        name: "business_user",
+        name: PATHS.BUSINESS.api,
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
       {
-        name: "unclaimed_buttons",
+        name: PATHS.BUSINESS_USER.api,
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
       {
-        name: "business",
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION
-      },
-      {
-        name: "message_service",
+        name: PATHS.MESSAGE.api,
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },

@@ -1,13 +1,16 @@
+import React, { ChangeEvent, createRef, useState, useContext } from "react";
 import { Card, CardContent, CardHeader, createStyles, Grid, IconButton, Button, makeStyles, Modal, TextField, Theme } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import React, { ChangeEvent, createRef, useState, useContext } from "react";
 import { animated, useSpring } from "react-spring";
 import { SearchBox } from "./Searchbox";
 import { CardElement, injectStripe } from "react-stripe-elements";
-import { API } from "aws-amplify";
 import Loader from "react-loader-spinner";
 import Dialog from '@material-ui/core/Dialog';
+
 import { UserContext } from "../../../auth";
+import { CreateNumber } from "../../../accessor/Message";
+import { CreateBusiness } from "../../../accessor/Business";
+import { AddBusiness } from "../../../accessor/BusinessUser";
 
 interface IAddVendorModal {
   open: boolean;
@@ -128,13 +131,13 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [placeId, setPlaceId] = useState("");
   const [primaryAddress, setPrimaryAddress] = useState("");
   const [onboardDeal, setOnboardDeal] = useState("");
-  const [singleClickDeal, setSingleClickDeal] = useState("");
-  const [doubleClickDeal, setDoubleClickDeal] = useState("");
-  const [longClickDeal, setLongClickDeal] = useState("");
+  const [presetDeal1, setPresetDeal1] = useState("");
+  const [presetDeal2, setPresetDeal2] = useState("");
+  const [presetDeal3, setPresetDeal3] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [isCardComplete, setIsCardComplete] = useState(false);
   const [cardName, setCardName] = useState("");
-  const styles = useStyles();
+  const styles = useStyles("");
   const userContext: IUserContext = useContext(UserContext);
 
   const searchBoxProps = {
@@ -148,9 +151,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       placeId,
       vendorName,
       primaryAddress,
-      singleClickDeal,
-      doubleClickDeal,
-      longClickDeal,
+      presetDeals: [presetDeal1, presetDeal2, presetDeal3],
       onboardDeal,
     }
 
@@ -159,133 +160,64 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     const { token, error } = await stripe.createToken({ name: cardName });
 
     if (error) {
-      alert("Uh oh! " + error);
+      alert("There was an error processing your payment.");
       return;
     }
 
-    const cardId = token.card.id;
-    let buttons: Array<VendorButton> = [];
-    try {
-      buttons = await API.get(
-        "unclaimed_buttons",
-        "/unclaimed_buttons",
-        {}
-      )
-    } catch (unclaimedButtonError) {
-      alert("Sorry, could not retrieve an unclaimed button: " + unclaimedButtonError);
+    CreateNumber(placeId).then((number) => {
+      return CreateBusiness({
+        id: placeId,
+        businessName: vendorName,
+        address: primaryAddress,
+        presetDeals: [presetDeal1, presetDeal2, presetDeal3],
+        onboardDeal: onboardDeal,
+        stripeCustomerId: token.card.id,
+        twilioNumber: number,
+        subscriberMap: {}
+      })
+    }).then(() => {
+      // identityId I believe is equivalent to userSub 
+      // https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
+      return AddBusiness(userContext.user.username, placeId);
+    }).then((business) => {
+      setIsLoading(false);
+      addVendor(vendor);
+      handleClose();
+    }).catch((e) => {
+      console.log(e)
+      alert("An error occured while creating your account");
+      setIsLoading(false);
+      handleClose();
       return;
-    }
-
-    // CURRENTLY FOR TESTING ONLY! CHANGE FOR RELEASE
-    const buttonId = buttons[1].button_id;
-
-    const isDev = (process.env.NODE_ENV === "development");
-    let twilioNumber = "";
-    try {
-      const twilioResult: TwilioCreateResponse = await API.post(
-        "message_service",
-        "/message_service/twilio_number/" + placeId, 
-        {
-          body: {
-            place_id: placeId,
-            isDev,
-          }
-        }
-      );
-
-      twilioNumber = twilioResult.twilioNumber;
-    } catch (twilioError) {
-      alert("Sorry, an error occurred when creating a twilio number: " + twilioError);
-      return;
-    }
-    console.log(isProcessing, isCardComplete);
-    try {
-      await API.post(
-        "business",
-        "/business",
-        {
-          body: {
-            place_id: placeId,
-            btn_id: buttonId,
-            business_name: vendorName,
-            address: primaryAddress,
-            single_click_deal: singleClickDeal,
-            double_click_deal: doubleClickDeal,
-            long_click_deal: longClickDeal,
-            onboard_deal: onboardDeal,
-            stripe_customer_id: cardId,
-            twilio_number: twilioNumber,
-            subscriber_dict: {}
-          }
-        }
-      );
-    } catch (createBusinessError) {
-      alert("Sorry, an error occurred when creating the business: " + createBusinessError);
-      return;
-    }
-
-    // identityId I believe is equivalent to userSub https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
-    try {
-      const currentUser = userContext.user;
-      const userName = currentUser.username;
-      await API.put(
-        "business_user",
-        "/business_user/" + userName,
-        {
-          body: {
-            "businesses": placeId,
-          }
-        } 
-      ) 
-    } catch (updateBusinessError) {
-      alert("Uh oh! " + updateBusinessError); 
-    }
-
-    setIsLoading(false);
-    addVendor(vendor);
-    handleClose();
+    });
   }
 
   function vendorNameChange(event: ChangeEvent<HTMLInputElement>) {
-    const vendorName = event.target.value;
-
-    setVendorName(vendorName);
+    setVendorName(event.target.value);
   }
 
   function primaryAddressChange(event: ChangeEvent<HTMLInputElement>) {
-    const primaryAddress = event.target.value;
-
-    setPrimaryAddress(primaryAddress);
+    setPrimaryAddress(event.target.value);
   }
 
   function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const onboardDeal = event.target.value;
-
-    setOnboardDeal(onboardDeal);
+    setOnboardDeal(event.target.value);
   }
 
-  function doubleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const doubleClickDeal = event.target.value;
-    
-    setDoubleClickDeal(doubleClickDeal);
+  function preset1Change(event: ChangeEvent<HTMLInputElement>) {    
+    setPresetDeal1(event.target.value);
   }
 
-  function singleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const singleClickDeal = event.target.value;
-    
-    setSingleClickDeal(singleClickDeal);
+  function preset2Change(event: ChangeEvent<HTMLInputElement>) {
+    setPresetDeal2(event.target.value);
   }
 
-  function longClickDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const longClickDeal = event.target.value;
-
-    setLongClickDeal(longClickDeal);
+  function preset3Change(event: ChangeEvent<HTMLInputElement>) {
+    setPresetDeal3(event.target.value);
   }
 
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
-    const cardName = event.target.value;
-
-    setCardName(cardName);
+    setCardName(event.target.value);
   }
 
   const searchBar = createRef<HTMLInputElement>();
@@ -328,9 +260,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                           className={styles.textInput}
                           label="Business Name"
                           value={vendorName}
-                          id="vendorName"
                           onChange={vendorNameChange}
-
                         />
                       </Grid>
                       <Grid item xs={TEXT_INPUT_SIZE}>
@@ -338,9 +268,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                           className={styles.textInput}
                           label="Address"
                           value={primaryAddress}
-                          id="primaryAddress"
                           onChange={primaryAddressChange}
-
                         />
                       </Grid>
                       <Grid item xs={TEXT_INPUT_SIZE}>
@@ -348,37 +276,31 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                           className={styles.textInput}
                           label="Onboard Deal"
                           value={onboardDeal}
-                          id="primaryAddress"
                           onChange={onboardDealChange}
-
                         />
                       </Grid>
                       <Grid item xs={TEXT_INPUT_SIZE}>
                         <TextField
                           className={styles.textInput}
-                          label="Single Click Deal"
-                          value={singleClickDeal}
-                          id="primaryAddress"
-                          onChange={singleClickDealChange}
-
+                          label="Preset 3"
+                          value={presetDeal1}
+                          onChange={preset1Change}
                         />
                       </Grid>
                       <Grid item xs={TEXT_INPUT_SIZE}>
                         <TextField
                           className={styles.textInput}
-                          label="Double Click Deal"
-                          value={doubleClickDeal}
-                          id="primaryAddress"
-                          onChange={doubleClickDealChange}
+                          label="Preset 2"
+                          value={presetDeal2}
+                          onChange={preset2Change}
                         />
                       </Grid>
                       <Grid item xs={TEXT_INPUT_SIZE}>
                         <TextField
                           className={styles.textInput}
-                          label="Long Click Deal"
-                          value={longClickDeal}
-                          id="primaryAddress"
-                          onChange={longClickDealChange}
+                          label="Preset 3"
+                          value={presetDeal3}
+                          onChange={preset3Change}
                         />
                       </Grid>
                   </Grid>

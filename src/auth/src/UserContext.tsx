@@ -1,5 +1,6 @@
 import React, { createContext, useReducer } from "react";
 import { Auth, API } from "aws-amplify";
+import { PATHS } from "../../accessor/paths";
 const INITIAL_AUTH: IUserContext = {
   isAuthenticated: false,
   isLoading: true,
@@ -62,7 +63,7 @@ export const UserContextProvider = (props: any) => {
       try {
         const userName = signupResult.userSub;
 
-        await API.post("business_user", "/business_user", 
+        await API.post(PATHS.BUSINESS_USER.api, PATHS.BUSINESS_USER.CREATE, 
         { 
           body: {
             uid: userName,

@@ -50,9 +50,9 @@ const VendorModal: React.FC<IVendorModal> = props => {
   const styles = useStyles();
 
   const [onboardDeal, setOnboardDeal] = useState(vendor.onboardDeal || "");
-  const [singleClickDeal, setSingleClickDeal] = useState(vendor.singleClickDeal || "");
-  const [doubleClickDeal, setDoubleClickDeal] = useState(vendor.doubleClickDeal || "");
-  const [longClickDeal, setLongClickDeal] = useState(vendor.longClickDeal || "");
+  const [presetDeal1, setPresetDeal1] = useState(vendor.presetDeals ? vendor.presetDeals[0] : "");
+  const [presetDeal2, setPresetDeal2] = useState(vendor.presetDeals ? vendor.presetDeals[1] : "");
+  const [presetDeal3, setPresetDeal3] = useState(vendor.presetDeals ? vendor.presetDeals[2] : "");
   const [selectedDeal, setSelectedDeal] = useState(DealType.ONBOARD);
   const [loading, setLoading] = useState(false);
 
@@ -61,19 +61,19 @@ const VendorModal: React.FC<IVendorModal> = props => {
     setOnboardDeal(onboardDeal);
   }
 
-  function doubleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const doubleClickDeal = event.target.value;
-    setDoubleClickDeal(doubleClickDeal);
+  function presetDeal2Change(event: ChangeEvent<HTMLInputElement>) {
+    const presetDeal2 = event.target.value;
+    setPresetDeal2(presetDeal2);
   }
 
-  function singleClickDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const singleClickDeal = event.target.value;
-    setSingleClickDeal(singleClickDeal);
+  function presetDeal1Change(event: ChangeEvent<HTMLInputElement>) {
+    const presetDeal1 = event.target.value;
+    setPresetDeal1(presetDeal1);
   }
 
-  function longClickDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const longClickDeal = event.target.value;
-    setLongClickDeal(longClickDeal);
+  function presetDeal3Change(event: ChangeEvent<HTMLInputElement>) {
+    const presetDeal3 = event.target.value;
+    setPresetDeal3(presetDeal3);
   }
 
   const selectedDealChange = (event: ChangeEvent<{value: unknown}>) => setSelectedDeal(event.target.value as DealType);
@@ -104,13 +104,13 @@ const VendorModal: React.FC<IVendorModal> = props => {
         await createDeal("ONBOARD", onboardDeal, vendor.vendorName);
         break;
       case DealType.SINGLE_CLICK:
-        await createDeal("SINGLE_CLICK", singleClickDeal, vendor.vendorName);
+        await createDeal("SINGLE_CLICK", presetDeal1, vendor.vendorName);
         break;
       case DealType.DOUBLE_CLICK:
-        await createDeal("DOUBLE_CLICK", doubleClickDeal, vendor.vendorName);
+        await createDeal("DOUBLE_CLICK", presetDeal2, vendor.vendorName);
         break;
       case DealType.LONG_CLICK:
-        await createDeal("LONG_CLICK", longClickDeal, vendor.vendorName);
+        await createDeal("LONG_CLICK", presetDeal3, vendor.vendorName);
         break;
       default:
         throw new Error("No deal type found");
@@ -135,15 +135,11 @@ const VendorModal: React.FC<IVendorModal> = props => {
             <Grid item xs={4}>
               Onboard Deal: {vendor.onboardDeal}
             </Grid>
-            <Grid item xs={4}>
-              Single Click Deal: {vendor.singleClickDeal}
-            </Grid>
-            <Grid item xs={4}>
-              Long Click Deal: {vendor.longClickDeal}
-            </Grid>
-            <Grid item xs={4}>
-              Double-click Deal: {vendor.doubleClickDeal}
-            </Grid>
+            {vendor.presetDeals &&
+              vendor.presetDeals.map((deal, i) => <Grid item xs={4}>
+                Preset Deal {i}: {deal}
+              </Grid>)
+            }
           </Grid>
           <FormControl>
             <InputLabel id="deal-select-label">
@@ -154,9 +150,10 @@ const VendorModal: React.FC<IVendorModal> = props => {
               onChange={selectedDealChange}
             >
               <MenuItem value={DealType.ONBOARD}>Onboard Deal</MenuItem>
-              <MenuItem value={DealType.SINGLE_CLICK}>Single Click Deal</MenuItem>
-              <MenuItem value={DealType.DOUBLE_CLICK}>Double Click Deal</MenuItem>
-              <MenuItem value={DealType.LONG_CLICK}>Long Click Deal</MenuItem>
+              {vendor.presetDeals &&
+                vendor.presetDeals.map((deal, i) => 
+                  <MenuItem value={i}>Preset Deal {i}</MenuItem>)
+              }
             </Select>
             <Button 
                     variant="contained"   
@@ -192,31 +189,29 @@ const VendorModal: React.FC<IVendorModal> = props => {
                     <Grid item xs={4}>
                       <TextField 
                           label="Single-click Deal"
-                          value={singleClickDeal}
-                          onChange={singleClickDealChange}
+                          value={presetDeal1}
+                          onChange={presetDeal1Change}
                         />                    
                     </Grid>
                     <Grid item xs={4}>
                       <TextField 
                           label="Double-click Deal"
-                          value={doubleClickDeal}
-                          onChange={doubleClickDealChange}
+                          value={presetDeal2}
+                          onChange={presetDeal2Change}
                         />                    
                     </Grid>
                     <Grid item xs={4}>
                       <TextField 
                           label="Long-click Deal"
-                          value={longClickDeal}
-                          onChange={longClickDealChange}
+                          value={presetDeal3}
+                          onChange={presetDeal3Change}
                         />                    
                     </Grid>
                     <Button 
                       className={styles.button}
                       onClick={() => updateVendor({
                         ...vendor, 
-                        singleClickDeal, 
-                        doubleClickDeal,
-                        longClickDeal,
+                        presetDeals: [presetDeal1, presetDeal2, presetDeal3],
                         onboardDeal,
                       })}
                     >
