@@ -16,7 +16,7 @@ import LogoWhite from "../../assets/img/brand/Savour_White.png";
 import Background from "../../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
-import { UserContext } from "../../auth";
+import { UserContext } from "../../auth/UserContext";
 
 export const Login: React.FC<any> = (props) => {
 

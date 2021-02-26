@@ -1,14 +1,15 @@
 import React from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { Login }  from "./components/Account/Login";
+import { Login }  from "./components/account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { Home } from "./components/Home/";
-import { CreateAccount } from "./components/Account/CreateAccount";
-import { UserContextProvider, UserContext } from "./auth";
+import { Home } from "./components/home/Home";
+import { CreateAccount } from "./components/account/CreateAccount";
+import { UserContextProvider, UserContext } from "./auth/UserContext";
 import Amplify from 'aws-amplify';
 import config from "./config";
-import { LoadingDialog } from "./components/Home/src/LoadingDialog";
-import ResetAccount from "./components/Account/ResetAccount";
+import { Loading } from "./components/common/Loading";
+import ResetAccount from "./components/account/ResetAccount";
+import { PATHS } from "./accessor/paths";
 
 Amplify.configure({
   Auth: {
@@ -21,22 +22,17 @@ Amplify.configure({
   API: {
     endpoints: [
       {
-        name: "business_users",
+        name: PATHS.BUSINESS.api,
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
       {
-        name: "unclaimed_buttons",
+        name: PATHS.BUSINESS_USER.api,
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
       {
-        name: "businesses",
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION
-      },
-      {
-        name: "message_service",
+        name: PATHS.MESSAGE.api,
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
@@ -52,8 +48,9 @@ const App: React.FC = () => {
     <UserContext.Consumer>
       {(auth: IUserContext) => 
             <BrowserRouter>
-            <LoadingDialog isLoading={auth.isLoading}/>
-
+            {auth.isLoading && 
+              <Loading/>
+            }
             <Switch>
                 <Route path="/login" render={() => <Login {...loginProps} />}/>
                 <Route path="/create-account" render={() => <CreateAccount/>}/>
