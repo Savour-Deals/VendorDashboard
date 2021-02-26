@@ -1,16 +1,20 @@
+import React, { useState, useEffect, useContext, useCallback } from "react";
+
+import Alert from "@material-ui/lab/Alert/Alert";
 import { Button, Grid} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useState, useEffect, useContext, useCallback } from "react";
-import  AddVendorModal  from "./AddVendorModal";
+
 import { StripeProvider, Elements } from "react-stripe-elements";
-import config from "../../../config";
 import { API } from "aws-amplify";
-import { UserContext } from "../../../auth";
+
+import { Loading } from "../common/Loading";
 import VendorModal from "./VendorModal";
-import Alert from "@material-ui/lab/Alert/Alert";
-import { Loading } from "./Loading";
-import { GetBusinessUser } from "../../../accessor/BusinessUser";
-import { GetBusiness } from "../../../accessor/Business";
+import AddVendorModal from "./addVendor/AddVendorModal";
+
+import config from "../../config";
+import { UserContext } from "../../auth/UserContext";
+import { GetBusinessUser } from "../../accessor/BusinessUser";
+import { GetBusiness } from "../../accessor/Business";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +46,6 @@ export const HomeBody: React.FC = () => {
   const userContext: IUserContext = useContext(UserContext);
   const [error, setError] = useState<string>();
   const [open, setOpen] = useState(false);
-  const [errorOpen, setErrorOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
@@ -76,9 +79,8 @@ export const HomeBody: React.FC = () => {
       console.log(e);
       setLoading(false);
       setError("Failed to load your profile");
-      setErrorOpen(true);
     });
-  }, [setVendors,setVendorState,setLoading, userContext.user]);
+  }, [vendors, vendorState, setLoading, userContext.user]);
 
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
@@ -92,7 +94,6 @@ export const HomeBody: React.FC = () => {
       console.log(res);
     } catch(error) {
       setError("Your profile could not be updated");
-      setErrorOpen(true);
       toggleVendorModal(placeId, false);
     }
     const updatedVendorList = [];
@@ -158,10 +159,9 @@ export const HomeBody: React.FC = () => {
       {!loading && 
         <>
         {error && 
-         
-            <Alert severity="error">
-              {error}
-            </Alert>
+          <Alert severity="error">
+            {error}
+          </Alert>
         }  
         <div className={styles.root}>
           <Grid container spacing={3} direction="column" alignItems="center"> 

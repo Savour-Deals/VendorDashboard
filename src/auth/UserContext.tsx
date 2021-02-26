@@ -1,6 +1,7 @@
 import React, { createContext, useReducer } from "react";
 import { Auth, API } from "aws-amplify";
-import { PATHS } from "../../accessor/paths";
+import { PATHS } from "../accessor/paths";
+
 const INITIAL_AUTH: IUserContext = {
   isAuthenticated: false,
   isLoading: true,

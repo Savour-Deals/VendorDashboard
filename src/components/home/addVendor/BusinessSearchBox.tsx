@@ -1,13 +1,16 @@
+import React, { ChangeEvent, useMemo, useEffect } from "react";
+
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import AutoComplete from '@material-ui/lab/Autocomplete';
-import parse from 'autosuggest-highlight/parse';
-import throttle from 'lodash/throttle';
-import React, { ChangeEvent, useMemo, useEffect } from "react";
 import CloseIcon from "@material-ui/icons/Close";
+
+import throttle from 'lodash/throttle';
+import parse from 'autosuggest-highlight/parse';
+
 
 interface ISearchBox {
   addPlace?: Function;
@@ -22,12 +25,10 @@ interface PlaceType {
   structured_formatting: {
     main_text: string;
     secondary_text: string;
-    main_text_matched_substrings: [
-      {
-        offset: number;
-        length: number;
-      }
-    ];
+    main_text_matched_substrings: {
+      offset: number;
+      length: number;
+    }[],
   };
 }
 
@@ -43,7 +44,6 @@ function loadScript(src: string, position: HTMLElement | null, id: string) {
   position.appendChild(script);
 }
 
-
 const autocompleteService = { current: null };
 
 const useStyles = makeStyles(theme => ({
@@ -56,7 +56,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export const SearchBox: React.FC<ISearchBox> = props => {
+export const BusinessSearchBox: React.FC<ISearchBox> = props => {
   const classes = useStyles();
   const loaded = React.useRef(false);
 
@@ -67,7 +67,6 @@ export const SearchBox: React.FC<ISearchBox> = props => {
 
   if (typeof window !== 'undefined' && !loaded.current) {
     if (!document.querySelector('#google-maps')) {
-      console.log(process.env);
       loadScript(
         'https://maps.googleapis.com/maps/api/js?key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY! +  "&libraries=places",
         document.querySelector('head'),
@@ -123,9 +122,8 @@ export const SearchBox: React.FC<ISearchBox> = props => {
     };
   }, [searchInput, fetch]);
 
-  return(
+  return (
     <AutoComplete
-      id="google-map-demo"
       style={{ width: "75%", textAlign: 'center', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
       getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
       filterOptions={x => x}

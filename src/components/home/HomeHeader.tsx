@@ -1,12 +1,14 @@
 import React from "react";
+
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { AppBar, Grid, Hidden, IconButton } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
-import LogoWhite from "../../../assets/img/brand/Savour_White.png";
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
 import { Sidebar } from "./Sidebar";
 
-const drawerWidth = 240;
+import LogoWhite from "../../assets/img/brand/Savour_White.png";
 
+const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     img: {

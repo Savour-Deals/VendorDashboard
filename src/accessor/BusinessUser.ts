@@ -11,7 +11,7 @@ export async function GetBusinessUser(businessUserId: string): Promise<any> {
 }
 
 export async function AddBusiness(businessUserId: string, businessId: string): Promise<void> {
-	return API.post(
+	return API.put(
 		PATHS.BUSINESS_USER.api,
 		PATHS.BUSINESS_USER.UPDATE.replace("{id}", businessUserId), 
 		{

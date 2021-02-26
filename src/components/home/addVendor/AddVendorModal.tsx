@@ -1,13 +1,15 @@
 import React, { ChangeEvent, createRef, useState, useContext } from "react";
+
 import { Card, CardContent, CardHeader, createStyles, Grid, IconButton, Button, makeStyles, Modal, TextField, Theme } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { animated, useSpring } from "react-spring";
-import { SearchBox } from "./Searchbox";
-import { CardElement, injectStripe } from "react-stripe-elements";
-import Loader from "react-loader-spinner";
 import Dialog from '@material-ui/core/Dialog';
 
-import { UserContext } from "../../../auth";
+import { animated, useSpring } from "react-spring";
+import { CardElement, injectStripe } from "react-stripe-elements";
+import Loader from "react-loader-spinner";
+
+import { BusinessSearchBox } from "./BusinessSearchBox";
+import { UserContext } from "../../../auth/UserContext";
 import { CreateNumber } from "../../../accessor/Message";
 import { CreateBusiness } from "../../../accessor/Business";
 import { AddBusiness } from "../../../accessor/BusinessUser";
@@ -134,8 +136,6 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const [presetDeal1, setPresetDeal1] = useState("");
   const [presetDeal2, setPresetDeal2] = useState("");
   const [presetDeal3, setPresetDeal3] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isCardComplete, setIsCardComplete] = useState(false);
   const [cardName, setCardName] = useState("");
   const styles = useStyles("");
   const userContext: IUserContext = useContext(UserContext);
@@ -155,8 +155,6 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       onboardDeal,
     }
 
-    setIsProcessing(true);
-    setIsLoading(true);
     const { token, error } = await stripe.createToken({ name: cardName });
 
     if (error) {
@@ -223,92 +221,83 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const searchBar = createRef<HTMLInputElement>();
 
   return (
-      <Modal open={open} onClose={handleClose}>
-
-        <Fade
-          in={open}
-        >
-        
-          <Card className={styles.card}>
-            <CardHeader
-              action={
-                <IconButton onClick={handleClose}>
-                  <CloseIcon/>
-                </IconButton>
-              }
-            />
-            <CardContent className={styles.cardContent} >
-              <Dialog open={isLoading}>
-                <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
-              </Dialog>
-              <form>
-                <h1>Add Business</h1>
-                <div>
-
-                  <div ref={searchBar}>
-                    <SearchBox {...searchBoxProps}/>
-                  </div>
+    <Modal open={open} onClose={handleClose}>
+      <Fade in={open}>
+        <Card className={styles.card}>
+          <CardHeader
+            action={
+              <IconButton onClick={handleClose}>
+                <CloseIcon/>
+              </IconButton>
+            }/>
+          <CardContent className={styles.cardContent} >
+            <Dialog open={isLoading}>
+              <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
+            </Dialog>
+            <form>
+              <h1>Add Business</h1>
+              <div>
+                <div ref={searchBar}>
+                  <BusinessSearchBox {...searchBoxProps}/>
                 </div>
-                <br></br>
-                <div>
-                  <h2>
-                    Vendor Info
-                  </h2>
-                  <Grid container spacing={4} className={styles.formFields}>
-                      <Grid item xs={TEXT_INPUT_SIZE}>
-                        <TextField
-                          className={styles.textInput}
-                          label="Business Name"
-                          value={vendorName}
-                          onChange={vendorNameChange}
-                        />
-                      </Grid>
-                      <Grid item xs={TEXT_INPUT_SIZE}>
-                        <TextField
-                          className={styles.textInput}
-                          label="Address"
-                          value={primaryAddress}
-                          onChange={primaryAddressChange}
-                        />
-                      </Grid>
-                      <Grid item xs={TEXT_INPUT_SIZE}>
-                        <TextField
-                          className={styles.textInput}
-                          label="Onboard Deal"
-                          value={onboardDeal}
-                          onChange={onboardDealChange}
-                        />
-                      </Grid>
-                      <Grid item xs={TEXT_INPUT_SIZE}>
-                        <TextField
-                          className={styles.textInput}
-                          label="Preset 3"
-                          value={presetDeal1}
-                          onChange={preset1Change}
-                        />
-                      </Grid>
-                      <Grid item xs={TEXT_INPUT_SIZE}>
-                        <TextField
-                          className={styles.textInput}
-                          label="Preset 2"
-                          value={presetDeal2}
-                          onChange={preset2Change}
-                        />
-                      </Grid>
-                      <Grid item xs={TEXT_INPUT_SIZE}>
-                        <TextField
-                          className={styles.textInput}
-                          label="Preset 3"
-                          value={presetDeal3}
-                          onChange={preset3Change}
-                        />
-                      </Grid>
+              </div>
+              <br></br>
+              <div>
+                <h2>
+                  Vendor Info
+                </h2>
+                <Grid container spacing={4} className={styles.formFields}>
+                  <Grid item xs={TEXT_INPUT_SIZE}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Business Name"
+                      value={vendorName}
+                      onChange={vendorNameChange}
+                    />
                   </Grid>
-                  <h2>
-                    Billing Info
-                  </h2>
-                  <Grid container spacing={4}  className={styles.formFields}>
-
+                  <Grid item xs={TEXT_INPUT_SIZE}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Address"
+                      value={primaryAddress}
+                      onChange={primaryAddressChange}
+                    />
+                  </Grid>
+                  <Grid item xs={TEXT_INPUT_SIZE}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Onboard Deal"
+                      value={onboardDeal}
+                      onChange={onboardDealChange}
+                    />
+                  </Grid>
+                  <Grid item xs={TEXT_INPUT_SIZE}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Preset 3"
+                      value={presetDeal1}
+                      onChange={preset1Change}
+                    />
+                  </Grid>
+                  <Grid item xs={TEXT_INPUT_SIZE}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Preset 2"
+                      value={presetDeal2}
+                      onChange={preset2Change}
+                    />
+                  </Grid>
+                  <Grid item xs={TEXT_INPUT_SIZE}>
+                    <TextField
+                      className={styles.textInput}
+                      label="Preset 3"
+                      value={presetDeal3}
+                      onChange={preset3Change}
+                    />
+                  </Grid>
+                </Grid>
+                <h2>Billing Info</h2>
+                <Grid container spacing={4}  className={styles.formFields}>
                   <Grid item xs={12}>
                     <TextField
                       variant="outlined"
@@ -316,32 +305,27 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       fullWidth
                       onChange={cardNameChange}
                     />
-
-                    </Grid>
-                    <Grid item xs={12}>
-
-                    <CardElement
-                      className={styles.cardField}
-                      onChange={e => setIsCardComplete(e.complete)}
-                      style={{
-                        base: { fontSize: "18px", fontFamily: '"Open Sans", sans-serif' }
-                      }}
-                    />
-                    </Grid>
-
                   </Grid>
-                  <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={createVendor}>
-                      Create Vendor
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </Fade> 
-      </Modal>
+                  <Grid item xs={12}>
+                  <CardElement
+                    className={styles.cardField}
+                    style={{
+                      base: { fontSize: "18px", fontFamily: '"Open Sans", sans-serif' }
+                    }}/>
+                </Grid>
+                </Grid>
+                <Button 
+                  variant="contained"   
+                  className={styles.button} 
+                  onClick={createVendor}>
+                  Create Vendor
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </Fade> 
+    </Modal>
   );
 }
 

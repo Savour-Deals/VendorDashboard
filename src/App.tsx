@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { Login }  from "./components/Account/Login";
+import { Login }  from "./components/account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { Home } from "./components/Home/";
-import { CreateAccount } from "./components/Account/CreateAccount";
-import { UserContextProvider, UserContext } from "./auth";
+import { Home } from "./components/home/Home";
+import { CreateAccount } from "./components/account/CreateAccount";
+import { UserContextProvider, UserContext } from "./auth/UserContext";
 import Amplify from 'aws-amplify';
 import config from "./config";
-import { Loading } from "./components/Home/src/Loading";
-import ResetAccount from "./components/Account/ResetAccount";
+import { Loading } from "./components/common/Loading";
+import ResetAccount from "./components/account/ResetAccount";
 import { PATHS } from "./accessor/paths";
 
 Amplify.configure({
