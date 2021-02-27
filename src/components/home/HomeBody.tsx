@@ -53,14 +53,16 @@ export const HomeBody: React.FC = () => {
   const styles = useStyles();
 
   const loadVendors = useCallback(async () => {
+    const loadedVendors: Array<Vendor> = [];
+    const loadedVendorState:  {[key: string]: boolean} = {};
     GetBusinessUser(userContext.user.username)
     .then((response) => {
-      let vendorPromises = response.businesses.map((id: string) => GetBusiness(id));
+      const vendorPromises = response.businesses ? response.businesses.map((id: string) => GetBusiness(id)) : [];
       return Promise.all(vendorPromises);
     }).then((responses) => {
       responses.forEach((vendor: any) => {
-        vendors.push({
-          placeId: vendor.id,
+        loadedVendors.push({
+          placeId: vendor.place_id,
           vendorName: vendor.business_name,
           primaryAddress: vendor.address,
           buttonId: vendor.btn_id,
@@ -68,11 +70,10 @@ export const HomeBody: React.FC = () => {
           presetDeals: vendor.preset_deals,
           twilioNumber: vendor.twilio_number,
         });
-        vendorState[vendor.id] = false;
+        loadedVendorState[vendor.place_id] = false;
       });
-  
-      setVendors(vendors);
-      setVendorState(vendorState);
+      setVendors(loadedVendors);
+      setVendorState(loadedVendorState);
       setLoading(false);
       setError(undefined);
     }).catch((e) => {
@@ -80,7 +81,9 @@ export const HomeBody: React.FC = () => {
       setLoading(false);
       setError("Failed to load your profile");
     });
-  }, [vendors, vendorState, setLoading, userContext.user]);
+
+
+  }, [setVendorState, setVendors, setLoading, userContext.user]);
 
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
