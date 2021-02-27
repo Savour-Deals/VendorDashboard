@@ -59,10 +59,8 @@ declare interface Vendor {
   buttonId?: string;
   vendorDescription?: string;
   onboardDeal?: string;
-  singleClickDeal?: string;
-  doubleClickDeal?: string;
+  presetDeals?: string[];
   subscribers?: object;
-  longClickDeal?: string;
   twilioNumber?: string;
 }
 
@@ -79,10 +77,7 @@ declare interface VendorState {
   subscribers?: object;
 }
 
-declare interface TwilioCreateResponse {
-  status: boolean;
-  twilioNumber: string;
-}
+
 
 declare interface SignUpData {
   email: string;

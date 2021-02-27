@@ -1,5 +1,7 @@
 import React, { createContext, useReducer } from "react";
 import { Auth, API } from "aws-amplify";
+import { PATHS } from "../accessor/paths";
+
 const INITIAL_AUTH: IUserContext = {
   isAuthenticated: false,
   isLoading: true,
@@ -62,7 +64,7 @@ export const UserContextProvider = (props: any) => {
       try {
         const userName = signupResult.userSub;
 
-        await API.post("business_users", "/business_users", 
+        await API.post(PATHS.BUSINESS_USER.api, PATHS.BUSINESS_USER.CREATE, 
         { 
           body: {
             uid: userName,
@@ -113,7 +115,8 @@ export const UserContextProvider = (props: any) => {
       payload["user"] = user;
       payload["isAuthenticated"] = true;
     } catch (error) {
-      alert(`No Currently authenticated user`);
+      payload["user"] = null;
+      payload["isAuthenticated"] = false;
     }
   
     return payload;
@@ -130,7 +133,7 @@ export const UserContextProvider = (props: any) => {
       });
     } catch (error) {
       console.log(error)
-      alert(`Sorry! ${error.message}`);
+      alert(`${error.message}`);
     }
   }
 
@@ -160,7 +163,7 @@ export const UserContextProvider = (props: any) => {
   
       }
     } catch (error) {
-      alert(`Sorry! ${error.message}`);
+      alert(`${error.message}`);
     }
   }
 
