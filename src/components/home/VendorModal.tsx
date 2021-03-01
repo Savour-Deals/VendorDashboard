@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 
-import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, TextField, Button, InputLabel } from "@material-ui/core";
+import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, Button, InputLabel } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl/FormControl";
 import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
@@ -9,7 +9,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 
 import { API } from "aws-amplify";
 
-import { DealType } from "../../domain/DealType";
+import { MessageInputForm } from './addVendor/MessageInputForm';
 
 interface IVendorModal {
   vendor: Vendor;
@@ -52,119 +52,80 @@ const VendorModal: React.FC<IVendorModal> = props => {
 
   const styles = useStyles();
 
-  const [onboardDeal, setOnboardDeal] = useState(vendor.onboardDeal || "");
-  const [presetDeal1, setPresetDeal1] = useState(vendor.presetDeals ? vendor.presetDeals[0] : "");
-  const [presetDeal2, setPresetDeal2] = useState(vendor.presetDeals ? vendor.presetDeals[1] : "");
-  const [presetDeal3, setPresetDeal3] = useState(vendor.presetDeals ? vendor.presetDeals[2] : "");
-  const [selectedDeal, setSelectedDeal] = useState(DealType.ONBOARD);
+
+  const [selectedMessage, setSelectedMessage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [presetMessages, setPresetMessages] = useState<string[]>(vendor.presetMessages || []);
+  const [onboardMessage, setOnboardMessage] = useState(vendor.onboardMessage || "");
 
-  function onboardDealChange(event: ChangeEvent<HTMLInputElement>) {
-    const onboardDeal = event.target.value;
-    setOnboardDeal(onboardDeal);
-  }
-
-  function presetDeal2Change(event: ChangeEvent<HTMLInputElement>) {
-    const presetDeal2 = event.target.value;
-    setPresetDeal2(presetDeal2);
-  }
-
-  function presetDeal1Change(event: ChangeEvent<HTMLInputElement>) {
-    const presetDeal1 = event.target.value;
-    setPresetDeal1(presetDeal1);
-  }
-
-  function presetDeal3Change(event: ChangeEvent<HTMLInputElement>) {
-    const presetDeal3 = event.target.value;
-    setPresetDeal3(presetDeal3);
-  }
-
-  const selectedDealChange = (event: ChangeEvent<{value: unknown}>) => setSelectedDeal(event.target.value as DealType);
+  const selectedMessageChanged = (event: ChangeEvent<{value: unknown}>) => setSelectedMessage(event.target.value as number);
   
-  async function createDeal(dealString: string, dealInfo: string, vendorName: string): Promise<void> {
+  async function sendMessage(message: string): Promise<void> {
     try {
       const response = await API.post("message_service_API","/message_service/send_number", {
         body:{
-          dealType: dealString,
-          dealInfo,
-          vendorName,
+          message: message,
+          vendorName: vendor.vendorName,
           twilioNumber: vendor.twilioNumber,
           subscribers: vendor.subscribers ? vendor.subscribers : [],
         },
       });
       console.log(response);
     } catch (e) {
-      console.log(`Whoops! Error with ${dealString} type. Here are some more details: \n ${e}`);
+      console.log(`An error occured while trying to initiate your message`);
     }
 
   }
 
-  async function runDeal(deal: DealType): Promise<void> {
-    console.log(deal);
+  async function runCampaign(index: number): Promise<void> {
+    console.log(presetMessages[index]);
     setLoading(true);
-    switch(deal) {
-      case DealType.ONBOARD:
-        await createDeal("ONBOARD", onboardDeal, vendor.vendorName);
-        break;
-      case DealType.SINGLE_CLICK:
-        await createDeal("SINGLE_CLICK", presetDeal1, vendor.vendorName);
-        break;
-      case DealType.DOUBLE_CLICK:
-        await createDeal("DOUBLE_CLICK", presetDeal2, vendor.vendorName);
-        break;
-      case DealType.LONG_CLICK:
-        await createDeal("LONG_CLICK", presetDeal3, vendor.vendorName);
-        break;
-      default:
-        throw new Error("No deal type found");
-    }
-    console.log(loading);
+    await sendMessage(presetMessages[index]);
     setLoading(false);
   }
 
   return (
-      <Card >
-        <CardHeader
-          title={vendor.vendorName}
-          subheader={vendor.primaryAddress}
-          action={
-            <IconButton onClick={() => toggleVendorModal(vendor.placeId, true)}>
-              <EditIcon/>
-            </IconButton>
-          }
-        />
-        <CardContent>
-          <Grid container spacing={1}> 
-            <Grid item xs={4}>
-              Onboard Deal: {vendor.onboardDeal}
-            </Grid>
-            {vendor.presetDeals &&
-              vendor.presetDeals.map((deal, i) => <Grid item xs={4}>
-                Preset Deal {i}: {deal}
-              </Grid>)
-            }
+    <Card >
+      <CardHeader
+        title={vendor.vendorName}
+        subheader={vendor.primaryAddress}
+        action={
+          <IconButton onClick={() => toggleVendorModal(vendor.placeId, true)}>
+            <EditIcon/>
+          </IconButton>
+        }
+      />
+      <CardContent>
+        <Grid container spacing={1}> 
+          <Grid item xs={4}>
+            Onboard message: {vendor.onboardMessage}
           </Grid>
-          <FormControl>
-            <InputLabel id="deal-select-label">
-              Select Deal
-            </InputLabel>
-            <Select
-              value={selectedDeal}
-              onChange={selectedDealChange}
-            >
-              <MenuItem value={DealType.ONBOARD}>Onboard Deal</MenuItem>
-              {vendor.presetDeals &&
-                vendor.presetDeals.map((deal, i) => 
-                  <MenuItem value={i}>Preset Deal {i}</MenuItem>)
-              }
-            </Select>
-            <Button 
-                    variant="contained"   
-                    className={styles.button} 
-                    onClick={() => runDeal(selectedDeal)}>
-                      Run Deal
-              </Button> 
-          </FormControl>
+          {vendor.presetMessages &&
+            vendor.presetMessages.map((message, i) => 
+            <Grid item xs={4}>
+              Preset message {i}: {message}
+            </Grid>)
+          }
+        </Grid>
+        <FormControl>
+          <InputLabel id="deal-select-label">
+            Select message
+          </InputLabel>
+          <Select
+            value={selectedMessage}
+            onChange={selectedMessageChanged}>
+            {vendor.presetMessages &&
+              vendor.presetMessages.map((message, i) => 
+                <MenuItem value={i}>Preset message {i}</MenuItem>)
+            }
+          </Select>
+          <Button 
+            variant="contained"   
+            className={styles.button} 
+            onClick={() => runCampaign(selectedMessage)}>
+              Run Deal
+          </Button> 
+        </FormControl>
           <Modal 
             open={vendorState[vendor.placeId]}
             onClose={() => toggleVendorModal(vendor.placeId, false)}
@@ -181,52 +142,27 @@ const VendorModal: React.FC<IVendorModal> = props => {
                     }
                   />
                 <CardContent className={styles.cardContent}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={4}>
-                      <TextField 
-                        label="Onboard Deal"
-                        value={onboardDeal}
-                        onChange={onboardDealChange}
-                      />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <TextField 
-                          label="Single-click Deal"
-                          value={presetDeal1}
-                          onChange={presetDeal1Change}
-                        />                    
-                    </Grid>
-                    <Grid item xs={4}>
-                      <TextField 
-                          label="Double-click Deal"
-                          value={presetDeal2}
-                          onChange={presetDeal2Change}
-                        />                    
-                    </Grid>
-                    <Grid item xs={4}>
-                      <TextField 
-                          label="Long-click Deal"
-                          value={presetDeal3}
-                          onChange={presetDeal3Change}
-                        />                    
-                    </Grid>
-                    <Button 
-                      className={styles.button}
-                      onClick={() => updateVendor({
-                        ...vendor, 
-                        presetDeals: [presetDeal1, presetDeal2, presetDeal3],
-                        onboardDeal,
-                      })}
-                    >
-                      Save
-                    </Button>
-                  </Grid>
+                  <MessageInputForm
+                    onUpdatePresetMessages={setPresetMessages}
+                    onUpdateOnboardingMessage={setOnboardMessage}
+                    presetMessages={presetMessages}
+                    onboardingMessage={onboardMessage}
+                  />
+                  <Button 
+                    className={styles.button}
+                    onClick={() => updateVendor({
+                      ...vendor, 
+                      presetMessages: presetMessages,
+                      onboardMessage: onboardMessage,
+                    })}>
+                    Save
+                  </Button>
                 </CardContent>
               </Card>
             </Fade>
         </Modal>          
-        </CardContent>
-      </Card>
+      </CardContent>
+    </Card>
   );
 }
 

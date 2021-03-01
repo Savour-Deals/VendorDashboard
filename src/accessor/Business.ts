@@ -5,8 +5,8 @@ declare interface CreateBusinessRequest {
 	id: string,
 	businessName: string,
 	address: string,
-	presetDeals: string[],
-	onboardDeal: string,
+	presetMessages: string[],
+	onboardMessage: string,
 	stripeCustomerId: string,
 	twilioNumber: string,
 	subscriberMap: {}
@@ -21,8 +21,8 @@ export async function CreateBusiness(request: CreateBusinessRequest): Promise<vo
 				place_id: request.id,
 				business_name: request.businessName,
 				address: request.address,
-				preset_deals: request.presetDeals,
-				onboard_deal: request.onboardDeal,
+				preset_messages: request.presetMessages,
+				onboard_message: request.onboardMessage,
 				stripe_customer_id: request.stripeCustomerId,
 				twilio_number: request.twilioNumber,
 				subscriber_map: request.subscriberMap
