@@ -58,8 +58,8 @@ declare interface Vendor {
   primaryAddress: string;
   buttonId?: string;
   vendorDescription?: string;
-  onboardDeal?: string;
-  presetDeals?: string[];
+  onboardMessage?: string;
+  presetMessages?: string[];
   subscribers?: object;
   twilioNumber?: string;
 }

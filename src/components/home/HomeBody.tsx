@@ -53,25 +53,25 @@ export const HomeBody: React.FC = () => {
   const styles = useStyles();
 
   const loadVendors = useCallback(async () => {
+    let loadedVendors: Array<Vendor> = [];
     GetBusinessUser(userContext.user.username)
     .then((response) => {
       let vendorPromises = response.businesses.map((id: string) => GetBusiness(id));
       return Promise.all(vendorPromises);
     }).then((responses) => {
       responses.forEach((vendor: any) => {
-        vendors.push({
+        loadedVendors.push({
           placeId: vendor.id,
           vendorName: vendor.business_name,
           primaryAddress: vendor.address,
           buttonId: vendor.btn_id,
-          onboardDeal: vendor.onboard_deal,
-          presetDeals: vendor.preset_deals,
+          onboardMessage: vendor.onboard_message,
+          presetMessages: vendor.preset_messages,
           twilioNumber: vendor.twilio_number,
         });
         vendorState[vendor.id] = false;
       });
-  
-      setVendors(vendors);
+      setVendors(loadedVendors);
       setVendorState(vendorState);
       setLoading(false);
       setError(undefined);
@@ -80,15 +80,15 @@ export const HomeBody: React.FC = () => {
       setLoading(false);
       setError("Failed to load your profile");
     });
-  }, [vendors, vendorState, setLoading, userContext.user]);
+  }, [vendorState, setLoading, userContext.user]);
 
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
     try {
       const  res = await API.put("businesses", `/businesses/${placeId}`, {
         body: {
-          preset_deals: updatedVendor.presetDeals,
-          onboard_deal: updatedVendor.onboardDeal,
+          preset_messages: updatedVendor.presetMessages,
+          onboard_message: updatedVendor.onboardMessage,
         }
       });
       console.log(res);
@@ -108,10 +108,6 @@ export const HomeBody: React.FC = () => {
     setVendors(updatedVendorList) 
   }
 
-  function addVendors(vendor: Vendor) {
-    setVendors([...vendors, vendor]);
-  }  
-
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
     setLoading(true);
@@ -121,6 +117,8 @@ export const HomeBody: React.FC = () => {
 
   function handleClose() {
     setOpen(false);
+    setLoading(true);
+    loadVendors();
   }
 
   function toggleVendorModal(placeId: string, isOpen: boolean) {
@@ -181,7 +179,6 @@ export const HomeBody: React.FC = () => {
             <AddVendorModal
               open={open}
               handleClose={handleClose}
-              addVendor={addVendors}
               isLoading={loading}
             />
           </Elements>
