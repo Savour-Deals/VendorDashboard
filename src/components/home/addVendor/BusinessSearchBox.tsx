@@ -124,7 +124,7 @@ export const BusinessSearchBox: React.FC<ISearchBox> = props => {
 
   return (
     <AutoComplete
-      style={{ width: "75%", textAlign: 'center', display: 'block', marginLeft: 'auto', marginRight: 'auto' }}
+      style={{ width: "100%", }}
       getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
       filterOptions={x => x}
       options={options}

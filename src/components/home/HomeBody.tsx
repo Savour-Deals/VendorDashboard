@@ -66,8 +66,8 @@ export const HomeBody: React.FC = () => {
           vendorName: vendor.business_name,
           primaryAddress: vendor.address,
           buttonId: vendor.btn_id,
-          onboardDeal: vendor.onboard_deal,
-          presetDeals: vendor.preset_deals,
+          onboardMessage: vendor.onboard_message,
+          presetMessages: vendor.preset_messages,
           twilioNumber: vendor.twilio_number,
         });
         loadedVendorState[vendor.place_id] = false;
@@ -90,8 +90,8 @@ export const HomeBody: React.FC = () => {
     try {
       const  res = await API.put("businesses", `/businesses/${placeId}`, {
         body: {
-          preset_deals: updatedVendor.presetDeals,
-          onboard_deal: updatedVendor.onboardDeal,
+          preset_messages: updatedVendor.presetMessages,
+          onboard_message: updatedVendor.onboardMessage,
         }
       });
       console.log(res);
@@ -111,10 +111,6 @@ export const HomeBody: React.FC = () => {
     setVendors(updatedVendorList) 
   }
 
-  function addVendors(vendor: Vendor) {
-    setVendors([...vendors, vendor]);
-  }  
-
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
     setLoading(true);
@@ -124,6 +120,8 @@ export const HomeBody: React.FC = () => {
 
   function handleClose() {
     setOpen(false);
+    setLoading(true);
+    loadVendors();
   }
 
   function toggleVendorModal(placeId: string, isOpen: boolean) {
@@ -184,7 +182,6 @@ export const HomeBody: React.FC = () => {
             <AddVendorModal
               open={open}
               handleClose={handleClose}
-              addVendor={addVendors}
               isLoading={loading}
             />
           </Elements>
