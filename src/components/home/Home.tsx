@@ -30,16 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function pageSwitch(page: Pages) {
-  switch(page) {
-    case Pages.HOME:
-      return <HomeBody/>;
-    case Pages.CAMPAIGNS:
-      return <Campaigns/>;
-    default: 
-      return null;
-  }
-}
 
 export const Home: React.FC = () => {
   const styles = useStyles();
@@ -48,7 +38,7 @@ export const Home: React.FC = () => {
   return (
     <animated.div className={styles.root} style={springProps}>
         <HomeHeader setCurrPage={setCurrPage} />
-        {pageSwitch(currPage)}
+        <HomeBody/>
     </animated.div>
   );
 }

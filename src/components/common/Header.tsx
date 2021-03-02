@@ -73,19 +73,19 @@ export const HomeHeader: React.FC<IHomeHeader> = props => {
       </AppBar>
 
         <Hidden smUp >
-          <Sidebar
+          <SideBar
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}
           >
-          </Sidebar>
+          </SideBar>
         </Hidden>
         <Hidden xsDown >
-          <Sidebar
+          <SideBar
             variant="permanent"
             open
           >
-          </Sidebar>
+          </SideBar>
         </Hidden>
     </>
   );
