@@ -10,6 +10,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { API } from "aws-amplify";
 
 import { MessageInputForm } from './addVendor/MessageInputForm';
+import { SendMessage } from '../../accessor/Message';
 
 interface IVendorModal {
   vendor: Vendor;
@@ -59,29 +60,18 @@ const VendorModal: React.FC<IVendorModal> = props => {
   const [onboardMessage, setOnboardMessage] = useState(vendor.onboardMessage || "");
 
   const selectedMessageChanged = (event: ChangeEvent<{value: unknown}>) => setSelectedMessage(event.target.value as number);
-  
-  async function sendMessage(message: string): Promise<void> {
-    try {
-      const response = await API.post("message_service_API","/message_service/send_number", {
-        body:{
-          message: message,
-          vendorName: vendor.vendorName,
-          twilioNumber: vendor.twilioNumber,
-          subscribers: vendor.subscribers ? vendor.subscribers : [],
-        },
-      });
-      console.log(response);
-    } catch (e) {
-      console.log(`An error occured while trying to initiate your message`);
-    }
-
-  }
 
   async function runCampaign(index: number): Promise<void> {
-    console.log(presetMessages[index]);
     setLoading(true);
-    await sendMessage(presetMessages[index]);
-    setLoading(false);
+    const message = presetMessages[index];
+    console.log(message);
+    const messageId = SendMessage(vendor.placeId, message, undefined)
+    .then((response) => response)
+    .catch(() => {
+      console.log(`An error occured while trying to initiate your message`);
+    }).finally(() => {
+      setLoading(false);
+    });
   }
 
   return (
