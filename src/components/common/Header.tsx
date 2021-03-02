@@ -40,11 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IHomeHeader {
-  setCurrPage: (page: Pages) => void;
-};
 
-export const HomeHeader: React.FC<IHomeHeader> = props => {
+
+export const Header: React.FC = () => {
 
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);

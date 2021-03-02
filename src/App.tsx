@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Login }  from "./components/Account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { Home } from "./components/Home/Home";
+import { HomeBody } from "./components/Home/HomeBody";
+import { withHeader } from "./components/common/withHeader";
 import { CreateAccount } from "./components/Account/CreateAccount";
 import { UserContextProvider, UserContext } from "./auth/UserContext";
 import Amplify from 'aws-amplify';
@@ -43,6 +44,7 @@ Amplify.configure({
 const loginProps = { isAuthenticated: false };
 
 const App: React.FC = () => {
+  const Home = withHeader(HomeBody);
   return (
   <UserContextProvider >
     <UserContext.Consumer>
