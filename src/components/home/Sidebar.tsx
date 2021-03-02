@@ -41,16 +41,25 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
   const { handleLogout } = useContext<any>(UserContext);
 
-  async function handleSignOut(event: React.MouseEvent) {
+
+
+  async function handleSignOut(_: React.MouseEvent) {
     await handleLogout();
     history.push("/login");
   }
+
   const sideList = () => (
     <div
       role="presentation"
       onClick={onClose}
     >
       <List>
+        <ListItem button key={"campaigns"} onClick={() => history.push("/campaigns")}>
+          <ListItemIcon>
+            <InboxIcon/>
+          </ListItemIcon>
+          <ListItemText primary={"Campaigns"} />
+        </ListItem>
         <ListItem button key={"logout"} onClick={handleSignOut}>
           <ListItemIcon>
             <InboxIcon/>

@@ -134,7 +134,7 @@ export const HomeBody: React.FC = () => {
 
   function generateVendors(vendors: Vendor[]): JSX.Element[] {
     return vendors.map((vendor : Vendor, index : number) => 
-    <Grid item key={vendor.placeId}>
+    <Grid item xs={3} key={vendor.placeId}>
       <VendorModal       
         key={vendor.placeId} 
         vendor={vendor} 
@@ -167,7 +167,7 @@ export const HomeBody: React.FC = () => {
         <div className={styles.root}>
           <Grid container spacing={3} direction="column" alignItems="center"> 
             <Grid item xs={12}>
-              <Grid container justify="center" direction="column" spacing={3}>
+              <Grid container justify="center" direction="row" spacing={3}>
                 {generateVendors(vendors)}
               </Grid>
             </Grid>

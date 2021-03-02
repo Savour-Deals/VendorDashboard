@@ -5,6 +5,7 @@ import { AppBar, Grid, Hidden, IconButton } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 
 import { Sidebar } from "./Sidebar";
+import { Pages } from "../../constants/Pages";
 
 import LogoWhite from "../../assets/img/brand/Savour_White.png";
 
@@ -39,7 +40,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const HomeHeader: React.FC = () => {
+interface IHomeHeader {
+  setCurrPage: (page: Pages) => void;
+};
+
+export const HomeHeader: React.FC<IHomeHeader> = props => {
 
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
