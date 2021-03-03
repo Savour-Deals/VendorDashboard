@@ -1,3 +1,4 @@
+import { Message } from "@material-ui/icons";
 import { API } from "aws-amplify";
 import { PATHS } from "./paths";
 
@@ -16,4 +17,22 @@ export async function CreateNumber(placeId: string): Promise<string> {
 			}
 		}
 	).then((response: CreateNumberResponse) => response.number);
+}
+
+declare interface SendMessageResponse {
+  messageId: string;
+}
+
+export async function SendMessage(id: string, message: string, link?: string): Promise<string> {
+	return API.post(
+		PATHS.MESSAGE.api,
+		PATHS.MESSAGE.SEND_MESSAGE, 
+		{
+			body: {
+				businessId: id,
+				message: message,
+				link: link
+			}
+		}
+	).then((response: SendMessageResponse) => response.messageId);
 }
