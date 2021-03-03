@@ -54,6 +54,12 @@ export const SideBar: React.FC<SideBarProps> = (props) => {
       onClick={onClose}
     >
       <List>
+      <ListItem button key={"home"} onClick={() => history.push("/index")}>
+          <ListItemIcon>
+            <InboxIcon/>
+          </ListItemIcon>
+          <ListItemText primary={"Home"} />
+        </ListItem>
         <ListItem button key={"campaigns"} onClick={() => history.push("/campaigns")}>
           <ListItemIcon>
             <InboxIcon/>

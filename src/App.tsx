@@ -11,7 +11,7 @@ import config from "./config";
 import { Loading } from "./components/common/Loading";
 import ResetAccount from "./components/Account/ResetAccount";
 import { PATHS } from "./accessor/paths";
-
+import { Campaigns } from "./components/Campaign"
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -45,9 +45,11 @@ const loginProps = { isAuthenticated: false };
 
 const App: React.FC = () => {
   const Home = withHeader(HomeBody);
+  const CampaignsWrapped = withHeader(Campaigns);
   return (
   <UserContextProvider >
     <UserContext.Consumer>
+
       {(auth: IUserContext) => 
             <BrowserRouter>
             {auth.isLoading && 
@@ -58,6 +60,8 @@ const App: React.FC = () => {
                 <Route path="/create-account" render={() => <CreateAccount/>}/>
                 <Route path="/reset-account" render={() => <ResetAccount/>}/>
                 <PrivateRoute path="/index" auth={auth.isAuthenticated} component={Home} />
+                <PrivateRoute path="/campaigns" auth={auth.isAuthenticated} component={CampaignsWrapped} />
+
               </Switch>
               {
                 auth.isAuthenticated

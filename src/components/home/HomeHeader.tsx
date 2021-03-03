@@ -71,7 +71,6 @@ export const HomeHeader: React.FC<IHomeHeader> = props => {
           </Grid>
         </Grid>
       </AppBar>
-
         <Hidden smUp >
           <Sidebar
             variant="temporary"
