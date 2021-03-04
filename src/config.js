@@ -23,7 +23,7 @@ const prod = {
     REGION: "us-east-1",
     URL: "https://oqecuocj0c.execute-api.us-east-1.amazonaws.com/dev"
   },
-  STRIPE_KEY: "pk_test_PvociWFfxr6L1cjqbkYXVhkm003Rm6oZNW"
+  STRIPE_KEY: "pk_live_zwDKo1RWSPCdp4N2ZWtS7nKV007mQ54KkY"
 }
 
 // Default to dev if not set
