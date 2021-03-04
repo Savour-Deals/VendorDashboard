@@ -1,4 +1,3 @@
-import { Message } from "@material-ui/icons";
 import { API } from "aws-amplify";
 import { PATHS } from "./paths";
 

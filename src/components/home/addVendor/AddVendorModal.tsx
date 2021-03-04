@@ -1,7 +1,7 @@
 import React, { 
   ChangeEvent, 
   useState, 
-  useContext 
+  useContext
 } from "react";
 
 import { 
@@ -17,7 +17,8 @@ import {
   TextField, 
   Theme, 
   List, 
-  ListItem 
+  ListItem, 
+  Typography
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Dialog from '@material-ui/core/Dialog';
@@ -25,6 +26,7 @@ import Dialog from '@material-ui/core/Dialog';
 import { animated, useSpring } from "react-spring";
 import { CardElement, injectStripe } from "react-stripe-elements";
 import Loader from "react-loader-spinner";
+import { v4 as uuidv4 } from 'uuid';
 
 import { MessageInputForm } from "./MessageInputForm";
 import { BusinessSearchBox } from "./BusinessSearchBox";
@@ -151,19 +153,12 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [vendorName, setVendorName] = useState("");
-  const [placeId, setPlaceId] = useState("");
   const [primaryAddress, setPrimaryAddress] = useState("");
   const [presetMessages, setPresetMessages] = useState<string[]>([""]); //always start with at least one blank preset
   const [onboardMessage, setOnboardMessage] = useState("");
   const [cardName, setCardName] = useState("");
   const styles = useStyles();
   const userContext: IUserContext = useContext(UserContext);
-
-  const searchBoxProps = {
-    setVendorName,
-    setPlaceId,
-    setPrimaryAddress,
-  }
   
   const createVendor = async () => {
     const { token, error } = await stripe.createToken({ name: cardName });
@@ -173,10 +168,12 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       return;
     }
 
-    CreateNumber(placeId).then((number) => {
+    const businessId = uuidv4();
+
+    CreateNumber(businessId).then((number) => {
       setIsLoading(true);
       return CreateBusiness({
-        id: placeId,
+        id: businessId,
         businessName: vendorName,
         address: primaryAddress,
         presetMessages,
@@ -188,7 +185,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     }).then(() => {
       // identityId I believe is equivalent to userSub 
       // https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
-      return AddBusiness(userContext.user.username, placeId);
+      return AddBusiness(userContext.user.username, businessId);
     }).then((business) => {
       setIsLoading(false);
       handleClose();
@@ -212,6 +209,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
     setCardName(event.target.value);
   }
+  
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -228,14 +226,26 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
               <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
             </Dialog>
             <form>
-              <h1>Add Business</h1>
+              <Typography variant="h1">
+                Add Business
+              </Typography>
               <div>
                 <Grid container spacing={4} className={styles.formFields}>
                   <List className={styles.inputList}>
-                    <ListItem><h2>Vendor Info</h2></ListItem>
-                    <ListItem>Search for a business below or manually enter your business name and address.</ListItem>
+                    <ListItem>                  
+                      <Typography variant="h2">
+                        Business Info
+                      </Typography>
+                    </ListItem>
                     <ListItem>
-                      <BusinessSearchBox {...searchBoxProps}/>
+                      <Typography variant="body1">
+                        Search for a business below or manually enter your business name and address.
+                      </Typography>
+                    </ListItem>
+                    <ListItem>
+                      <BusinessSearchBox 
+                        setPrimaryAddress={setPrimaryAddress}
+                        setVendorName={setVendorName}/>
                     </ListItem>
                     <ListItem>
                       <TextField
@@ -257,7 +267,11 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                 </Grid>
                 <Grid container spacing={4} className={styles.formFields}>
                   <List className={styles.inputList}>
-                    <ListItem><h2>Setup Messages</h2></ListItem>
+                    <ListItem>
+                      <Typography variant="h2">
+                        Setup Messages
+                      </Typography>
+                    </ListItem>
                     <MessageInputForm
                       onUpdatePresetMessages={setPresetMessages}
                       onUpdateOnboardingMessage={setOnboardMessage}
@@ -267,7 +281,29 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                 </Grid>
                 <Grid container spacing={4}  className={styles.formFields}>
                   <ListItem>
-                    <h2>Billing Info</h2>
+                    <Typography variant="h2">
+                      Billing Info
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <Typography variant="body1">
+                      Enter your business billing information. Our payment structure is simple. You pay:
+                    </Typography>
+                    
+                  </ListItem>
+                  <ListItem>
+                  <List>
+                      <ListItem>
+                        <Typography variant="body1">
+                          &#8226; $40/month subscription fee
+                        </Typography>
+                      </ListItem>
+                      <ListItem>
+                        <Typography variant="body1">
+                          &#8226; $0.01 for every message sent
+                        </Typography>
+                      </ListItem>
+                    </List>
                   </ListItem>
                   <ListItem>
                       <TextField
