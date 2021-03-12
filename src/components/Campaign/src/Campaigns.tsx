@@ -35,4 +35,4 @@ const Campaigns: React.FC = () => {
   )
 };
 
-export default Campaigns;
+export default Campaigns; 
