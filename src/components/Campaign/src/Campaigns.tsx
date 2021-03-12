@@ -26,12 +26,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   }),
 );
-const Campaigns: React.FC = () => {
+
+interface ICampaigns {
+  loading: boolean;
+  error: string | undefined;
+  vendors: Array<Vendor>;
+  setVendors: (vendors: Array<Vendor>) => void;
+}
+const Campaigns: React.FC<ICampaigns> = props => {
+  const { error, loading, vendors } = props;
   const styles = useStyles();
   return (
-    <div className={styles.root}>
+    <>
+      <div className={styles.root}>
 
-    </div>
+      </div>
+    </>
   )
 };
 

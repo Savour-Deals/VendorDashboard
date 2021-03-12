@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Login }  from "./components/Account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
@@ -43,17 +43,27 @@ Amplify.configure({
   }
 });
 
+interface IApp {
+  userContext: IUserContext;
+}
+
 const loginProps = { isAuthenticated: false };
 
-const App: React.FC = () => {
-  const userContext: IUserContext = useContext(UserContext);
+const App: React.FC<IApp> = props => {
+
+  const { userContext } = props;
+
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
-  const [stripe, setStripe] = useState(null);
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
+
   const loadVendors = useCallback(async () => {
 
-    const { loadedVendors, loadedVendorState, error } = await GetBusinessUser(userContext.user.username);
+    console.log(userContext);
+
+    if (!userContext.user) return;
+
+    const { loadedVendors, error } = await GetBusinessUser(userContext.user.username);
 
     if (!error) {
       setVendors(loadedVendors);
@@ -66,34 +76,40 @@ const App: React.FC = () => {
 
   }, [setVendors, setLoading, userContext.user]);
 
+
+  useEffect(() => {
+    loadVendors();
+  }, [loadVendors]);
+
   const Home = withHeader(HomeBody, {});
-  const CampaignsWrapped = withHeader(Campaigns, {});
+  const CampaignsWrapped = withHeader(Campaigns, {
+    error,
+    loading,
+    vendors,
+    setVendors,
+  });
+
   return (
-  <UserContextProvider >
-    <UserContext.Consumer>
+      <>
+        <BrowserRouter>
+        {userContext.isLoading && 
+          <Loading/>
+        }
+        <Switch>
+            <Route path="/login" render={() => <Login {...loginProps} />}/>
+            <Route path="/create-account" render={() => <CreateAccount/>}/>
+            <Route path="/reset-account" render={() => <ResetAccount/>}/>
+            <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={Home} />
+            <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={CampaignsWrapped} />
 
-      {(auth: IUserContext) => 
-            <BrowserRouter>
-            {auth.isLoading && 
-              <Loading/>
-            }
-            <Switch>
-                <Route path="/login" render={() => <Login {...loginProps} />}/>
-                <Route path="/create-account" render={() => <CreateAccount/>}/>
-                <Route path="/reset-account" render={() => <ResetAccount/>}/>
-                <PrivateRoute path="/index" auth={auth.isAuthenticated} component={Home} />
-                <PrivateRoute path="/campaigns" auth={auth.isAuthenticated} component={CampaignsWrapped} />
-
-              </Switch>
-              {
-                auth.isAuthenticated
-                ? <Redirect to="/index" />
-                : <Redirect to="/login" />
-              }
-            </BrowserRouter>
-      }
-      </UserContext.Consumer>
-    </UserContextProvider>
+          </Switch>
+          {
+            userContext.isAuthenticated
+            ? <Redirect to="/index" />
+            : <Redirect to="/login" />
+          }
+        </BrowserRouter>
+    </>
   );
 }
 
