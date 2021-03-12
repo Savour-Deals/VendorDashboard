@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Login }  from "./components/Account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
@@ -12,6 +12,8 @@ import { Loading } from "./components/common/Loading";
 import ResetAccount from "./components/Account/ResetAccount";
 import { PATHS } from "./accessor/paths";
 import { Campaigns } from "./components/Campaign"
+import { useCallback } from "react";
+import { GetBusinessUser } from "./accessor/BusinessUser";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -44,6 +46,26 @@ Amplify.configure({
 const loginProps = { isAuthenticated: false };
 
 const App: React.FC = () => {
+  const userContext: IUserContext = useContext(UserContext);
+  const [error, setError] = useState<string>();
+  const [loading, setLoading] = useState(false);
+  const [stripe, setStripe] = useState(null);
+  const [vendors, setVendors] = useState<Array<Vendor>>([]);
+  const loadVendors = useCallback(async () => {
+
+    const { loadedVendors, loadedVendorState, error } = await GetBusinessUser(userContext.user.username);
+
+    if (!error) {
+      setVendors(loadedVendors);
+      setLoading(false);
+      setError(undefined);
+    } else {
+      setLoading(false);
+      setError("Failed to load your profile");
+    }
+
+  }, [setVendors, setLoading, userContext.user]);
+
   const Home = withHeader(HomeBody, {});
   const CampaignsWrapped = withHeader(Campaigns, {});
   return (

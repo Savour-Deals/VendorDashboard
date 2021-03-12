@@ -42,14 +42,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+interface IHomeBody {
+  loading: boolean;
+  error: string | undefined;
+  vendors: Array<Vendor>;
+  setVendors: (vendors: Array<Vendor>) => void;
+}
+
 export const HomeBody: React.FC = () => {
   const userContext: IUserContext = useContext(UserContext);
   const [error, setError] = useState<string>();
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
   const [vendorState, setVendorState] = useState<{[key: string]: boolean}>({});
+  const [open, setOpen] = useState(false);
+
   const styles = useStyles();
 
   const loadVendors = useCallback(async () => {
