@@ -44,8 +44,8 @@ Amplify.configure({
 const loginProps = { isAuthenticated: false };
 
 const App: React.FC = () => {
-  const Home = withHeader(HomeBody);
-  const CampaignsWrapped = withHeader(Campaigns);
+  const Home = withHeader(HomeBody, {});
+  const CampaignsWrapped = withHeader(Campaigns, {});
   return (
   <UserContextProvider >
     <UserContext.Consumer>

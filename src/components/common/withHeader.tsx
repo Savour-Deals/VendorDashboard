@@ -26,8 +26,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export function withHeader<T> (Component: React.ComponentType<T>) {
-  const WrappedComponent: React.FC<T> = props => {
+export function withHeader<T> (Component: React.ComponentType<T>, props: T) {
+  const WrappedComponent: React.FC<T> = () => {
     const styles = useStyles();
     const springProps = useSpring({opacity: 1, from: {opacity: 0}});
     return (
