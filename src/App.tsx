@@ -5,7 +5,6 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { HomeBody } from "./components/Home/HomeBody";
 import { withHeader } from "./components/common/withHeader";
 import { CreateAccount } from "./components/Account/CreateAccount";
-import { UserContextProvider, UserContext } from "./auth/UserContext";
 import Amplify from 'aws-amplify';
 import config from "./config";
 import { Loading } from "./components/common/Loading";
@@ -13,7 +12,8 @@ import ResetAccount from "./components/Account/ResetAccount";
 import { PATHS } from "./accessor/paths";
 import { Campaigns } from "./components/Campaign"
 import { useCallback } from "react";
-import { GetBusinessUser } from "./accessor/BusinessUser";
+import { GetBusinessUser, getVendors } from "./accessor/BusinessUser";
+import { GetBusiness } from "./accessor/Business";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -55,19 +55,19 @@ const App: React.FC<IApp> = props => {
 
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
 
-  const loadVendors = useCallback(async () => {
+  console.log(userContext);
 
-    console.log(userContext);
-
-    if (!userContext.user) return;
-
-    const { loadedVendors, error } = await GetBusinessUser(userContext.user.username);
+  const loadVendors = useCallback(async (username: string) => {
+    const { response } = await GetBusinessUser(username);
+    const { loadedVendors, error } = await getVendors(username);
 
     if (!error) {
       setVendors(loadedVendors);
       setLoading(false);
+      setPhoneNumber(response.mobile_number)
       setError(undefined);
     } else {
       setLoading(false);
@@ -78,7 +78,9 @@ const App: React.FC<IApp> = props => {
 
 
   useEffect(() => {
-    loadVendors();
+    if (userContext.user) {
+      loadVendors(userContext.user.username);
+    }
   }, [loadVendors]);
 
   const Home = withHeader(HomeBody, {});
@@ -87,6 +89,7 @@ const App: React.FC<IApp> = props => {
     loading,
     vendors,
     setVendors,
+    phoneNumber,
   });
 
   return (

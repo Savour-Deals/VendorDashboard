@@ -1,5 +1,10 @@
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
+
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import Alert from "@material-ui/lab/Alert/Alert";
+
+import { Loading } from "../../common/Loading";
+import CampaignBuisnessCard from "./CampaignBusinessCard";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,14 +37,36 @@ interface ICampaigns {
   error: string | undefined;
   vendors: Array<Vendor>;
   setVendors: (vendors: Array<Vendor>) => void;
+  phoneNumber?: string;
 }
+
+
+const createBusinessCards = (vendors: Array<Vendor>) : Array<JSX.Element> => {
+  return vendors.map((vendor: Vendor): JSX.Element => (
+      <CampaignBuisnessCard
+        businessName={vendor.vendorName}
+        phoneNumber={"12345678"}
+        subscriberCount={vendor.subscribers ? Object.keys(vendor.subscribers).length : 0}
+      />
+    )
+  );
+};
+
 const Campaigns: React.FC<ICampaigns> = props => {
-  const { error, loading, vendors } = props;
+  const { error, loading, vendors, phoneNumber } = props;
   const styles = useStyles();
   return (
     <>
+          {loading &&
+        <Loading />
+      }
+      {error && 
+      <Alert severity="error">
+        {error}
+      </Alert>
+      }  
       <div className={styles.root}>
-
+        {createBusinessCards(vendors)}
       </div>
     </>
   )

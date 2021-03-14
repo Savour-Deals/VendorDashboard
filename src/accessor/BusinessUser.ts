@@ -17,6 +17,16 @@ export async function GetBusinessUser(businessUserId: string): Promise<any> {
 		error = e;
 	}
 
+
+	return { error, response };
+}
+
+export async function getVendors(businessUserId: string) {
+
+	const { response } = await GetBusinessUser(businessUserId);
+
+	let error;
+	let vendorData;
 	vendorData = response.businesses ? response.businesses.map((id: string) => GetBusiness(id)) : [];
 	const loadedVendors: Array<Vendor> = [];
 	const loadedVendorState:  {[key: string]: boolean} = {};
@@ -24,7 +34,6 @@ export async function GetBusinessUser(businessUserId: string): Promise<any> {
 	try {
 		for (const vendor of vendorData) {
 			const res = await vendor;
-			console.log(res);
 			loadedVendors.push({
 				placeId: res.place_id,
 				vendorName: res.business_name,
@@ -40,10 +49,8 @@ export async function GetBusinessUser(businessUserId: string): Promise<any> {
 		error = e;
 	}
 
-	return { loadedVendors, loadedVendorState, error };
+	return { loadedVendors, loadedVendorState, error, response };
 }
-
-
 
 export async function AddBusiness(businessUserId: string, businessId: string): Promise<void> {
 	return API.put(
