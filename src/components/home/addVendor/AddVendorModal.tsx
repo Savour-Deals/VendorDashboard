@@ -37,6 +37,7 @@ interface IAddVendorModal {
   open: boolean;
   isLoading: boolean;
   handleClose: () => void;
+  addVendor: (vendor: Vendor) => void;
   stripe?: any;
 }
 
@@ -147,7 +148,7 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
 
 const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
-  const { open, handleClose, stripe } = props;
+  const { open, handleClose, addVendor, stripe } = props;
 
   const [isLoading, setIsLoading] = useState(false);
   const [vendorName, setVendorName] = useState("");
@@ -173,8 +174,11 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       return;
     }
 
+    let twilioNumber: string = "";
+
     CreateNumber(placeId).then((number) => {
       setIsLoading(true);
+      twilioNumber = number;
       return CreateBusiness({
         id: placeId,
         businessName: vendorName,
@@ -189,9 +193,19 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       // identityId I believe is equivalent to userSub 
       // https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
       return AddBusiness(userContext.user.username, placeId);
-    }).then((business) => {
+    }).then((_) => {
+
       setIsLoading(false);
       handleClose();
+      addVendor({
+        placeId,
+        vendorName,
+        primaryAddress,
+        twilioNumber,
+        onboardMessage,
+        presetMessages,
+        subscribers: {},
+      });
     }).catch((e) => {
       console.log(e)
       alert("An error occured while creating your account");

@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const HomeBody: React.FC<IPageProps> = props => {
 
   const {loading, error, vendors, setVendors, setError, setLoading } = props;
-  console.log(props);
   const INIT_VENDOR_STATE:  {[key: string]: boolean} = {};
 
 
@@ -120,6 +119,10 @@ export const HomeBody: React.FC<IPageProps> = props => {
     setOpen(!open);
   }
 
+
+  function addVendor(vendor: Vendor) {
+    setVendors([...vendors, vendor])
+  }
   return ( 
     <div className={styles.root}>
     <StripeProvider stripe={stripe}>
@@ -154,6 +157,7 @@ export const HomeBody: React.FC<IPageProps> = props => {
               open={open}
               handleClose={handleClose}
               isLoading={loading}
+              addVendor={addVendor}
             />
           </Elements>
         </div>
