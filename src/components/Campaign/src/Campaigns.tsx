@@ -41,11 +41,11 @@ interface ICampaigns {
 }
 
 
-const createBusinessCards = (vendors: Array<Vendor>) : Array<JSX.Element> => {
+const createBusinessCards = (vendors: Array<Vendor>, phoneNumber: string) : Array<JSX.Element> => {
   return vendors.map((vendor: Vendor): JSX.Element => (
       <CampaignBuisnessCard
         businessName={vendor.vendorName}
-        phoneNumber={"12345678"}
+        phoneNumber={phoneNumber}
         subscriberCount={vendor.subscribers ? Object.keys(vendor.subscribers).length : 0}
       />
     )
@@ -66,7 +66,7 @@ const Campaigns: React.FC<ICampaigns> = props => {
       </Alert>
       }  
       <div className={styles.root}>
-        {createBusinessCards(vendors)}
+        {createBusinessCards(vendors, phoneNumber!)}
       </div>
     </>
   )
