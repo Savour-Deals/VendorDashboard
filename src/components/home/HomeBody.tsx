@@ -41,39 +41,24 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface IHomeBody {
-  loading: boolean;
-  error: string | undefined;
-  vendors: Array<Vendor>;
-  setVendors: (vendors: Array<Vendor>) => void;
-}
+export const HomeBody: React.FC<IPageProps> = props => {
 
-export const HomeBody: React.FC = () => {
-  const userContext: IUserContext = useContext(UserContext);
-  const [error, setError] = useState<string>();
-  const [loading, setLoading] = useState(false);
+  const {loading, error, vendors, setVendors, setError, setLoading } = props;
+  console.log(props);
+  const INIT_VENDOR_STATE:  {[key: string]: boolean} = {};
+
+
+  // initialize vendor modal state (everything is closed)
+  for (const vendor of vendors) {
+    INIT_VENDOR_STATE[vendor.placeId] = false;
+  }
+
   const [stripe, setStripe] = useState(null);
-  const [vendors, setVendors] = useState<Array<Vendor>>([]);
   const [vendorState, setVendorState] = useState<{[key: string]: boolean}>({});
   const [open, setOpen] = useState(false);
 
   const styles = useStyles();
 
-  const loadVendors = useCallback(async () => {
-
-    const { loadedVendors, loadedVendorState, error } = await getVendors(userContext.user.username);
-
-    if (!error) {
-      setVendors(loadedVendors);
-      setVendorState(loadedVendorState);
-      setLoading(false);
-      setError(undefined);
-    } else {
-      setLoading(false);
-      setError("Failed to load your profile");
-    }
-
-  }, [setVendorState, setVendors, setLoading, userContext.user]);
 
   const updateVendor = async (updatedVendor: Vendor) => {
     const placeId = updatedVendor.placeId;
@@ -103,15 +88,11 @@ export const HomeBody: React.FC = () => {
 
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
-    setLoading(true);
-    loadVendors();
-  }, [loadVendors]);
+  }, []);
 
 
   function handleClose() {
     setOpen(false);
-    setLoading(true);
-    loadVendors();
   }
 
   function toggleVendorModal(placeId: string, isOpen: boolean) {

@@ -75,17 +75,22 @@ const App: React.FC<IApp> = props => {
 
   useEffect(() => {
     if (userContext.user) {
+      setLoading(true);
       loadVendors(userContext.user.username);
     }
   }, [loadVendors]);
 
-  const Home = withHeader(HomeBody, {});
-  const CampaignsWrapped = withHeader(Campaigns, {
+  const pageProps =  {
     error,
     loading,
     vendors,
     setVendors,
-  });
+    setLoading,
+    setError,
+  };
+
+  const Home = withHeader(HomeBody, pageProps);
+  const CampaignsWrapped = withHeader(Campaigns, pageProps);
 
   return (
       <>

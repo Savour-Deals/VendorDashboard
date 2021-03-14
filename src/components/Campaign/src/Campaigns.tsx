@@ -32,15 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-interface ICampaigns {
-  loading: boolean;
-  error: string | undefined;
-  vendors: Array<Vendor>;
-  setVendors: (vendors: Array<Vendor>) => void;
-  phoneNumber?: string;
-}
-
-
 const createBusinessCards = (vendors: Array<Vendor>) : Array<JSX.Element> => {
   return vendors.map((vendor: Vendor): JSX.Element => (
       <CampaignBuisnessCard
@@ -52,7 +43,7 @@ const createBusinessCards = (vendors: Array<Vendor>) : Array<JSX.Element> => {
   );
 };
 
-const Campaigns: React.FC<ICampaigns> = props => {
+const Campaigns: React.FC<IPageProps> = props => {
   const { error, loading, vendors } = props;
   const styles = useStyles();
   return (

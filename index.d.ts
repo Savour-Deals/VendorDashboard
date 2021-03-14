@@ -13,6 +13,15 @@ declare interface IUserContext {
   addVendor: (vendor: Vendor) => void;
 }
 
+declare interface IPageProps {
+  loading: boolean;
+  error: string | undefined;
+  vendors: Array<Vendor>;
+  setVendors: (vendors: Array<Vendor>) => void;
+  setError: (error: string) => void;
+  setLoading: (loading: boolean) => void;
+}
+
 declare interface IConfirmAccountDialog {
   open: boolean;
   redirectToLogin: () => void;
