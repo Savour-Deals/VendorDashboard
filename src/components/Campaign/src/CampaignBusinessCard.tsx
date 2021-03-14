@@ -39,10 +39,10 @@ const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
       />
       <CardContent>
         <Typography className={styles.title} color="textSecondary" gutterBottom>
-            {phoneNumber}
+            Phone #: {phoneNumber}
           </Typography>
           <Typography className={styles.title} color="textSecondary" gutterBottom>
-            {subscriberCount}
+            Number of Subscribers: {subscriberCount}
           </Typography>
       </CardContent>
       

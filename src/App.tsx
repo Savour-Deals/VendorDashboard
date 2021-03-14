@@ -12,8 +12,7 @@ import ResetAccount from "./components/Account/ResetAccount";
 import { PATHS } from "./accessor/paths";
 import { Campaigns } from "./components/Campaign"
 import { useCallback } from "react";
-import { GetBusinessUser, getVendors } from "./accessor/BusinessUser";
-import { GetBusiness } from "./accessor/Business";
+import { getVendors } from "./accessor/BusinessUser";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -55,19 +54,16 @@ const App: React.FC<IApp> = props => {
 
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [vendors, setVendors] = useState<Array<Vendor>>([]);
 
   console.log(userContext);
 
   const loadVendors = useCallback(async (username: string) => {
-    const { response } = await GetBusinessUser(username);
     const { loadedVendors, error } = await getVendors(username);
 
     if (!error) {
       setVendors(loadedVendors);
       setLoading(false);
-      setPhoneNumber(response.mobile_number)
       setError(undefined);
     } else {
       setLoading(false);
@@ -89,7 +85,6 @@ const App: React.FC<IApp> = props => {
     loading,
     vendors,
     setVendors,
-    phoneNumber,
   });
 
   return (

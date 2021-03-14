@@ -13,8 +13,7 @@ import AddVendorModal from "./addVendor/AddVendorModal";
 
 import config from "../../config";
 import { UserContext } from "../../auth/UserContext";
-import { GetBusinessUser } from "../../accessor/BusinessUser";
-import { GetBusiness } from "../../accessor/Business";
+import { getVendors } from "../../accessor/BusinessUser";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,7 +61,7 @@ export const HomeBody: React.FC = () => {
 
   const loadVendors = useCallback(async () => {
 
-    const { loadedVendors, loadedVendorState, error } = await GetBusinessUser(userContext.user.username);
+    const { loadedVendors, loadedVendorState, error } = await getVendors(userContext.user.username);
 
     if (!error) {
       setVendors(loadedVendors);
@@ -159,7 +158,7 @@ export const HomeBody: React.FC = () => {
           <Grid container spacing={3} direction="column" alignItems="center"> 
             <Grid item xs={12}>
               <Grid container justify="center" direction="row" spacing={3}>
-                {generateVendors(vendors)}
+                {vendors && generateVendors(vendors)}
               </Grid>
             </Grid>
           </Grid>
