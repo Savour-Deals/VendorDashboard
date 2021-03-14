@@ -12,7 +12,7 @@ declare interface CreateBusinessRequest {
 	subscriberMap: {}
 }
 
-export async function CreateBusiness(request: CreateBusinessRequest): Promise<void> {
+export function CreateBusiness(request: CreateBusinessRequest): Promise<void> {
 	return API.post(
 		PATHS.BUSINESS.api,
 		PATHS.BUSINESS.CREATE, 
@@ -32,7 +32,7 @@ export async function CreateBusiness(request: CreateBusinessRequest): Promise<vo
 }
 
 //TODO: Change any return type to Vendor
-export async function GetBusiness(businessId: string): Promise<any> {
+export function GetBusiness(businessId: string): Promise<any> {
 	return API.get(
 		PATHS.BUSINESS.api,
 		PATHS.BUSINESS.GET.replace("{id}", businessId), 

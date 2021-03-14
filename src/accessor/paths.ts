@@ -14,5 +14,16 @@ export const PATHS = {
 		UPDATE: "/business_user/{id}",
 		GET: "/business_user/{id}",
 		CREATE: "/business_user"
+	},
+	PAYMENT: {
+		api: "payment",
+		CREATE_CUSTOMER: "payment/subscription/{id}",
+		UPDATE_CARD: "payment/card/{id}",
+		UPDATE_USAGE: "payment/usage/{id}"
+	},
+	PUSH: {
+		api: "push",
+		GET_ALL: "push/q/{businessId}",
+		GET: "push/g/{uid}"
 	}
 }
