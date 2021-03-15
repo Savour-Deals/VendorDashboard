@@ -7,7 +7,7 @@ const dev = {
   },
   apiGateway: {
     REGION: "us-east-1",
-    URL: "https://oqecuocj0c.execute-api.us-east-1.amazonaws.com/dev"
+    URL: "https://6zs6jwpnw5.execute-api.us-east-1.amazonaws.com/dev"
   },
   STRIPE_KEY: "pk_test_PvociWFfxr6L1cjqbkYXVhkm003Rm6oZNW"
 }
@@ -21,7 +21,7 @@ const prod = {
   },
   apiGateway: {
     REGION: "us-east-1",
-    URL: "https://oqecuocj0c.execute-api.us-east-1.amazonaws.com/dev"
+    URL: "https://6zs6jwpnw5.execute-api.us-east-1.amazonaws.com/dev"
   },
   STRIPE_KEY: "pk_live_zwDKo1RWSPCdp4N2ZWtS7nKV007mQ54KkY"
 }

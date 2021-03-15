@@ -4,7 +4,11 @@ import { PATHS } from "./paths";
 declare interface CreateSubscriptionRequest {
 	email: string,
 	name: string,
-	paymentMethod: string
+	paymentMethod: string,
+	subscriptions: {
+		recurring: string,
+		usage: string,
+	}
 }
 
 export function CreateSubscription(businessId: string, request: CreateSubscriptionRequest): Promise<void> {

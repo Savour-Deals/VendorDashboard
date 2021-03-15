@@ -5,7 +5,7 @@ import { PATHS } from "./paths";
 export function GetAll(businessId: string): Promise<any> {
 	return API.get(
 		PATHS.PUSH.api,
-		PATHS.PUSH.GET_ALL.replace("{businessId}", businessId), 
+		PATHS.PUSH.GET_ALL.replace("{id}", businessId), 
 		{}
 	);
 }
@@ -14,7 +14,7 @@ export function GetAll(businessId: string): Promise<any> {
 export function Get(uid: string): Promise<any> {
 	return API.get(
 		PATHS.PUSH.api,
-		PATHS.PUSH.GET.replace("{uid}", uid), 
+		PATHS.PUSH.GET.replace("{id}", uid), 
 		{}
 	);
 }

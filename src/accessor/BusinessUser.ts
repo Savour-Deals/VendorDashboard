@@ -1,8 +1,18 @@
 import { API } from "aws-amplify";
+import BusinessUser from "../model/businessUser";
 import { PATHS } from "./paths";
 
-// TODO: Change any to BusinessUser type
-export async function GetBusinessUser(businessUserId: string): Promise<any> {
+export async function CreateBusinessUser(user: BusinessUser): Promise<BusinessUser> {
+	return API.post(
+		PATHS.BUSINESS_USER.api,
+		PATHS.BUSINESS_USER.CREATE,
+		{
+			body: user
+		}
+	);
+}
+
+export async function GetBusinessUser(businessUserId: string): Promise<BusinessUser> {
 	return API.get(
 		PATHS.BUSINESS_USER.api,
 		PATHS.BUSINESS_USER.GET.replace("{id}", businessUserId),

@@ -7,16 +7,15 @@ import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Cancel";
 
-import { API } from "aws-amplify";
-
-import { MessageInputForm } from './addVendor/MessageInputForm';
 import { SendMessage } from '../../accessor/Message';
+import Business from '../../model/business';
+import { MessageInputForm } from './addBusiness/MessageInputForm';
 
-interface IVendorModal {
-  vendor: Vendor;
-  vendorState: {[key:string]: boolean};
-  toggleVendorModal: (placeId: string, isOpen: boolean) => void;
-  updateVendor: (updatedVendor: Vendor) => void;
+interface IBusinessModal {
+  business: Business;
+  businessState: {[key:string]: boolean};
+  toggleBusinessModal: (id: string, isOpen: boolean) => void;
+  updateBusiness: (updatedBusiness: Business) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -47,17 +46,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   }
 }));
 
-const VendorModal: React.FC<IVendorModal> = props => {
+const BusinessModal: React.FC<IBusinessModal> = props => {
   
-  const { vendor, vendorState, toggleVendorModal, updateVendor } = props;
+  const { business, businessState, toggleBusinessModal, updateBusiness } = props;
 
   const styles = useStyles();
 
 
   const [selectedMessage, setSelectedMessage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [presetMessages, setPresetMessages] = useState<string[]>(vendor.presetMessages || []);
-  const [onboardMessage, setOnboardMessage] = useState(vendor.onboardMessage || "");
+  const [presetMessages, setPresetMessages] = useState<string[]>(business.presetMessages || []);
+  const [onboardMessage, setOnboardMessage] = useState(business.onboardMessage || "");
 
   const selectedMessageChanged = (event: ChangeEvent<{value: unknown}>) => setSelectedMessage(event.target.value as number);
 
@@ -65,7 +64,7 @@ const VendorModal: React.FC<IVendorModal> = props => {
     setLoading(true);
     const message = presetMessages[index];
     console.log(message);
-    const messageId = SendMessage(vendor.placeId, message, undefined)
+    const messageId = SendMessage(business.id, message, undefined)
     .then((response) => response)
     .catch(() => {
       console.log(`An error occured while trying to initiate your message`);
@@ -77,10 +76,10 @@ const VendorModal: React.FC<IVendorModal> = props => {
   return (
     <Card >
       <CardHeader
-        title={vendor.vendorName}
-        subheader={vendor.primaryAddress}
+        title={business.businessName}
+        subheader={business.address}
         action={
-          <IconButton onClick={() => toggleVendorModal(vendor.placeId, true)}>
+          <IconButton onClick={() => toggleBusinessModal(business.id, true)}>
             <EditIcon/>
           </IconButton>
         }
@@ -88,10 +87,10 @@ const VendorModal: React.FC<IVendorModal> = props => {
       <CardContent>
         <Grid container spacing={1}> 
           <Grid item xs={4}>
-            Onboard message: {vendor.onboardMessage}
+            Onboard message: {business.onboardMessage}
           </Grid>
-          {vendor.presetMessages &&
-            vendor.presetMessages.map((message, i) => 
+          {business.presetMessages &&
+            business.presetMessages.map((message, i) => 
             <Grid item xs={4}>
               Preset message {i}: {message}
             </Grid>)
@@ -104,8 +103,8 @@ const VendorModal: React.FC<IVendorModal> = props => {
           <Select
             value={selectedMessage}
             onChange={selectedMessageChanged}>
-            {vendor.presetMessages &&
-              vendor.presetMessages.map((message, i) => 
+            {business.presetMessages &&
+              business.presetMessages.map((message, i) => 
                 <MenuItem value={i}>Preset message {i}</MenuItem>)
             }
           </Select>
@@ -117,16 +116,16 @@ const VendorModal: React.FC<IVendorModal> = props => {
           </Button> 
         </FormControl>
           <Modal 
-            open={vendorState[vendor.placeId]}
-            onClose={() => toggleVendorModal(vendor.placeId, false)}
+            open={businessState[business.id]}
+            onClose={() => toggleBusinessModal(business.id, false)}
           >
-            <Fade in={vendorState[vendor.placeId]}>
+            <Fade in={businessState[business.id]}>
               <Card className={styles.modal}>
                 <CardHeader
-                    title={vendor.vendorName}
-                    subheader={vendor.primaryAddress}
+                    title={business.businessName}
+                    subheader={business.address}
                     action={
-                      <CancelIcon onClick={() => toggleVendorModal(vendor.placeId, false)}>
+                      <CancelIcon onClick={() => toggleBusinessModal(business.id, false)}>
                         <EditIcon/>
                       </CancelIcon>
                     }
@@ -140,8 +139,8 @@ const VendorModal: React.FC<IVendorModal> = props => {
                   />
                   <Button 
                     className={styles.button}
-                    onClick={() => updateVendor({
-                      ...vendor, 
+                    onClick={() => updateBusiness({
+                      ...business, 
                       presetMessages: presetMessages,
                       onboardMessage: onboardMessage,
                     })}>
@@ -156,4 +155,4 @@ const VendorModal: React.FC<IVendorModal> = props => {
   );
 }
 
-export default VendorModal;
+export default BusinessModal;

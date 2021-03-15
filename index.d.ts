@@ -1,16 +1,15 @@
-
+// import { CognitoUser } from 'amazon-cognito-identity-js';
 
 declare interface IUserContext {
   isAuthenticated: boolean;
   isLoading: boolean;
-  // user: import('amazon-cognito-identity-js').CognitoUser | null;
-  user: any;
+  user?: any;
   data: any;
   handleLogin: (email: string, password: string) => void;
   handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
   confirmSignUp: (username: string, code: string) => Promise<any>;
-  addVendor: (vendor: Vendor) => void;
+  addBusiness: (business: Business) => void;
 }
 
 declare interface IConfirmAccountDialog {
@@ -48,36 +47,9 @@ declare interface Subscriber {
 
 }
 
-declare interface VendorButton {
+declare interface BusinessButton {
   button_id: string;
 }
-
-declare interface Vendor {
-  placeId: string;
-  vendorName: string;
-  primaryAddress: string;
-  buttonId?: string;
-  vendorDescription?: string;
-  onboardMessage?: string;
-  presetMessages?: string[];
-  subscribers?: object;
-  twilioNumber?: string;
-}
-
-declare interface VendorState {
-  placeId: string;
-  vendorName: string;
-  primaryAddress: string;
-  isOpen: boolean;
-  buttonId?: string;
-  vendorDescription?: string;
-  onboardDeal?: string;
-  singleClickDeal?: string;
-  doubleClickDeal?: string;
-  subscribers?: object;
-}
-
-
 
 declare interface SignUpData {
   email: string;

@@ -6,13 +6,13 @@ declare interface CreateNumberResponse {
   number: string;
 }
 
-export async function CreateNumber(placeId: string): Promise<string> {
+export async function CreateNumber(businessId: string): Promise<string> {
 	return API.post(
 		PATHS.MESSAGE.api,
 		PATHS.MESSAGE.CREATE_NUMBER, 
 		{
 			body: {
-				place_id: placeId
+				businessId: businessId
 			}
 		}
 	).then((response: CreateNumberResponse) => response.number);
