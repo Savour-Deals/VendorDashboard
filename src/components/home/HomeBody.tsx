@@ -5,16 +5,16 @@ import { Button, Grid} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { StripeProvider, Elements } from "react-stripe-elements";
-import { API } from "aws-amplify";
 
 import { Loading } from "../common/Loading";
-import VendorModal from "./VendorModal";
-import AddVendorModal from "./addVendor/AddVendorModal";
+import BusinessModal from "./BusinessModal";
+import AddBusinessModal from "./addBusiness/AddBusinessModal";
 
 import config from "../../config";
 import { UserContext } from "../../auth/UserContext";
 import { GetBusinessUser } from "../../accessor/BusinessUser";
-import { GetBusiness } from "../../accessor/Business";
+import { GetBusiness, UpdateBusiness } from "../../accessor/Business";
+import Business from "../../model/business";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,96 +48,80 @@ export const HomeBody: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [stripe, setStripe] = useState(null);
-  const [vendors, setVendors] = useState<Array<Vendor>>([]);
-  const [vendorState, setVendorState] = useState<{[key: string]: boolean}>({});
+  const [businesses, setBusinesses] = useState<Array<Business>>([]);
+  const [businessState, setBusinessState] = useState<{[key: string]: boolean}>({});
   const styles = useStyles();
 
-  const loadVendors = useCallback(async () => {
-    let loadedVendors: Array<Vendor> = [];
+  const loadBusinesses = useCallback(async () => {
     GetBusinessUser(userContext.user.username)
     .then((response) => {
-      let vendorPromises = response.businesses.map((id: string) => GetBusiness(id));
-      return Promise.all(vendorPromises);
+      let businessPromises = response.businesses.map((id: string) => GetBusiness(id));
+      return Promise.all(businessPromises);
     }).then((responses) => {
-      responses.forEach((vendor: any) => {
-        loadedVendors.push({
-          placeId: vendor.id,
-          vendorName: vendor.business_name,
-          primaryAddress: vendor.address,
-          buttonId: vendor.btn_id,
-          onboardMessage: vendor.onboard_message,
-          presetMessages: vendor.preset_messages,
-          twilioNumber: vendor.twilio_number,
-        });
-        vendorState[vendor.id] = false;
+      responses.forEach((business: any) => {
+        businessState[business.id] = false;
       });
-      setVendors(loadedVendors);
-      setVendorState(vendorState);
+      setBusinesses(responses);
+      setBusinessState(businessState);
       setLoading(false);
       setError(undefined);
     }).catch((e) => {
       console.log(e);
       setLoading(false);
-      setError("Failed to load your profile");
+      setError(`Failed to load your profile`);
     });
-  }, [vendorState, setLoading, userContext.user]);
+  }, [businessState, setLoading, userContext.user]);
 
-  const updateVendor = async (updatedVendor: Vendor) => {
-    const placeId = updatedVendor.placeId;
+  const updateBusiness = async (updatedBusiness: Business) => {
     try {
-      const  res = await API.put("businesses", `/businesses/${placeId}`, {
-        body: {
-          preset_messages: updatedVendor.presetMessages,
-          onboard_message: updatedVendor.onboardMessage,
-        }
-      });
+      const res = await UpdateBusiness(updatedBusiness);
       console.log(res);
     } catch(error) {
       setError("Your profile could not be updated");
-      toggleVendorModal(placeId, false);
+      toggleBusinessModal(updatedBusiness.id, false);
     }
-    const updatedVendorList = [];
-    for (const index in vendors) {
-      if (vendors[index].placeId === placeId) {
-        updatedVendorList.push(updatedVendor)
+    const updatedBusinessList = [];
+    for (const index in businesses) {
+      if (businesses[index].id === updatedBusiness.id) {
+        updatedBusinessList.push(updatedBusiness)
       } else {
-        updatedVendorList.push(vendors[index]);
+        updatedBusinessList.push(businesses[index]);
       }
     }
-    toggleVendorModal(placeId, false);
-    setVendors(updatedVendorList) 
+    toggleBusinessModal(updatedBusiness.id, false);
+    setBusinesses(updatedBusinessList);
   }
 
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
     setLoading(true);
-    loadVendors();
-  }, [loadVendors]);
+    loadBusinesses();
+  }, [loadBusinesses]);
 
 
   function handleClose() {
     setOpen(false);
     setLoading(true);
-    loadVendors();
+    loadBusinesses();
   }
 
-  function toggleVendorModal(placeId: string, isOpen: boolean) {
+  function toggleBusinessModal(id: string, isOpen: boolean) {
     const res = {
-      ...vendorState,
-      [placeId]: isOpen
+      ...businessState,
+      [id]: isOpen
     }
-    setVendorState(res);
+    setBusinessState(res);
   }
 
-  function generateVendors(vendors: Vendor[]): JSX.Element[] {
-    return vendors.map((vendor : Vendor, index : number) => 
-    <Grid item key={vendor.placeId}>
-      <VendorModal       
-        key={vendor.placeId} 
-        vendor={vendor} 
-        vendorState={vendorState} 
-        toggleVendorModal={toggleVendorModal} 
-        updateVendor={updateVendor} />
+  function generateBusinesses(businesses: Business[]): JSX.Element[] {
+    return businesses.map((business : Business, index : number) => 
+    <Grid item key={business.id}>
+      <BusinessModal       
+        key={business.id} 
+        business={business} 
+        businessState={businessState} 
+        toggleBusinessModal={toggleBusinessModal} 
+        updateBusiness={updateBusiness} />
       </Grid>
     );
   }
@@ -165,7 +149,7 @@ export const HomeBody: React.FC = () => {
           <Grid container spacing={3} direction="column" alignItems="center"> 
             <Grid item xs={12}>
               <Grid container justify="center" direction="column" spacing={3}>
-                {generateVendors(vendors)}
+                {generateBusinesses(businesses)}
               </Grid>
             </Grid>
           </Grid>
@@ -173,10 +157,10 @@ export const HomeBody: React.FC = () => {
             variant="contained"   
             className={styles.button} 
             onClick={toggleModal}>
-              Add Vendor
+              Add Business
           </Button>
           <Elements>
-            <AddVendorModal
+            <AddBusinessModal
               open={open}
               handleClose={handleClose}
               isLoading={loading}

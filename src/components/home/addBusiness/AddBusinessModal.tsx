@@ -25,6 +25,7 @@ import Dialog from '@material-ui/core/Dialog';
 
 import { animated, useSpring } from "react-spring";
 import { CardElement, injectStripe } from "react-stripe-elements";
+
 import Loader from "react-loader-spinner";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -34,12 +35,15 @@ import { UserContext } from "../../../auth/UserContext";
 import { CreateNumber } from "../../../accessor/Message";
 import { CreateBusiness } from "../../../accessor/Business";
 import { AddBusiness } from "../../../accessor/BusinessUser";
+import { CreateSubscription } from "../../../accessor/Payment";
+import { SubscriberInfo } from "../../../model/business";
 
 interface IAddVendorModal {
   open: boolean;
   isLoading: boolean;
   handleClose: () => void;
   stripe?: any;
+  elements?: any;
 }
 
 interface FadeProps {
@@ -149,7 +153,7 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
 
 const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
-  const { open, handleClose, stripe } = props;
+  const { open, handleClose, stripe, elements } = props;
 
   const [isLoading, setIsLoading] = useState(false);
   const [vendorName, setVendorName] = useState("");
@@ -161,7 +165,14 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   const userContext: IUserContext = useContext(UserContext);
   
   const createVendor = async () => {
-    const { token, error } = await stripe.createToken({ name: cardName });
+    const cardElement = elements.getElement('card');
+    const { paymentMethod, error } = await await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+      billing_details: {
+        email: userContext.user.email
+      },
+    });
 
     if (error) {
       alert("There was an error processing your payment.");
@@ -169,24 +180,28 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     }
 
     const businessId = uuidv4();
-
-    CreateNumber(businessId).then((number) => {
-      setIsLoading(true);
-      return CreateBusiness({
+    return Promise.all([
+      CreateBusiness({
         id: businessId,
         businessName: vendorName,
         address: primaryAddress,
         presetMessages,
         onboardMessage,
-        stripeCustomerId: token.card.id,
-        twilioNumber: number,
-        subscriberMap: {}
-      })
+        subscriberMap: new Map<string, SubscriberInfo>()
+      }),
+      CreateNumber(businessId),
+      AddBusiness(userContext.user.username, businessId),
+    ]).then(() => {
+      return CreateSubscription(businessId, {
+        email: userContext.user.attributes.email,
+        name: vendorName,
+        paymentMethod: paymentMethod.id,
+        subscriptions: {
+          recurring: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
+          usage: "price_1IV8SPFdZgF3d0XeK1qX4bW1",
+        }
+      });
     }).then(() => {
-      // identityId I believe is equivalent to userSub 
-      // https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
-      return AddBusiness(userContext.user.username, businessId);
-    }).then((business) => {
       setIsLoading(false);
       handleClose();
     }).catch((e) => {
@@ -252,6 +267,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                         className={styles.textInput}
                         label="Business Name"
                         value={vendorName}
+                        variant="outlined"
                         onChange={vendorNameChange}
                       />
                     </ListItem>
@@ -259,6 +275,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       <TextField
                         className={styles.textInput}
                         label="Address"
+                        variant="outlined"
                         value={primaryAddress}
                         onChange={primaryAddressChange}
                       />
@@ -289,7 +306,6 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     <Typography variant="body1">
                       Enter your business billing information. Our payment structure is simple. You pay:
                     </Typography>
-                    
                   </ListItem>
                   <ListItem>
                   <List>

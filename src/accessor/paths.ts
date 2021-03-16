@@ -7,7 +7,8 @@ export const PATHS = {
 	BUSINESS: {
 		api: "business",
 		CREATE: "/business",
-		GET: "/business/{id}"
+		GET: "/business/{id}",
+		UPDATE: "/business/{id}"
 	},
 	BUSINESS_USER: {
 		api: "business_user",
@@ -17,13 +18,13 @@ export const PATHS = {
 	},
 	PAYMENT: {
 		api: "payment",
-		CREATE_CUSTOMER: "payment/subscription/{id}",
-		UPDATE_CARD: "payment/card/{id}",
-		UPDATE_USAGE: "payment/usage/{id}"
+		CREATE_CUSTOMER: "/payment/subscription/{id}",
+		UPDATE_CARD: "/payment/card/{id}",
+		UPDATE_USAGE: "/payment/usage/{id}"
 	},
 	PUSH: {
 		api: "push",
-		GET_ALL: "push/q/{businessId}",
-		GET: "push/g/{uid}"
+		GET_ALL: "/push/q/{id}",
+		GET: "/push/g/{id}"
 	}
 }
