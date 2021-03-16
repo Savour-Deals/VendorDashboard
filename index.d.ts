@@ -15,11 +15,12 @@ declare interface IUserContext {
 
 declare interface IPageProps {
   loading: boolean;
-  error: string | undefined;
   vendors: Array<Vendor>;
   setVendors: (vendors: Array<Vendor>) => void;
   setError: (error: string) => void;
   setLoading: (loading: boolean) => void;
+  error?: string;
+
 }
 
 declare interface IConfirmAccountDialog {
@@ -38,27 +39,6 @@ declare interface UserAuth {
   isLoading: boolean;
   isAuthenticated: boolean;
   error: any;
-}
-
-declare interface MapCoordinates {
-  lat: number;
-  lng: number;
-}
-
-declare interface MapAPI {
-  places: {searchBox: Function};
-  event: {clearInstanceListeners: Function};
-}
-
-declare interface MapAPIEvent {
-}
-
-declare interface Subscriber {
-
-}
-
-declare interface VendorButton {
-  button_id: string;
 }
 
 declare interface Vendor {

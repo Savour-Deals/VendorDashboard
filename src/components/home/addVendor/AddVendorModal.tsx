@@ -193,7 +193,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       // identityId I believe is equivalent to userSub 
       // https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
       return AddBusiness(userContext.user.username, placeId);
-    }).then((_) => {
+    }).then(() => {
 
       setIsLoading(false);
       handleClose();
@@ -210,7 +210,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       console.log(e)
       alert("An error occured while creating your account");
       setIsLoading(false);
-      handleClose();
+      handleClose();  
       return;
     });
   }

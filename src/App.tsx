@@ -64,7 +64,7 @@ const App: React.FC<IApp> = props => {
     if (!error) {
       setVendors(loadedVendors);
       setLoading(false);
-      setError(undefined);
+      setError("");
     } else {
       setLoading(false);
       setError("Failed to load your profile");
@@ -89,9 +89,6 @@ const App: React.FC<IApp> = props => {
     setError,
   };
 
-  const Home = withHeader(HomeBody, pageProps);
-  const CampaignsWrapped = withHeader(Campaigns, pageProps);
-
   return (
       <>
         <BrowserRouter>
@@ -102,8 +99,8 @@ const App: React.FC<IApp> = props => {
             <Route path="/login" render={() => <Login {...loginProps} />}/>
             <Route path="/create-account" render={() => <CreateAccount/>}/>
             <Route path="/reset-account" render={() => <ResetAccount/>}/>
-            <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={Home} />
-            <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={CampaignsWrapped} />
+            <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
+            <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(Campaigns, pageProps)} />
 
           </Switch>
           {
