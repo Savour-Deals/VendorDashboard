@@ -6,14 +6,32 @@ declare interface CreateNumberResponse {
   number: string;
 }
 
-export async function CreateNumber(placeId: string): Promise<string> {
+export async function CreateNumber(businessId: string): Promise<string> {
 	return API.post(
 		PATHS.MESSAGE.api,
 		PATHS.MESSAGE.CREATE_NUMBER, 
 		{
 			body: {
-				place_id: placeId
+				businessId: businessId
 			}
 		}
 	).then((response: CreateNumberResponse) => response.number);
+}
+
+declare interface SendMessageResponse {
+  messageId: string;
+}
+
+export async function SendMessage(id: string, message: string, link?: string): Promise<string> {
+	return API.post(
+		PATHS.MESSAGE.api,
+		PATHS.MESSAGE.SEND_MESSAGE, 
+		{
+			body: {
+				businessId: id,
+				message: message,
+				link: link
+			}
+		}
+	).then((response: SendMessageResponse) => response.messageId);
 }

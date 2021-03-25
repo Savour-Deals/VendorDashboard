@@ -17,7 +17,6 @@ interface ISearchBox {
   placeHolder?: string;
   setVendorName: Function;
   setPrimaryAddress: Function;
-  setPlaceId: Function;
 }
 
 interface PlaceType {
@@ -63,7 +62,7 @@ export const BusinessSearchBox: React.FC<ISearchBox> = props => {
   const [searchInput, setSearchInput] = React.useState("");
   const [options, setOptions] = React.useState<PlaceType[]>([]);
 
-  const { setVendorName, setPrimaryAddress, setPlaceId } = props; 
+  const { setVendorName, setPrimaryAddress } = props; 
 
   if (typeof window !== 'undefined' && !loaded.current) {
     if (!document.querySelector('#google-maps')) {
@@ -79,7 +78,6 @@ export const BusinessSearchBox: React.FC<ISearchBox> = props => {
   const getPlaceInformation = (options: any, part?: any) => {
     const restaurantName: string = options.structured_formatting.main_text;
     const address: string = options.structured_formatting.secondary_text;
-    setPlaceId(options.place_id);
     setVendorName(restaurantName);
     setPrimaryAddress(address);
     setSearchInput(options.description);

@@ -1,7 +1,7 @@
 import React, { 
   ChangeEvent, 
   useState, 
-  useContext 
+  useContext
 } from "react";
 
 import { 
@@ -17,14 +17,17 @@ import {
   TextField, 
   Theme, 
   List, 
-  ListItem 
+  ListItem, 
+  Typography
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import Dialog from '@material-ui/core/Dialog';
 
 import { animated, useSpring } from "react-spring";
 import { CardElement, injectStripe } from "react-stripe-elements";
+
 import Loader from "react-loader-spinner";
+import { v4 as uuidv4 } from 'uuid';
 
 import { MessageInputForm } from "./MessageInputForm";
 import { BusinessSearchBox } from "./BusinessSearchBox";
@@ -32,6 +35,8 @@ import { UserContext } from "../../../auth/UserContext";
 import { CreateNumber } from "../../../accessor/Message";
 import { CreateBusiness } from "../../../accessor/Business";
 import { AddBusiness } from "../../../accessor/BusinessUser";
+import { CreateSubscription } from "../../../accessor/Payment";
+import { SubscriberInfo } from "../../../model/business";
 
 interface IAddVendorModal {
   open: boolean;
@@ -39,6 +44,7 @@ interface IAddVendorModal {
   handleClose: () => void;
   addVendor: (vendor: Vendor) => void;
   stripe?: any;
+  elements?: any;
 }
 
 interface FadeProps {
@@ -148,32 +154,37 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
 
 const AddVendorModal: React.FC<IAddVendorModal> = props => {
 
+<<<<<<< HEAD:src/components/home/addVendor/AddVendorModal.tsx
   const { open, handleClose, addVendor, stripe } = props;
+=======
+  const { open, handleClose, stripe, elements } = props;
+>>>>>>> master:src/components/home/addBusiness/AddBusinessModal.tsx
 
   const [isLoading, setIsLoading] = useState(false);
   const [vendorName, setVendorName] = useState("");
-  const [placeId, setPlaceId] = useState("");
   const [primaryAddress, setPrimaryAddress] = useState("");
   const [presetMessages, setPresetMessages] = useState<string[]>([""]); //always start with at least one blank preset
   const [onboardMessage, setOnboardMessage] = useState("");
   const [cardName, setCardName] = useState("");
   const styles = useStyles();
   const userContext: IUserContext = useContext(UserContext);
-
-  const searchBoxProps = {
-    setVendorName,
-    setPlaceId,
-    setPrimaryAddress,
-  }
   
   const createVendor = async () => {
-    const { token, error } = await stripe.createToken({ name: cardName });
+    const cardElement = elements.getElement('card');
+    const { paymentMethod, error } = await await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+      billing_details: {
+        email: userContext.user.email
+      },
+    });
 
     if (error) {
       alert("There was an error processing your payment.");
       return;
     }
 
+<<<<<<< HEAD:src/components/home/addVendor/AddVendorModal.tsx
     let twilioNumber: string = "";
 
     CreateNumber(placeId).then((number) => {
@@ -181,20 +192,39 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       twilioNumber = number;
       return CreateBusiness({
         id: placeId,
+=======
+    const businessId = uuidv4();
+    return Promise.all([
+      CreateBusiness({
+        id: businessId,
+>>>>>>> master:src/components/home/addBusiness/AddBusinessModal.tsx
         businessName: vendorName,
         address: primaryAddress,
         presetMessages,
         onboardMessage,
-        stripeCustomerId: token.card.id,
-        twilioNumber: number,
-        subscriberMap: {}
-      })
+        subscriberMap: new Map<string, SubscriberInfo>()
+      }),
+      CreateNumber(businessId),
+      AddBusiness(userContext.user.username, businessId),
+    ]).then(() => {
+      return CreateSubscription(businessId, {
+        email: userContext.user.attributes.email,
+        name: vendorName,
+        paymentMethod: paymentMethod.id,
+        subscriptions: {
+          recurring: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
+          usage: "price_1IV8SPFdZgF3d0XeK1qX4bW1",
+        }
+      });
     }).then(() => {
+<<<<<<< HEAD:src/components/home/addVendor/AddVendorModal.tsx
       // identityId I believe is equivalent to userSub 
       // https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
       return AddBusiness(userContext.user.username, placeId);
     }).then(() => {
 
+=======
+>>>>>>> master:src/components/home/addBusiness/AddBusinessModal.tsx
       setIsLoading(false);
       handleClose();
       addVendor({
@@ -226,6 +256,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
     setCardName(event.target.value);
   }
+  
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -242,20 +273,33 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
               <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
             </Dialog>
             <form>
-              <h1>Add Business</h1>
+              <Typography variant="h1">
+                Add Business
+              </Typography>
               <div>
                 <Grid container spacing={4} className={styles.formFields}>
                   <List className={styles.inputList}>
-                    <ListItem><h2>Vendor Info</h2></ListItem>
-                    <ListItem>Search for a business below or manually enter your business name and address.</ListItem>
+                    <ListItem>                  
+                      <Typography variant="h2">
+                        Business Info
+                      </Typography>
+                    </ListItem>
                     <ListItem>
-                      <BusinessSearchBox {...searchBoxProps}/>
+                      <Typography variant="body1">
+                        Search for a business below or manually enter your business name and address.
+                      </Typography>
+                    </ListItem>
+                    <ListItem>
+                      <BusinessSearchBox 
+                        setPrimaryAddress={setPrimaryAddress}
+                        setVendorName={setVendorName}/>
                     </ListItem>
                     <ListItem>
                       <TextField
                         className={styles.textInput}
                         label="Business Name"
                         value={vendorName}
+                        variant="outlined"
                         onChange={vendorNameChange}
                       />
                     </ListItem>
@@ -263,6 +307,7 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                       <TextField
                         className={styles.textInput}
                         label="Address"
+                        variant="outlined"
                         value={primaryAddress}
                         onChange={primaryAddressChange}
                       />
@@ -271,7 +316,11 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                 </Grid>
                 <Grid container spacing={4} className={styles.formFields}>
                   <List className={styles.inputList}>
-                    <ListItem><h2>Setup Messages</h2></ListItem>
+                    <ListItem>
+                      <Typography variant="h2">
+                        Setup Messages
+                      </Typography>
+                    </ListItem>
                     <MessageInputForm
                       onUpdatePresetMessages={setPresetMessages}
                       onUpdateOnboardingMessage={setOnboardMessage}
@@ -281,7 +330,28 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                 </Grid>
                 <Grid container spacing={4}  className={styles.formFields}>
                   <ListItem>
-                    <h2>Billing Info</h2>
+                    <Typography variant="h2">
+                      Billing Info
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                    <Typography variant="body1">
+                      Enter your business billing information. Our payment structure is simple. You pay:
+                    </Typography>
+                  </ListItem>
+                  <ListItem>
+                  <List>
+                      <ListItem>
+                        <Typography variant="body1">
+                          &#8226; $40/month subscription fee
+                        </Typography>
+                      </ListItem>
+                      <ListItem>
+                        <Typography variant="body1">
+                          &#8226; $0.01 for every message sent
+                        </Typography>
+                      </ListItem>
+                    </List>
                   </ListItem>
                   <ListItem>
                       <TextField

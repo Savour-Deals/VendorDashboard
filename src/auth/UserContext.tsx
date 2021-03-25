@@ -1,6 +1,7 @@
 import React, { createContext, useReducer } from "react";
-import { Auth, API } from "aws-amplify";
-import { PATHS } from "../accessor/paths";
+import { Auth } from "aws-amplify";
+import { CreateBusinessUser } from "../accessor/BusinessUser";
+import Business from "../model/business";
 
 const INITIAL_AUTH: IUserContext = {
   isAuthenticated: false,
@@ -14,7 +15,7 @@ const INITIAL_AUTH: IUserContext = {
   })),
   handleLogout: () => {},
   confirmSignUp: async (username: string, code: string) => {},
-  addVendor: (vendor: Vendor) => {}
+  addBusiness: (business: Business) => {}
 }
 
 export const UserContext = createContext<IUserContext>(INITIAL_AUTH);
@@ -63,19 +64,14 @@ export const UserContextProvider = (props: any) => {
 
       try {
         const userName = signupResult.userSub;
-
-        await API.post(PATHS.BUSINESS_USER.api, PATHS.BUSINESS_USER.CREATE, 
-        { 
-          body: {
-            uid: userName,
-            email,
-            first_name: firstName,
-            mobile_number: phoneNumber,
-            last_name: lastName,
-            businesses: []
-          }
-        }
-        );
+        await CreateBusinessUser({
+          id: userName,
+          email,
+          firstName: firstName,
+          mobileNumber: phoneNumber,
+          lastName: lastName,
+          businesses: []
+        });
       } catch (error) {
         console.log(error);
       }
@@ -163,6 +159,11 @@ export const UserContextProvider = (props: any) => {
   
       }
     } catch (error) {
+      dispatch({
+        type: "LOGIN_USER",
+        isLoading: false,
+        payload
+      }); 
       alert(`${error.message}`);
     }
   }
@@ -189,11 +190,11 @@ export const UserContextProvider = (props: any) => {
     });
   }
   
-  function addVendor(vendor: Vendor) {
-    const vendors = 'vendors' in state.data ? state.data.vendors : [];
+  function addBusiness(business: Business) {
+    const businesss = 'businesss' in state.data ? state.data.businesss : [];
     dispatch({
       type: "SET_DATA",
-      payload: {data: {...state.data,  vendors: [...vendors, vendor]}}
+      payload: {data: {...state.data,  businesss: [...businesss, business]}}
     })
   }
 
@@ -203,7 +204,7 @@ export const UserContextProvider = (props: any) => {
     handleLogout,
     handleSignUp,
     confirmSignUp,
-    addVendor
+    addBusiness
   }}>
     {props.children}
   </UserContext.Provider>

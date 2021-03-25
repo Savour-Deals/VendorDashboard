@@ -75,6 +75,7 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
         <TextField
           className={styles.textInput}
           label="Onboard Message"
+          variant="outlined"
           value={props.onboardingMessage || ""}
           onChange={onOnboardingChange}/>
       </ListItem>
@@ -97,6 +98,7 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
             placeholder="Input preset message..."
             rowsMax={3}
             value={message}
+            variant="outlined"
             onChange={(event: ChangeEvent<HTMLInputElement>) => onPresetMessageChange(event, index)}
           />
           <ListItemSecondaryAction>

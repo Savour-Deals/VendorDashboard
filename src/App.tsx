@@ -22,23 +22,13 @@ Amplify.configure({
     userPoolWebClientId: config.cognito.APP_CLIENT_ID
   },
   API: {
-    endpoints: [
-      {
-        name: PATHS.BUSINESS.api,
+    endpoints: Object.values(PATHS).map((path) => {
+      return {
+        name: path.api,
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
-      },
-      {
-        name: PATHS.BUSINESS_USER.api,
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION
-      },
-      {
-        name: PATHS.MESSAGE.api,
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION
-      },
-    ]
+      }
+    })
   }
 });
 

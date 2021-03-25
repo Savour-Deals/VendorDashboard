@@ -1,16 +1,15 @@
-
+// import { CognitoUser } from 'amazon-cognito-identity-js';
 
 declare interface IUserContext {
   isAuthenticated: boolean;
   isLoading: boolean;
-  // user: import('amazon-cognito-identity-js').CognitoUser | null;
-  user: any;
+  user?: any;
   data: any;
   handleLogin: (email: string, password: string) => void;
   handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
   confirmSignUp: (username: string, code: string) => Promise<any>;
-  addVendor: (vendor: Vendor) => void;
+  addBusiness: (business: Business) => void;
 }
 
 declare interface IPageProps {

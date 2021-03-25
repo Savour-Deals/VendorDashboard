@@ -5,15 +5,17 @@ import { Button, Grid} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { StripeProvider, Elements } from "react-stripe-elements";
-import { API } from "aws-amplify";
 
 import { Loading } from "../common/Loading";
-import VendorModal from "./VendorModal";
-import AddVendorModal from "./addVendor/AddVendorModal";
+import BusinessModal from "./BusinessModal";
+import AddBusinessModal from "./addBusiness/AddBusinessModal";
 
 import config from "../../config";
 import { UserContext } from "../../auth/UserContext";
 import { getVendors } from "../../accessor/BusinessUser";
+import { GetBusinessUser } from "../../accessor/BusinessUser";
+import { GetBusiness, UpdateBusiness } from "../../accessor/Business";
+import Business from "../../model/business";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,36 +55,30 @@ export const HomeBody: React.FC<IPageProps> = props => {
   }
 
   const [stripe, setStripe] = useState(null);
-  const [vendorState, setVendorState] = useState<{[key: string]: boolean}>({});
+  const [businessState, setBusinessState] = useState<{[key: string]: boolean}>({});
   const [open, setOpen] = useState(false);
 
   const styles = useStyles();
 
 
-  const updateVendor = async (updatedVendor: Vendor) => {
-    const placeId = updatedVendor.placeId;
+  const updateBusiness = async (updatedBusiness: Business) => {
     try {
-      const  res = await API.put("businesses", `/businesses/${placeId}`, {
-        body: {
-          preset_messages: updatedVendor.presetMessages,
-          onboard_message: updatedVendor.onboardMessage,
-        }
-      });
+      const res = await UpdateBusiness(updatedBusiness);
       console.log(res);
     } catch(error) {
       setError("Your profile could not be updated");
-      toggleVendorModal(placeId, false);
+      toggleBusinessModal(updatedBusiness.id, false);
     }
-    const updatedVendorList = [];
-    for (const index in vendors) {
-      if (vendors[index].placeId === placeId) {
-        updatedVendorList.push(updatedVendor)
+    const updatedBusinessList = [];
+    for (const index in businesses) {
+      if (businesses[index].id === updatedBusiness.id) {
+        updatedBusinessList.push(updatedBusiness)
       } else {
-        updatedVendorList.push(vendors[index]);
+        updatedBusinessList.push(businesses[index]);
       }
     }
-    toggleVendorModal(placeId, false);
-    setVendors(updatedVendorList) 
+    toggleBusinessModal(updatedBusiness.id, false);
+    setBusinesses(updatedBusinessList);
   }
 
   useEffect(() => {
@@ -94,23 +90,23 @@ export const HomeBody: React.FC<IPageProps> = props => {
     setOpen(false);
   }
 
-  function toggleVendorModal(placeId: string, isOpen: boolean) {
+  function toggleBusinessModal(id: string, isOpen: boolean) {
     const res = {
-      ...vendorState,
-      [placeId]: isOpen
+      ...businessState,
+      [id]: isOpen
     }
-    setVendorState(res);
+    setBusinessState(res);
   }
 
-  function generateVendors(vendors: Vendor[]): JSX.Element[] {
-    return vendors.map((vendor : Vendor, index : number) => 
-    <Grid item xs={3} key={vendor.placeId}>
-      <VendorModal       
-        key={vendor.placeId} 
-        vendor={vendor} 
-        vendorState={vendorState} 
-        toggleVendorModal={toggleVendorModal} 
-        updateVendor={updateVendor} />
+  function generateBusinesses(businesses: Business[]): JSX.Element[] {
+    return businesses.map((business : Business, index : number) => 
+    <Grid item key={business.id}>
+      <BusinessModal       
+        key={business.id} 
+        business={business} 
+        businessState={businessState} 
+        toggleBusinessModal={toggleBusinessModal} 
+        updateBusiness={updateBusiness} />
       </Grid>
     );
   }
@@ -141,8 +137,8 @@ export const HomeBody: React.FC<IPageProps> = props => {
         <div className={styles.root}>
           <Grid container spacing={3} direction="column" alignItems="center"> 
             <Grid item xs={12}>
-              <Grid container justify="center" direction="row" spacing={3}>
-                {vendors && generateVendors(vendors)}
+              <Grid container justify="center" direction="column" spacing={3}>
+                {generateBusinesses(businesses)}
               </Grid>
             </Grid>
           </Grid>
@@ -150,10 +146,10 @@ export const HomeBody: React.FC<IPageProps> = props => {
             variant="contained"   
             className={styles.button} 
             onClick={toggleModal}>
-              Add Vendor
+              Add Business
           </Button>
           <Elements>
-            <AddVendorModal
+            <AddBusinessModal
               open={open}
               handleClose={handleClose}
               isLoading={loading}
