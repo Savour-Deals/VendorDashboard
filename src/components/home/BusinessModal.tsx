@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const BusinessModal: React.FC<IBusinessModal> = props => {
   
   const { business, businessState, toggleBusinessModal, updateBusiness } = props;
-  console.log(business);
   const styles = useStyles();
 
 

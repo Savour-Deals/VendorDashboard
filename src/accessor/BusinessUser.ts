@@ -8,7 +8,6 @@ import Business from "../model/business";
 export async function GetBusinessUser(businessUserId: string): Promise<any> {
 	let error;
 	let response;
-	let vendorData;
 	try {
 		response = await API.get(
 			PATHS.BUSINESS_USER.api,
@@ -23,61 +22,25 @@ export async function GetBusinessUser(businessUserId: string): Promise<any> {
 	return { error, response };
 }
 
-export async function getVendors(businessUserId: string) {
-
-	const { response } = await GetBusinessUser(businessUserId);
-
-	let error;
-	let vendorData;
-	vendorData = response.businesses ? response.businesses.map((id: string) => GetBusiness(id)) : [];
-	const loadedVendors: Array<Business> = [];
-	const loadedVendorState:  {[key: string]: boolean} = {};
-
-	try {
-		for (const vendor of vendorData) {
-			const res = await vendor;
-			loadedVendors.push({
-				id: res.place_id,
-				businessName: res.business_name,
-				address: res.address,
-				subscriberMap: new Map(),
-				onboardMessage: res.onboard_message,
-				presetMessages: res.preset_messages,
-				twilioNumber: res.twilio_number,
-			});
-			loadedVendorState[res.place_id] = false;
-		}
-	} catch (e) {
-		error = e;
-	}
-
-	return { loadedVendors, loadedVendorState, error, response };
-}
-
 export async function GetBusinesses(businessUserId: string): Promise<{loadedBusinesses: Array<Business>, error?: string}> {
 
-	const { response } = await GetBusinessUser(businessUserId);
+	const { response, error } = await GetBusinessUser(businessUserId);
 
-	let error;
 	let businessData;
+
 	businessData = response.businesses ? response.businesses.map((id: string) => GetBusiness(id)) : [];
 	const loadedBusinesses: Array<Business> = [];
-
-	try {
-		for (const vendor of businessData) {
-			const res = await vendor;
-			loadedBusinesses.push({
-				id: res.id,
-				businessName: res.businessName,
-				address: res.address,
-				subscriberMap: new Map(),
-				onboardMessage: res.onboardMessage,
-				presetMessages: res.presetMessage,
-				twilioNumber: res.twilioNumber,
-			});
-		}
-	} catch (e) {
-		error = e;
+	for (const vendor of businessData) {
+		const res = await vendor;
+		loadedBusinesses.push({
+			id: res.id,
+			businessName: res.businessName,
+			address: res.address,
+			subscriberMap: new Map(),
+			onboardMessage: res.onboardMessage,
+			presetMessages: res.presetMessages,
+			twilioNumber: res.twilioNumber,
+		});
 	}
 
 	return { loadedBusinesses, error };
