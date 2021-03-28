@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -12,29 +12,33 @@ import { Toolbar } from "@material-ui/core";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles({
-  fullList: {
-    width: 'auto',
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerContainer: {
-    overflow: 'auto',
-  },
-});
+const useStyles = makeStyles((theme: Theme) => createStyles({
+    fullList: {
+      width: 'auto',
+    },
+    drawer: {
+      width: drawerWidth,
+      flexShrink: 0,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    drawerContainer: {
+      overflow: 'auto',
+    },
+    sidebar: {
+      padding: theme.spacing(4),
+    }
+  })
+);
 
-interface SidebarProps {
+interface SideBarProps {
   open: boolean;
   variant?: 'permanent' | 'persistent' | 'temporary';
   onClose?: (event: React.MouseEvent) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = (props) => {
+export const SideBar: React.FC<SideBarProps> = (props) => {
   const styles = useStyles();
   const { open, onClose } = props;
   const history = useHistory();
@@ -52,8 +56,15 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     <div
       role="presentation"
       onClick={onClose}
+      className={styles.sidebar}
     >
       <List>
+      <ListItem button key={"home"} onClick={() => history.push("/index")}>
+          <ListItemIcon>
+            <InboxIcon/>
+          </ListItemIcon>
+          <ListItemText primary={"Home"} />
+        </ListItem>
         <ListItem button key={"campaigns"} onClick={() => history.push("/campaigns")}>
           <ListItemIcon>
             <InboxIcon/>

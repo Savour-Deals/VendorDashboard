@@ -12,6 +12,15 @@ declare interface IUserContext {
   addBusiness: (business: Business) => void;
 }
 
+declare interface IPageProps {
+  loading: boolean;
+  vendors: Array<Vendor>;
+  setVendors: (vendors: Array<Vendor>) => void;
+  setError: (error: string) => void;
+  setLoading: (loading: boolean) => void;
+  error?: string;
+}
+
 declare interface IConfirmAccountDialog {
   open: boolean;
   redirectToLogin: () => void;
@@ -30,26 +39,32 @@ declare interface UserAuth {
   error: any;
 }
 
-declare interface MapCoordinates {
-  lat: number;
-  lng: number;
+declare interface Vendor {
+  placeId: string;
+  vendorName: string;
+  primaryAddress: string;
+  buttonId?: string;
+  vendorDescription?: string;
+  onboardMessage?: string;
+  presetMessages?: string[];
+  subscribers?: object;
+  twilioNumber?: string;
 }
 
-declare interface MapAPI {
-  places: {searchBox: Function};
-  event: {clearInstanceListeners: Function};
+declare interface VendorState {
+  placeId: string;
+  vendorName: string;
+  primaryAddress: string;
+  isOpen: boolean;
+  buttonId?: string;
+  vendorDescription?: string;
+  onboardDeal?: string;
+  singleClickDeal?: string;
+  doubleClickDeal?: string;
+  subscribers?: object;
 }
 
-declare interface MapAPIEvent {
-}
 
-declare interface Subscriber {
-
-}
-
-declare interface BusinessButton {
-  button_id: string;
-}
 
 declare interface SignUpData {
   email: string;

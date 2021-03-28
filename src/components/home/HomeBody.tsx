@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 
 import Alert from "@material-ui/lab/Alert/Alert";
 import { Button, Grid} from "@material-ui/core";
@@ -11,10 +11,10 @@ import BusinessModal from "./BusinessModal";
 import AddBusinessModal from "./addBusiness/AddBusinessModal";
 
 import config from "../../config";
-import { UserContext } from "../../auth/UserContext";
-import { GetBusinessUser } from "../../accessor/BusinessUser";
-import { GetBusiness, UpdateBusiness } from "../../accessor/Business";
+import { UpdateBusiness } from "../../accessor/Business";
 import Business from "../../model/business";
+
+import { AuthenticatedPageProperties } from "../../model/page";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,40 +42,27 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const HomeBody: React.FC = () => {
-  const userContext: IUserContext = useContext(UserContext);
-  const [error, setError] = useState<string>();
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
+
+  const {loading, error, businesses, setBusinesses, setError, setLoading } = props;
+  const INIT_BUSINESS_STATE:  {[key: string]: boolean} = {};
+
+
+  // initialize vendor modal state (everything is closed)
+  for (const business of businesses) {
+    INIT_BUSINESS_STATE[business.id] = false;
+  }
+
   const [stripe, setStripe] = useState(null);
-  const [businesses, setBusinesses] = useState<Array<Business>>([]);
   const [businessState, setBusinessState] = useState<{[key: string]: boolean}>({});
+  const [open, setOpen] = useState(false);
+
   const styles = useStyles();
 
-  const loadBusinesses = useCallback(async () => {
-    GetBusinessUser(userContext.user.username)
-    .then((response) => {
-      let businessPromises = response.businesses.map((id: string) => GetBusiness(id));
-      return Promise.all(businessPromises);
-    }).then((responses) => {
-      responses.forEach((business: any) => {
-        businessState[business.id] = false;
-      });
-      setBusinesses(responses);
-      setBusinessState(businessState);
-      setLoading(false);
-      setError(undefined);
-    }).catch((e) => {
-      console.log(e);
-      setLoading(false);
-      setError(`Failed to load your profile`);
-    });
-  }, [businessState, setLoading, userContext.user]);
 
   const updateBusiness = async (updatedBusiness: Business) => {
     try {
-      const res = await UpdateBusiness(updatedBusiness);
-      console.log(res);
+      await UpdateBusiness(updatedBusiness);
     } catch(error) {
       setError("Your profile could not be updated");
       toggleBusinessModal(updatedBusiness.id, false);
@@ -94,15 +81,11 @@ export const HomeBody: React.FC = () => {
 
   useEffect(() => {
     setStripe((window as any).Stripe(config.STRIPE_KEY));
-    setLoading(true);
-    loadBusinesses();
-  }, [loadBusinesses]);
+  }, []);
 
 
   function handleClose() {
     setOpen(false);
-    setLoading(true);
-    loadBusinesses();
   }
 
   function toggleBusinessModal(id: string, isOpen: boolean) {
@@ -130,6 +113,10 @@ export const HomeBody: React.FC = () => {
     setOpen(!open);
   }
 
+
+  function addBusiness(business: Business) {
+    setBusinesses([...businesses, business])
+  }
   return ( 
     <div className={styles.root}>
     <StripeProvider stripe={stripe}>
@@ -164,6 +151,7 @@ export const HomeBody: React.FC = () => {
               open={open}
               handleClose={handleClose}
               isLoading={loading}
+              addBusiness={addBusiness}
             />
           </Elements>
         </div>

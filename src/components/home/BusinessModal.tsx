@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const BusinessModal: React.FC<IBusinessModal> = props => {
   
   const { business, businessState, toggleBusinessModal, updateBusiness } = props;
-
   const styles = useStyles();
 
 
@@ -64,7 +63,7 @@ const BusinessModal: React.FC<IBusinessModal> = props => {
     setLoading(true);
     const message = presetMessages[index];
     console.log(message);
-    const messageId = SendMessage(business.id, message, undefined)
+    SendMessage(business.id, message, undefined)
     .then((response) => response)
     .catch(() => {
       console.log(`An error occured while trying to initiate your message`);

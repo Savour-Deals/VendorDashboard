@@ -4,7 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { AppBar, Grid, Hidden, IconButton } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 
-import { Sidebar } from "./Sidebar";
+import { SideBar } from "./SideBar";
+import { Pages } from "../../constants/Pages";
 
 import LogoWhite from "../../assets/img/brand/Savour_White.png";
 
@@ -39,7 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const HomeHeader: React.FC = () => {
+
+
+export const Header: React.FC = () => {
 
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -68,19 +71,19 @@ export const HomeHeader: React.FC = () => {
       </AppBar>
 
         <Hidden smUp >
-          <Sidebar
+          <SideBar
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}
           >
-          </Sidebar>
+          </SideBar>
         </Hidden>
         <Hidden xsDown >
-          <Sidebar
+          <SideBar
             variant="permanent"
             open
           >
-          </Sidebar>
+          </SideBar>
         </Hidden>
     </>
   );

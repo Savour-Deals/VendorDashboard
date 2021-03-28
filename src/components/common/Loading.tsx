@@ -1,9 +1,6 @@
 import React from "react";
 import { Box, CircularProgress, createStyles, makeStyles, Theme } from "@material-ui/core";
 
-interface LoadingProps {
-}
-
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
     loader: {
@@ -15,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const Loading = (props: LoadingProps) => {
+export const Loading = () => {
   const styles = useStyles();
 
   return (

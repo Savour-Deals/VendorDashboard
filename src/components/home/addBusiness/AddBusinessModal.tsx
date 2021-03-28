@@ -23,7 +23,6 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import Dialog from '@material-ui/core/Dialog';
 
-import { animated, useSpring } from "react-spring";
 import { CardElement, injectStripe } from "react-stripe-elements";
 
 import Loader from "react-loader-spinner";
@@ -36,22 +35,10 @@ import { CreateNumber } from "../../../accessor/Message";
 import { CreateBusiness } from "../../../accessor/Business";
 import { AddBusiness } from "../../../accessor/BusinessUser";
 import { CreateSubscription } from "../../../accessor/Payment";
-import { SubscriberInfo } from "../../../model/business";
+import Business, { SubscriberInfo, Campaign } from "../../../model/business";
+import Fade from "../../common/Fade";
 
-interface IAddVendorModal {
-  open: boolean;
-  isLoading: boolean;
-  handleClose: () => void;
-  stripe?: any;
-  elements?: any;
-}
 
-interface FadeProps {
-  children?: React.ReactElement;
-  in: boolean;
-  onEnter?: () => {};
-  onExited?: () => {};
-}
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -125,46 +112,30 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// https://material-ui.com/components/modal/#modal
-const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, ref) {
-  const { in: open, children, onEnter, onExited, ...other } = props;
-  const layout = useStyles();
-  const style = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: open ? 1 : 0 },
-    onStart: () => {
-      if (open && onEnter) {
-        onEnter();
-      }
-    },
-    onRest: () => {
-      if (!open && onExited) {
-        onExited();
-      }
-    },
-  });
+interface IAddBusinessModal {
+  open: boolean;
+  isLoading: boolean;
+  handleClose: () => void;
+  addBusiness: (business: Business) => void;
+  stripe?: any;
+  elements?: any;
+}
 
-  return (
-    <animated.div ref={ref} style={style} {...other} className={layout.root}>
-      {children}
-    </animated.div>
-  );
-});
 
-const AddVendorModal: React.FC<IAddVendorModal> = props => {
+const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
 
-  const { open, handleClose, stripe, elements } = props;
+  const { open, handleClose, stripe, addBusiness, elements } = props;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [vendorName, setVendorName] = useState("");
-  const [primaryAddress, setPrimaryAddress] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [address, setAddress] = useState("");
   const [presetMessages, setPresetMessages] = useState<string[]>([""]); //always start with at least one blank preset
   const [onboardMessage, setOnboardMessage] = useState("");
   const [cardName, setCardName] = useState("");
   const styles = useStyles();
   const userContext: IUserContext = useContext(UserContext);
   
-  const createVendor = async () => {
+  const createBusiness = async () => {
     const cardElement = elements.getElement('card');
     const { paymentMethod, error } = await await stripe.createPaymentMethod({
       type: 'card',
@@ -180,45 +151,52 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     }
 
     const businessId = uuidv4();
+    
+    const business = {
+      id: businessId,
+      businessName,
+      address,
+      presetMessages,
+      onboardMessage,
+      subscriberMap: new Map<string, SubscriberInfo>(),
+      campaignsMap: new Map<string, Campaign>(),
+    };
+
+    // update app state 
+    addBusiness(business);
+
     return Promise.all([
-      CreateBusiness({
-        id: businessId,
-        businessName: vendorName,
-        address: primaryAddress,
-        presetMessages,
-        onboardMessage,
-        subscriberMap: new Map<string, SubscriberInfo>()
-      }),
+      CreateBusiness(business),
       CreateNumber(businessId),
       AddBusiness(userContext.user.username, businessId),
+
     ]).then(() => {
+      setIsLoading(false);
+      handleClose();
       return CreateSubscription(businessId, {
         email: userContext.user.attributes.email,
-        name: vendorName,
+        name: businessName,
         paymentMethod: paymentMethod.id,
         subscriptions: {
           recurring: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
           usage: "price_1IV8SPFdZgF3d0XeK1qX4bW1",
         }
       });
-    }).then(() => {
-      setIsLoading(false);
-      handleClose();
     }).catch((e) => {
       console.log(e)
       alert("An error occured while creating your account");
       setIsLoading(false);
-      handleClose();
+      handleClose();  
       return;
     });
   }
 
-  function vendorNameChange(event: ChangeEvent<HTMLInputElement>) {
-    setVendorName(event.target.value);
+  function businessNameChange(event: ChangeEvent<HTMLInputElement>) {
+    setBusinessName(event.target.value);
   }
 
-  function primaryAddressChange(event: ChangeEvent<HTMLInputElement>) {
-    setPrimaryAddress(event.target.value);
+  function addressChange(event: ChangeEvent<HTMLInputElement>) {
+    setAddress(event.target.value);
   }
 
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -259,16 +237,16 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     </ListItem>
                     <ListItem>
                       <BusinessSearchBox 
-                        setPrimaryAddress={setPrimaryAddress}
-                        setVendorName={setVendorName}/>
+                        setPrimaryAddress={setAddress}
+                        setVendorName={setBusinessName}/>
                     </ListItem>
                     <ListItem>
                       <TextField
                         className={styles.textInput}
                         label="Business Name"
-                        value={vendorName}
+                        value={businessName}
                         variant="outlined"
-                        onChange={vendorNameChange}
+                        onChange={businessNameChange}
                       />
                     </ListItem>
                     <ListItem>
@@ -276,8 +254,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                         className={styles.textInput}
                         label="Address"
                         variant="outlined"
-                        value={primaryAddress}
-                        onChange={primaryAddressChange}
+                        value={address}
+                        onChange={addressChange}
                       />
                     </ListItem>
                   </List>
@@ -341,8 +319,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                   variant="contained" 
                   disabled={isLoading}  
                   className={styles.button} 
-                  onClick={createVendor}>
-                  Create Vendor                 
+                  onClick={createBusiness}>
+                  Create Business                 
                 </Button>
               </div>
             </form>
@@ -353,4 +331,4 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   );
 }
 
-export default injectStripe(AddVendorModal);
+export default injectStripe(AddBusinessModal);

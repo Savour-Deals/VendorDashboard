@@ -14,7 +14,7 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = (props) => {
   return (
     <Route path={path} render={(props) => (
         (auth) 
-        ? <Component /> 
+        ? <Component  {...props} /> 
         : <Redirect to="/login"/>
       )}
     />
