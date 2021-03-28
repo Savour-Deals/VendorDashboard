@@ -62,7 +62,7 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
 
   const updateBusiness = async (updatedBusiness: Business) => {
     try {
-      const res = await UpdateBusiness(updatedBusiness);
+      await UpdateBusiness(updatedBusiness);
     } catch(error) {
       setError("Your profile could not be updated");
       toggleBusinessModal(updatedBusiness.id, false);

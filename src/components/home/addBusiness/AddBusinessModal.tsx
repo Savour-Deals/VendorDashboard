@@ -23,7 +23,6 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import Dialog from '@material-ui/core/Dialog';
 
-import { animated, useSpring } from "react-spring";
 import { CardElement, injectStripe } from "react-stripe-elements";
 
 import Loader from "react-loader-spinner";
@@ -36,25 +35,10 @@ import { CreateNumber } from "../../../accessor/Message";
 import { CreateBusiness } from "../../../accessor/Business";
 import { AddBusiness } from "../../../accessor/BusinessUser";
 import { CreateSubscription } from "../../../accessor/Payment";
-import { SubscriberInfo } from "../../../model/business";
+import Business, { SubscriberInfo, Campaign } from "../../../model/business";
+import Fade from "../../common/Fade";
 
-import Business from "../../../model/business";
 
-interface IAddBusinessModal {
-  open: boolean;
-  isLoading: boolean;
-  handleClose: () => void;
-  addBusiness: (business: Business) => void;
-  stripe?: any;
-  elements?: any;
-}
-
-interface FadeProps {
-  children?: React.ReactElement;
-  in: boolean;
-  onEnter?: () => {};
-  onExited?: () => {};
-}
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -128,31 +112,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// https://material-ui.com/components/modal/#modal
-const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, ref) {
-  const { in: open, children, onEnter, onExited, ...other } = props;
-  const layout = useStyles();
-  const style = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: open ? 1 : 0 },
-    onStart: () => {
-      if (open && onEnter) {
-        onEnter();
-      }
-    },
-    onRest: () => {
-      if (!open && onExited) {
-        onExited();
-      }
-    },
-  });
+interface IAddBusinessModal {
+  open: boolean;
+  isLoading: boolean;
+  handleClose: () => void;
+  addBusiness: (business: Business) => void;
+  stripe?: any;
+  elements?: any;
+}
 
-  return (
-    <animated.div ref={ref} style={style} {...other} className={layout.root}>
-      {children}
-    </animated.div>
-  );
-});
 
 const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
 
@@ -190,7 +158,8 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
       address,
       presetMessages,
       onboardMessage,
-      subscriberMap: new Map<string, SubscriberInfo>()
+      subscriberMap: new Map<string, SubscriberInfo>(),
+      campaignsMap: new Map<string, Campaign>(),
     };
 
     // update app state 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
@@ -7,6 +7,8 @@ import { Loading } from "../../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
 import { AuthenticatedPageProperties } from "../../../model/page";
 import Business from "../../../model/business";
+import { Button, Grid } from "@material-ui/core";
+import AddCampaignModal from "./AddCampaignModal";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,9 +47,19 @@ const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> =
   );
 };
 
+const createCampaigns = (businesses: Array<Business>) : Array<JSX.Element> => {
+  return [];
+}
+
 const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const { error, loading, businesses } = props;
   const styles = useStyles();
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  }
   return (
     <>
           {loading &&
@@ -59,7 +71,23 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
       </Alert>
       }  
       <div className={styles.root}>
-        {createBusinessCards(businesses)}
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {createBusinessCards(businesses)}
+          </Grid>
+          <Grid item xs={12}>
+            {createCampaigns(businesses)}
+          </Grid>
+          <Grid item xs={12}>
+            <Button className={styles.button}>
+              Create Campaign
+            </Button>
+          </Grid>
+        </Grid>
+        <AddCampaignModal
+          modalOpen={modalOpen}
+          handleModalClose={handleModalClose}
+        />
       </div>
     </>
   )
