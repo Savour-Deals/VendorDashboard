@@ -19,7 +19,6 @@ declare interface IPageProps {
   setError: (error: string) => void;
   setLoading: (loading: boolean) => void;
   error?: string;
-
 }
 
 declare interface IConfirmAccountDialog {

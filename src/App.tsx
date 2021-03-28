@@ -12,7 +12,8 @@ import ResetAccount from "./components/Account/ResetAccount";
 import { PATHS } from "./accessor/paths";
 import { Campaigns } from "./components/Campaign"
 import { useCallback } from "react";
-import { getVendors } from "./accessor/BusinessUser";
+import { GetBusinesses } from "./accessor/BusinessUser";
+import Business from "./model/business";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -44,15 +45,15 @@ const App: React.FC<IApp> = props => {
 
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
-  const [vendors, setVendors] = useState<Array<Vendor>>([]);
+  const [businesses, setBusinesses] = useState<Array<Business>>([]);
 
   console.log(userContext);
 
-  const loadVendors = useCallback(async (username: string) => {
-    const { loadedVendors, error } = await getVendors(username);
+  const loadBusinesses = useCallback(async (username: string) => {
+    const { loadedBusinesses, error } = await GetBusinesses(username);
 
     if (!error) {
-      setVendors(loadedVendors);
+      setBusinesses(loadedBusinesses);
       setLoading(false);
       setError("");
     } else {
@@ -60,21 +61,21 @@ const App: React.FC<IApp> = props => {
       setError("Failed to load your profile");
     }
 
-  }, [setVendors, setLoading, userContext.user]);
+  }, [setBusinesses, setLoading, userContext.user]);
 
 
   useEffect(() => {
     if (userContext.user) {
       setLoading(true);
-      loadVendors(userContext.user.username);
+      loadBusinesses(userContext.user.username);
     }
-  }, [loadVendors]);
+  }, [loadBusinesses]);
 
   const pageProps =  {
     error,
     loading,
-    vendors,
-    setVendors,
+    businesses,
+    setBusinesses,
     setLoading,
     setError,
   };

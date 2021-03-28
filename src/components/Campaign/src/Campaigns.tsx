@@ -4,7 +4,9 @@ import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
 
 import { Loading } from "../../common/Loading";
-import CampaignBuisnessCard from "./CampaignBusinessCard";
+import CampaignBusinessCard from "./CampaignBusinessCard";
+import { AuthenticatedPageProperties } from "../../../model/page";
+import Business from "../../../model/business";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,19 +34,19 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const createBusinessCards = (vendors: Array<Vendor>) : Array<JSX.Element> => {
-  return vendors.map((vendor: Vendor): JSX.Element => (
-      <CampaignBuisnessCard
-        businessName={vendor.vendorName}
-        phoneNumber={vendor.twilioNumber!}
-        subscriberCount={vendor.subscribers ? Object.keys(vendor.subscribers).length : 0}
+const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
+  return businesses.map((business: Business): JSX.Element => (
+      <CampaignBusinessCard
+        businessName={business.businessName}
+        phoneNumber={business.twilioNumber!}
+        subscriberCount={business.subscriberMap.size}
       />
     )
   );
 };
 
-const Campaigns: React.FC<IPageProps> = props => {
-  const { error, loading, vendors } = props;
+const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
+  const { error, loading, businesses } = props;
   const styles = useStyles();
   return (
     <>
@@ -57,7 +59,7 @@ const Campaigns: React.FC<IPageProps> = props => {
       </Alert>
       }  
       <div className={styles.root}>
-        {createBusinessCards(vendors)}
+        {createBusinessCards(businesses)}
       </div>
     </>
   )

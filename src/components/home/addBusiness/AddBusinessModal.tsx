@@ -38,11 +38,13 @@ import { AddBusiness } from "../../../accessor/BusinessUser";
 import { CreateSubscription } from "../../../accessor/Payment";
 import { SubscriberInfo } from "../../../model/business";
 
-interface IAddVendorModal {
+import Business from "../../../model/business";
+
+interface IAddBusinessModal {
   open: boolean;
   isLoading: boolean;
   handleClose: () => void;
-  addVendor: (vendor: Vendor) => void;
+  addBusiness: (business: Business) => void;
   stripe?: any;
   elements?: any;
 }
@@ -152,24 +154,20 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
   );
 });
 
-const AddVendorModal: React.FC<IAddVendorModal> = props => {
+const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
 
-<<<<<<< HEAD:src/components/home/addVendor/AddVendorModal.tsx
-  const { open, handleClose, addVendor, stripe } = props;
-=======
-  const { open, handleClose, stripe, elements } = props;
->>>>>>> master:src/components/home/addBusiness/AddBusinessModal.tsx
+  const { open, handleClose, stripe, addBusiness, elements } = props;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [vendorName, setVendorName] = useState("");
-  const [primaryAddress, setPrimaryAddress] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [address, setAddress] = useState("");
   const [presetMessages, setPresetMessages] = useState<string[]>([""]); //always start with at least one blank preset
   const [onboardMessage, setOnboardMessage] = useState("");
   const [cardName, setCardName] = useState("");
   const styles = useStyles();
   const userContext: IUserContext = useContext(UserContext);
   
-  const createVendor = async () => {
+  const createBusiness = async () => {
     const cardElement = elements.getElement('card');
     const { paymentMethod, error } = await await stripe.createPaymentMethod({
       type: 'card',
@@ -184,57 +182,36 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
       return;
     }
 
-<<<<<<< HEAD:src/components/home/addVendor/AddVendorModal.tsx
-    let twilioNumber: string = "";
-
-    CreateNumber(placeId).then((number) => {
-      setIsLoading(true);
-      twilioNumber = number;
-      return CreateBusiness({
-        id: placeId,
-=======
     const businessId = uuidv4();
+    
+    const business = {
+      id: businessId,
+      businessName,
+      address,
+      presetMessages,
+      onboardMessage,
+      subscriberMap: new Map<string, SubscriberInfo>()
+    };
+
+    // update app state 
+    addBusiness(business);
+
     return Promise.all([
-      CreateBusiness({
-        id: businessId,
->>>>>>> master:src/components/home/addBusiness/AddBusinessModal.tsx
-        businessName: vendorName,
-        address: primaryAddress,
-        presetMessages,
-        onboardMessage,
-        subscriberMap: new Map<string, SubscriberInfo>()
-      }),
+      CreateBusiness(business),
       CreateNumber(businessId),
       AddBusiness(userContext.user.username, businessId),
+
     ]).then(() => {
+      setIsLoading(false);
+      handleClose();
       return CreateSubscription(businessId, {
         email: userContext.user.attributes.email,
-        name: vendorName,
+        name: businessName,
         paymentMethod: paymentMethod.id,
         subscriptions: {
           recurring: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
           usage: "price_1IV8SPFdZgF3d0XeK1qX4bW1",
         }
-      });
-    }).then(() => {
-<<<<<<< HEAD:src/components/home/addVendor/AddVendorModal.tsx
-      // identityId I believe is equivalent to userSub 
-      // https://stackoverflow.com/questions/42645932/aws-cognito-difference-between-cognito-id-and-sub-what-should-i-use-as-primary
-      return AddBusiness(userContext.user.username, placeId);
-    }).then(() => {
-
-=======
->>>>>>> master:src/components/home/addBusiness/AddBusinessModal.tsx
-      setIsLoading(false);
-      handleClose();
-      addVendor({
-        placeId,
-        vendorName,
-        primaryAddress,
-        twilioNumber,
-        onboardMessage,
-        presetMessages,
-        subscribers: {},
       });
     }).catch((e) => {
       console.log(e)
@@ -245,12 +222,12 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
     });
   }
 
-  function vendorNameChange(event: ChangeEvent<HTMLInputElement>) {
-    setVendorName(event.target.value);
+  function businessNameChange(event: ChangeEvent<HTMLInputElement>) {
+    setBusinessName(event.target.value);
   }
 
-  function primaryAddressChange(event: ChangeEvent<HTMLInputElement>) {
-    setPrimaryAddress(event.target.value);
+  function addressChange(event: ChangeEvent<HTMLInputElement>) {
+    setAddress(event.target.value);
   }
 
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -291,16 +268,16 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                     </ListItem>
                     <ListItem>
                       <BusinessSearchBox 
-                        setPrimaryAddress={setPrimaryAddress}
-                        setVendorName={setVendorName}/>
+                        setPrimaryAddress={setAddress}
+                        setVendorName={setBusinessName}/>
                     </ListItem>
                     <ListItem>
                       <TextField
                         className={styles.textInput}
                         label="Business Name"
-                        value={vendorName}
+                        value={businessName}
                         variant="outlined"
-                        onChange={vendorNameChange}
+                        onChange={businessNameChange}
                       />
                     </ListItem>
                     <ListItem>
@@ -308,8 +285,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                         className={styles.textInput}
                         label="Address"
                         variant="outlined"
-                        value={primaryAddress}
-                        onChange={primaryAddressChange}
+                        value={address}
+                        onChange={addressChange}
                       />
                     </ListItem>
                   </List>
@@ -373,8 +350,8 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
                   variant="contained" 
                   disabled={isLoading}  
                   className={styles.button} 
-                  onClick={createVendor}>
-                  Create Vendor                 
+                  onClick={createBusiness}>
+                  Create Business                 
                 </Button>
               </div>
             </form>
@@ -385,4 +362,4 @@ const AddVendorModal: React.FC<IAddVendorModal> = props => {
   );
 }
 
-export default injectStripe(AddVendorModal);
+export default injectStripe(AddBusinessModal);

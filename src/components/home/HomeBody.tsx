@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 
 import Alert from "@material-ui/lab/Alert/Alert";
 import { Button, Grid} from "@material-ui/core";
@@ -11,11 +11,10 @@ import BusinessModal from "./BusinessModal";
 import AddBusinessModal from "./addBusiness/AddBusinessModal";
 
 import config from "../../config";
-import { UserContext } from "../../auth/UserContext";
-import { getVendors } from "../../accessor/BusinessUser";
-import { GetBusinessUser } from "../../accessor/BusinessUser";
-import { GetBusiness, UpdateBusiness } from "../../accessor/Business";
+import { UpdateBusiness } from "../../accessor/Business";
 import Business from "../../model/business";
+
+import { AuthenticatedPageProperties } from "../../model/page";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,15 +42,15 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export const HomeBody: React.FC<IPageProps> = props => {
+export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
 
-  const {loading, error, vendors, setVendors, setError, setLoading } = props;
-  const INIT_VENDOR_STATE:  {[key: string]: boolean} = {};
+  const {loading, error, businesses, setBusinesses, setError, setLoading } = props;
+  const INIT_BUSINESS_STATE:  {[key: string]: boolean} = {};
 
 
   // initialize vendor modal state (everything is closed)
-  for (const vendor of vendors) {
-    INIT_VENDOR_STATE[vendor.placeId] = false;
+  for (const business of businesses) {
+    INIT_BUSINESS_STATE[business.id] = false;
   }
 
   const [stripe, setStripe] = useState(null);
@@ -64,7 +63,6 @@ export const HomeBody: React.FC<IPageProps> = props => {
   const updateBusiness = async (updatedBusiness: Business) => {
     try {
       const res = await UpdateBusiness(updatedBusiness);
-      console.log(res);
     } catch(error) {
       setError("Your profile could not be updated");
       toggleBusinessModal(updatedBusiness.id, false);
@@ -116,8 +114,8 @@ export const HomeBody: React.FC<IPageProps> = props => {
   }
 
 
-  function addVendor(vendor: Vendor) {
-    setVendors([...vendors, vendor])
+  function addBusiness(business: Business) {
+    setBusinesses([...businesses, business])
   }
   return ( 
     <div className={styles.root}>
@@ -153,7 +151,7 @@ export const HomeBody: React.FC<IPageProps> = props => {
               open={open}
               handleClose={handleClose}
               isLoading={loading}
-              addVendor={addVendor}
+              addBusiness={addBusiness}
             />
           </Elements>
         </div>

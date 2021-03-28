@@ -40,7 +40,7 @@ export async function getVendors(businessUserId: string) {
 				id: res.place_id,
 				businessName: res.business_name,
 				address: res.address,
-				: res.btn_id,
+				subscriberMap: new Map(),
 				onboardMessage: res.onboard_message,
 				presetMessages: res.preset_messages,
 				twilioNumber: res.twilio_number,
@@ -52,6 +52,35 @@ export async function getVendors(businessUserId: string) {
 	}
 
 	return { loadedVendors, loadedVendorState, error, response };
+}
+
+export async function GetBusinesses(businessUserId: string): Promise<{loadedBusinesses: Array<Business>, error?: string}> {
+
+	const { response } = await GetBusinessUser(businessUserId);
+
+	let error;
+	let businessData;
+	businessData = response.businesses ? response.businesses.map((id: string) => GetBusiness(id)) : [];
+	const loadedBusinesses: Array<Business> = [];
+
+	try {
+		for (const vendor of businessData) {
+			const res = await vendor;
+			loadedBusinesses.push({
+				id: res.id,
+				businessName: res.businessName,
+				address: res.address,
+				subscriberMap: new Map(),
+				onboardMessage: res.onboardMessage,
+				presetMessages: res.presetMessage,
+				twilioNumber: res.twilioNumber,
+			});
+		}
+	} catch (e) {
+		error = e;
+	}
+
+	return { loadedBusinesses, error };
 }
 
 export async function CreateBusinessUser(user: BusinessUser): Promise<BusinessUser> {
