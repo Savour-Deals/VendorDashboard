@@ -26,9 +26,8 @@ export async function GetBusinesses(businessUserId: string): Promise<{loadedBusi
 
 	const { response, error } = await GetBusinessUser(businessUserId);
 
-	let businessData;
-
-	businessData = response.businesses ? response.businesses.map((id: string) => GetBusiness(id)) : [];
+	const businessData = response.businesses ? response.businesses.map((id: string) => GetBusiness(id)) : [];
+	
 	const loadedBusinesses: Array<Business> = [];
 	for (const vendor of businessData) {
 		const res = await vendor;
