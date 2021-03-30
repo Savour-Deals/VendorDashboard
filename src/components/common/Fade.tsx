@@ -1,20 +1,9 @@
 import React from 'react';
 import { animated, useSpring } from "react-spring";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
+import {  
   createStyles, 
-  Grid, 
-  IconButton, 
-  Button, 
   makeStyles, 
-  Modal, 
-  TextField, 
   Theme, 
-  List, 
-  ListItem, 
-  Typography
 } from "@material-ui/core";
 
 interface FadeProps {
@@ -61,7 +50,5 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
     </animated.div>
   );
 });
-
-
 
 export default Fade;

@@ -1,9 +1,8 @@
 import React from 'react';
-import Fade from '../../common/Fade';
+import Fade from '../common/Fade';
 
 import { 
   Card, 
-  CardContent, 
   CardHeader, 
   createStyles, 
   IconButton, 

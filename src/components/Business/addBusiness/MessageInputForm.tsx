@@ -6,8 +6,7 @@ import {
   TextField, 
   List, 
   ListItem, 
-  ListItemSecondaryAction, 
-  Button } from "@material-ui/core";
+  ListItemSecondaryAction } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
@@ -80,15 +79,14 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
           onChange={onOnboardingChange}/>
       </ListItem>
       <ListItem>
-        Preset Messages  
-        <ListItemSecondaryAction>
-          <Button 
-            variant="contained"
-            startIcon={<AddIcon />}
+        Preset Messages
+        { props.presetMessages.length === 0 && 
+          <IconButton 
+            edge="end" 
+            aria-label="add"
             onClick={onAddMessage}>
-            Add
-          </Button>
-        </ListItemSecondaryAction>
+            <AddIcon/>
+          </IconButton>}
       </ListItem>
       { props.presetMessages.map((message, index) => 
         <ListItem>
@@ -108,6 +106,13 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
               onClick={() => onDeleteMessage(index)}>
               <DeleteIcon/>
             </IconButton>
+            { index === props.presetMessages.length - 1 && 
+              <IconButton 
+                edge="end" 
+                aria-label="add"
+                onClick={onAddMessage}>
+                <AddIcon/>
+              </IconButton>}
           </ListItemSecondaryAction>
         </ListItem>)
       } 

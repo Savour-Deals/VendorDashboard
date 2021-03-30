@@ -2,7 +2,6 @@ export default interface Business {
 	id: string,
 	businessName: string,
 	address: string,
-	subscriberMap: Map<string, SubscriberInfo>,
 	presetMessages: string[],
 	onboardMessage: string,
 	stripeCustomerId?: string,
@@ -10,12 +9,14 @@ export default interface Business {
 	stripeSubId?: string,
 	stripeRecurringSubItem?: string,
 	stripeUsageSubItem?: string,
-	twilioNumber?: string,
+	messagingNumber?: string,
+	subscriberMap: Map<string, SubscriberInfo>,
 	campaignsMap?: Map<string, Campaign>,
 }
 
 export interface SubscriberInfo {
-	subscribed: boolean
+	subscribed: boolean,
+	timestamp: string
 }
 
 export interface Campaign {

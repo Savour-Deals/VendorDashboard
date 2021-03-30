@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
 
-import { Loading } from "../../common/Loading";
+import { Loading } from "../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
-import { AuthenticatedPageProperties } from "../../../model/page";
-import Business from "../../../model/business";
+import { AuthenticatedPageProperties } from "../../model/page";
+import Business from "../../model/business";
 import { Button, Grid } from "@material-ui/core";
 import AddCampaignModal from "./AddCampaignModal";
 
@@ -40,7 +40,7 @@ const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> =
   return businesses.map((business: Business): JSX.Element => (
       <CampaignBusinessCard
         businessName={business.businessName}
-        phoneNumber={business.twilioNumber!}
+        phoneNumber={business.messagingNumber!}
         subscriberCount={business.subscriberMap.size}
       />
     )
@@ -51,7 +51,7 @@ const createCampaigns = (businesses: Array<Business>) : Array<JSX.Element> => {
   return [];
 }
 
-const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
+export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const { error, loading, businesses } = props;
   const styles = useStyles();
 
@@ -92,5 +92,3 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
     </>
   )
 };
-
-export default Campaigns; 
