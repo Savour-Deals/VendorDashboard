@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
+import Business from "../../../model/business";
+
 interface ICampaignBusinessCard {
-  businessName: string;
-  phoneNumber: string;
-  subscriberCount: number;
+  business: Business;
 };
 
 const useStyles = makeStyles(
@@ -37,20 +37,20 @@ const useStyles = makeStyles(
 
 const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
 
-  const { businessName, phoneNumber, subscriberCount } = props;
+  const { business } = props;
   const styles = useStyles();
 
   return (
     <Card className={styles.businessCard}>
       <CardHeader
-        title={businessName}
+        title={business.businessName}
       />
       <CardContent>
         <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Phone #: {phoneNumber}
+            Phone #: {business.phoneNumber}
           </Typography>
           <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Number of Subscribers: {subscriberCount}
+            Number of Subscribers: {business.subscriberCount}
           </Typography>
       </CardContent>
       

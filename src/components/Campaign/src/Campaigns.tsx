@@ -52,9 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
   return businesses.map((business: Business): JSX.Element => (
       <CampaignBusinessCard
-        businessName={business.businessName}
-        phoneNumber={business.twilioNumber!}
-        subscriberCount={business.subscriberMap.size}
+        business={business}
       />
     )
   );
