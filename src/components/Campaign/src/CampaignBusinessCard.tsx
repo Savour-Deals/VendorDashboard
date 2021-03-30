@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Card, CardContent, CardHeader } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 interface ICampaignBusinessCard {
@@ -10,22 +10,30 @@ interface ICampaignBusinessCard {
   subscriberCount: number;
 };
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
+const useStyles = makeStyles(
+  (theme: Theme) =>
+  createStyles({
+    root: {
+      minWidth: 275,
+    },
+    bullet: {
+      display: 'inline-block',
+      margin: '0 2px',
+      transform: 'scale(0.8)',
+    },
+    title: {
+      fontSize: 14,
+    },
+    pos: {
+      marginBottom: 12,
+    },
+    businessCard: {
+      margin: theme.spacing(2),
+      width: "80%",
+    }
+
+  }),
+);
 
 const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
 
@@ -33,7 +41,7 @@ const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
   const styles = useStyles();
 
   return (
-    <Card>
+    <Card className={styles.businessCard}>
       <CardHeader
         title={businessName}
       />

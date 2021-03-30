@@ -2,14 +2,23 @@ import React, { useState } from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
+import {
+  Card, 
+  CardContent, 
+  CardHeader, 
+  Button, 
+  Grid,
+  Typography
+
+} from "@material-ui/core";
 
 import { Loading } from "../../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
 import { AuthenticatedPageProperties } from "../../../model/page";
 import Business from "../../../model/business";
-import { Button, Grid } from "@material-ui/core";
 import AddCampaignModal from "./AddCampaignModal";
 
+import { UpdateBusiness } from "../../../accessor/Business";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -33,6 +42,10 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "white",
       margin: theme.spacing(2),
     },
+    title: {
+      padding: theme.spacing(2),
+    },
+
   }),
 );
 
@@ -48,6 +61,9 @@ const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> =
 };
 
 const createCampaigns = (businesses: Array<Business>) : Array<JSX.Element> => {
+  businesses.map(async (business: Business, index: number) => {
+    return index;
+  });
   return [];
 }
 
@@ -60,6 +76,7 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const handleModalClose = () => {
     setModalOpen(false);
   }
+
   return (
     <>
           {loading &&
@@ -73,13 +90,31 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
       <div className={styles.root}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            {createBusinessCards(businesses)}
+          <Card>
+                <CardHeader
+                />
+                <CardContent>
+                  <Typography variant="h3" className={styles.title}>
+                    Campaigns
+                  </Typography>
+                  {createBusinessCards(businesses)}
+                </CardContent>
+            </Card>
           </Grid>
           <Grid item xs={12}>
-            {createCampaigns(businesses)}
+            <Card>
+                <CardHeader
+                />
+                <CardContent>
+                <Typography variant="h3" className={styles.title}>
+                  Campaigns
+                </Typography>
+                  {createCampaigns(businesses)}
+                </CardContent>
+            </Card>
           </Grid>
           <Grid item xs={12}>
-            <Button className={styles.button}>
+            <Button className={styles.button} onClick={() => setModalOpen(true)}>
               Create Campaign
             </Button>
           </Grid>

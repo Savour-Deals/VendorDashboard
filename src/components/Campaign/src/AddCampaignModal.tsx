@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Fade from '../../common/Fade';
 
 import { 
@@ -10,9 +10,11 @@ import {
   makeStyles, 
   Modal, 
   Theme, 
+  Dialog,
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
+import Loader from "react-loader-spinner";
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -93,6 +95,7 @@ interface IAddCampaignModal {
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   const { modalOpen, handleModalClose } = props;
 
+  const [isLoading, setIsLoading] = useState(false);
   const styles = useStyles();
 
   return (
@@ -105,6 +108,11 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                 <CloseIcon/>
               </IconButton>
             }/>
+          <CardContent>
+          <Dialog open={isLoading}>
+              <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
+            </Dialog>
+          </CardContent>
         </Card>
       </Fade>
     </Modal>
