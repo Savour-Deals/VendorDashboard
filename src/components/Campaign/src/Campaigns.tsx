@@ -15,8 +15,9 @@ import {
 import { Loading } from "../../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
 import { AuthenticatedPageProperties } from "../../../model/page";
-import Business from "../../../model/business";
+import Business, { Campaign } from "../../../model/business";
 import AddCampaignModal from "./AddCampaignModal";
+import { v4 as uuidv4 } from 'uuid';
 
 import { UpdateBusiness } from "../../../accessor/Business";
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,31 +50,56 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+
+
 const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
   return businesses.map((business: Business): JSX.Element => (
+    <Grid item xs={12}>
       <CampaignBusinessCard
         business={business}
       />
+    </Grid>
+
+
     )
   );
 };
 
-const createCampaigns = (businesses: Array<Business>) : Array<JSX.Element> => {
-  businesses.map(async (business: Business, index: number) => {
-    return index;
+const createCampaignCards = (businesses: Array<Business>) : Array<JSX.Element> => {
+  const campaigns: Array<JSX.Element> = [];
+
+  businesses.forEach((business: Business) => {
+    if (business.campaignsMap) {
+      business.campaignsMap!.forEach((campaign: Campaign, key: string) => {
+
+      });
+    }
   });
-  return [];
+  return campaigns;
 }
 
 const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
-  const { error, loading, businesses } = props;
+  const { error, loading, businesses, setBusinesses } = props;
   const styles = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
 
+  const addCampaign = async (business: Business, campaign: Campaign) => {
+    // add the campaign map if it doesn't already exist!
+    if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
+
+    const campaignId = uuidv4();
+    business.campaignsMap!.set(campaignId, campaign);
+
+    // update current business object 
+    const updateBusinesses = [...businesses];
+
+    await UpdateBusiness(business);
+  };
+
   const handleModalClose = () => {
     setModalOpen(false);
-  }
+  };
 
   return (
     <>
@@ -86,16 +112,20 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
       </Alert>
       }  
       <div className={styles.root}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} alignItems="center">
           <Grid item xs={12}>
           <Card>
                 <CardHeader
                 />
                 <CardContent>
+                <Grid container spacing={1} alignItems="center" direction="column">
+                  <Grid item xs={6}>
                   <Typography variant="h3" className={styles.title}>
-                    Campaigns
+                    Businesses
                   </Typography>
+                  </Grid>
                   {createBusinessCards(businesses)}
+                </Grid>
                 </CardContent>
             </Card>
           </Grid>
@@ -104,10 +134,15 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
                 <CardHeader
                 />
                 <CardContent>
-                <Typography variant="h3" className={styles.title}>
-                  Campaigns
-                </Typography>
-                  {createCampaigns(businesses)}
+
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item xs={12}>
+                  <Typography variant="h3" className={styles.title}>
+                    Campaigns
+                  </Typography>
+                  </Grid>
+                  {createCampaignCards(businesses)}
+                </Grid>
                 </CardContent>
             </Card>
           </Grid>
@@ -120,6 +155,7 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
         <AddCampaignModal
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
+          businesses={businesses} 
         />
       </div>
     </>

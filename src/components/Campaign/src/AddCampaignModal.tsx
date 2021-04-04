@@ -15,6 +15,8 @@ import {
 
 import CloseIcon from "@material-ui/icons/Close";
 import Loader from "react-loader-spinner";
+import Business, { Campaign } from "../../../model/business";
+import { UpdateBusiness } from "../../../accessor/Business";
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -88,12 +90,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const addCampaign = async (business: Business, campaign: Campaign, campaignId: string) => {
+  if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
+
+  business.campaignsMap!.set(campaignId, campaign);
+
+  await UpdateBusiness(business);
+};
+
 interface IAddCampaignModal {
   modalOpen: boolean;
   handleModalClose: () => void;
+  businesses: Array<Business>;
+
 }
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
-  const { modalOpen, handleModalClose } = props;
+  const { modalOpen, handleModalClose, businesses } = props;
 
   const [isLoading, setIsLoading] = useState(false);
   const styles = useStyles();

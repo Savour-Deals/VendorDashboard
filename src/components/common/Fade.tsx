@@ -1,20 +1,10 @@
 import React from 'react';
 import { animated, useSpring } from "react-spring";
 import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
   createStyles, 
-  Grid, 
-  IconButton, 
-  Button, 
   makeStyles, 
-  Modal, 
-  TextField, 
   Theme, 
-  List, 
-  ListItem, 
-  Typography
+
 } from "@material-ui/core";
 
 interface FadeProps {

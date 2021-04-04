@@ -29,7 +29,7 @@ const useStyles = makeStyles(
     },
     businessCard: {
       margin: theme.spacing(2),
-      width: "80%",
+      width: "100%",
     }
 
   }),
@@ -47,10 +47,10 @@ const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
       />
       <CardContent>
         <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Phone #: {business.phoneNumber}
+            Phone #: {business.twilioNumber}
           </Typography>
           <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Number of Subscribers: {business.subscriberCount}
+            Number of Subscribers: {business.subscriberMap.size}
           </Typography>
       </CardContent>
       

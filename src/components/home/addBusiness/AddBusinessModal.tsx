@@ -117,7 +117,6 @@ interface IAddBusinessModal {
   isLoading: boolean;
   handleClose: () => void;
   addBusiness: (business: Business) => void;
-  businesses: Array<Business>;
   stripe?: any;
   elements?: any;
 }
