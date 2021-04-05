@@ -3,12 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-
-import Business from "../../../model/business";
-
-interface ICampaignBusinessCard {
-  business: Business;
-};
+import Business, { Campaign } from "../../../model/business";
 
 const useStyles = makeStyles(
   (theme: Theme) =>
@@ -31,13 +26,18 @@ const useStyles = makeStyles(
       margin: theme.spacing(2),
       width: "100%",
     }
-    
+
   }),
 );
 
-const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
+interface ICampaignCard {
+  business: Business;
+  campaign: Campaign;
+}
 
-  const { business } = props;
+const CampaignCard: React.FC<ICampaignCard> = props => {
+
+  const { business, campaign } = props;
   const styles = useStyles();
 
   return (
@@ -56,6 +56,6 @@ const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
       
     </Card>
   );
-}
+};
 
-export default CampaignBusinessCard;
+export default CampaignCard;

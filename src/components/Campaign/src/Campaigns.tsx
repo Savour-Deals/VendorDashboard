@@ -14,6 +14,7 @@ import {
 
 import { Loading } from "../../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
+import CampaignCard from "./CampaignCard";
 import { AuthenticatedPageProperties } from "../../../model/page";
 import Business, { Campaign } from "../../../model/business";
 import AddCampaignModal from "./AddCampaignModal";
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
   return businesses.map((business: Business): JSX.Element => (
-    <Grid item xs={12}>
+    <Grid item xs={8}>
       <CampaignBusinessCard
         business={business}
       />
@@ -71,7 +72,12 @@ const createCampaignCards = (businesses: Array<Business>) : Array<JSX.Element> =
   businesses.forEach((business: Business) => {
     if (business.campaignsMap) {
       business.campaignsMap!.forEach((campaign: Campaign, key: string) => {
-
+        campaigns.push(
+          <CampaignCard
+            business={business}
+            campaign={campaign}
+          />
+        )
       });
     }
   });
@@ -91,10 +97,13 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
     const campaignId = uuidv4();
     business.campaignsMap!.set(campaignId, campaign);
 
-    // update current business object 
-    const updateBusinesses = [...businesses];
 
     await UpdateBusiness(business);
+
+    // update current business object 
+    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id ===  business.id ? business : oldBusiness);
+
+    setBusinesses(updatedBusinesses);
   };
 
   const handleModalClose = () => {
@@ -148,7 +157,7 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
           </Grid>
           <Grid item xs={12}>
             <Button className={styles.button} onClick={() => setModalOpen(true)}>
-              Create Campaign
+              Run New Campaign
             </Button>
           </Grid>
         </Grid>
@@ -156,6 +165,7 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
           businesses={businesses} 
+          addCampaign={addCampaign}
         />
       </div>
     </>

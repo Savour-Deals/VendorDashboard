@@ -11,12 +11,15 @@ import {
   Modal, 
   Theme, 
   Dialog,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
 import Loader from "react-loader-spinner";
 import Business, { Campaign } from "../../../model/business";
-import { UpdateBusiness } from "../../../accessor/Business";
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -86,29 +89,32 @@ const useStyles = makeStyles((theme: Theme) =>
       border: '1px solid #CCC',
       boxShadow: 'inset 0 1px 1px rgba(102, 175, 233, 0.6)',
       lineHeight: '1.3333333'
-    }
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
   })
 );
 
-const addCampaign = async (business: Business, campaign: Campaign, campaignId: string) => {
-  if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
-
-  business.campaignsMap!.set(campaignId, campaign);
-
-  await UpdateBusiness(business);
-};
 
 interface IAddCampaignModal {
   modalOpen: boolean;
   handleModalClose: () => void;
   businesses: Array<Business>;
+  addCampaign: (business: Business, campaign: Campaign) => Promise<void>;
 
 }
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   const { modalOpen, handleModalClose, businesses } = props;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const styles = useStyles();
+
+  const handleBusinessSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const business = event.target.value as Business;
+  };
 
   return (
     <Modal open={modalOpen} onClose={handleModalClose}>
@@ -121,7 +127,26 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
               </IconButton>
             }/>
           <CardContent>
-          <Dialog open={isLoading}>
+            <FormControl className={styles.formControl}>
+            <InputLabel id="business-dropdown-label">Business</InputLabel>
+
+              <Select
+                value={selectedBusiness ? selectedBusiness.businessName : ""}
+                onChange={handleBusinessSelection}
+                label="Business"
+              >
+                {businesses.map((business: Business) => (
+                  <MenuItem
+                    value={business as any}
+                    key={business.id}
+                  >
+                    {business.businessName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Dialog open={isLoading}>
               <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
             </Dialog>
           </CardContent>

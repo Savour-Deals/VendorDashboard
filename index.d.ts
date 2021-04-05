@@ -39,33 +39,6 @@ declare interface UserAuth {
   error: any;
 }
 
-declare interface Vendor {
-  placeId: string;
-  vendorName: string;
-  primaryAddress: string;
-  buttonId?: string;
-  vendorDescription?: string;
-  onboardMessage?: string;
-  presetMessages?: string[];
-  subscribers?: object;
-  twilioNumber?: string;
-}
-
-declare interface VendorState {
-  placeId: string;
-  vendorName: string;
-  primaryAddress: string;
-  isOpen: boolean;
-  buttonId?: string;
-  vendorDescription?: string;
-  onboardDeal?: string;
-  singleClickDeal?: string;
-  doubleClickDeal?: string;
-  subscribers?: object;
-}
-
-
-
 declare interface SignUpData {
   email: string;
   password: string;
