@@ -171,14 +171,17 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                   </Grid>
                   <Grid item xs={6}>
                     <KeyboardDatePicker
+                      disableToolbar
                       variant="inline"
-                      ampm={false}
-                      label="With keyboard"
+                      format="MM/dd/yyyy"
+                      margin="normal"
+                      id="date-picker-inline"
+                      label="Date picker inline"
                       value={selectedDate}
                       onChange={handleDateChange}
-                      onError={console.log}
-                      disablePast
-                      format="yyyy/MM/dd HH:mm"
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
                     />
                   </Grid>
                   <Grid item xs={6}>
