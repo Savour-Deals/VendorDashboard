@@ -15,11 +15,22 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Grid,
+  TextField,
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
 import Loader from "react-loader-spinner";
 import Business, { Campaign } from "../../../model/business";
+
+
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -91,8 +102,7 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: '1.3333333'
     },
     formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
+      minWidth: 300,
     },
   })
 );
@@ -110,49 +120,89 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const styles = useStyles();
 
   const handleBusinessSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
     const business = event.target.value as Business;
+    setSelectedBusiness(business);
   };
 
+  const handleDateChange = (date: Date | null) => setSelectedDate(date);
+
   return (
-    <Modal open={modalOpen} onClose={handleModalClose}>
-      <Fade in={modalOpen}>
-        <Card>
-        <CardHeader
-            action={
-              <IconButton onClick={handleModalClose}>
-                <CloseIcon/>
-              </IconButton>
-            }/>
-          <CardContent>
-            <FormControl className={styles.formControl}>
-            <InputLabel id="business-dropdown-label">Business</InputLabel>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <Modal open={modalOpen} onClose={handleModalClose}>
+        <Fade in={modalOpen}>
+          <Card>
+          <CardHeader
+              action={
+                <IconButton onClick={handleModalClose}>
+                  <CloseIcon/>
+                </IconButton>
+              }/>
+            <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Campaign Name"
+                      variant="outlined"
+                      className={styles.formControl}
+                    />
+                  </Grid> 
+                  <Grid item xs={6}>
+                    <FormControl className={styles.formControl} variant="outlined">
+                    <InputLabel id="business-dropdown-label">Business</InputLabel>
+                      <Select
+                        value={selectedBusiness ? selectedBusiness.businessName : ""}
+                        onChange={handleBusinessSelection}
+                        label="Business"
+                      >
+                        {businesses.map((business: Business) => (
+                          <MenuItem
+                            value={business as any}
+                            key={business.id}
+                          >
+                            {business.businessName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <KeyboardDatePicker
+                      variant="inline"
+                      ampm={false}
+                      label="With keyboard"
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      onError={console.log}
+                      disablePast
+                      format="yyyy/MM/dd HH:mm"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <KeyboardTimePicker
+                      margin="normal"
+                      id="time-picker"
+                      label="Time picker"
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change time',
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              <Dialog open={isLoading}>
+                <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
+              </Dialog>
+            </CardContent>
+          </Card>
+        </Fade>
+      </Modal>
+    </MuiPickersUtilsProvider>
 
-              <Select
-                value={selectedBusiness ? selectedBusiness.businessName : ""}
-                onChange={handleBusinessSelection}
-                label="Business"
-              >
-                {businesses.map((business: Business) => (
-                  <MenuItem
-                    value={business as any}
-                    key={business.id}
-                  >
-                    {business.businessName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            <Dialog open={isLoading}>
-              <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
-            </Dialog>
-          </CardContent>
-        </Card>
-      </Fade>
-    </Modal>
   );
 };
 

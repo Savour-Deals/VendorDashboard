@@ -247,7 +247,7 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
                         value={businessName}
                         variant="outlined"
                         onChange={businessNameChange}
-                      />
+                      />  
                     </ListItem>
                     <ListItem>
                       <TextField
