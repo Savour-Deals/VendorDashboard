@@ -44,6 +44,7 @@ function loadScript(src: string, position: HTMLElement | null, id: string) {
 }
 
 const autocompleteService = { current: null };
+const placeDetailsService = { current: null };
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -75,13 +76,21 @@ export const BusinessSearchBox: React.FC<ISearchBox> = props => {
     loaded.current = true;
   }
 
-  const getPlaceInformation = (options: any, part?: any) => {
-    const restaurantName: string = options.structured_formatting.main_text;
-    const address: string = options.structured_formatting.secondary_text;
-    setVendorName(restaurantName);
-    setPrimaryAddress(address);
+  const getPlaceInformation = async (options: any, part?: any) => {
+    if (!placeDetailsService.current && (window as any).google) {
+      placeDetailsService.current = new (window as any).google.maps.places.PlacesService(document.getElementById('places'));
+    }
+
+    (placeDetailsService.current as any).getDetails({
+      placeId: options.place_id
+    }, function(result: any, status: any) {
+      if (result) {
+        setVendorName(result.name);
+        setPrimaryAddress(result.formatted_address);
+      }
+    });     
     setSearchInput(options.description);
-  }
+  } 
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchInput(event.target.value);
@@ -121,63 +130,66 @@ export const BusinessSearchBox: React.FC<ISearchBox> = props => {
   }, [searchInput, fetch]);
 
   return (
-    <AutoComplete
-      style={{ width: "100%", }}
-      getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
-      filterOptions={x => x}
-      options={options}
-      autoComplete
-      includeInputInList
-      freeSolo
-      closeIcon={
-        <CloseIcon
-          fontSize="small"
-          onClick={() => {
-            setSearchInput("");
-          }} 
-        />
-      }
-      autoSelect
-      inputValue={searchInput}
-      renderInput={params => (
-        <TextField
-          {...params}
-          label="Business Address Look-up"
-          variant="outlined"
-          fullWidth
-          value={searchInput}	
-          rowsMax="4"
-          color="primary"
-          
-          className={classes.field}
-          onChange={handleChange}
-        />
-      )}
-      renderOption={option => {
-        const matches = option.structured_formatting.main_text_matched_substrings;
-        const parts = parse(
-          option.structured_formatting.main_text,
-          matches.map((match: any) => [match.offset, match.offset + match.length]),
-        );
+    <>
+      <div id="places"></div>
+      <AutoComplete
+        style={{ width: "100%", }}
+        getOptionLabel={option => (typeof option === 'string' ? option : option.description)}
+        filterOptions={x => x}
+        options={options}
+        autoComplete
+        includeInputInList
+        freeSolo
+        closeIcon={
+          <CloseIcon
+            fontSize="small"
+            onClick={() => {
+              setSearchInput("");
+            }} 
+          />
+        }
+        autoSelect
+        inputValue={searchInput}
+        renderInput={params => (
+          <TextField
+            {...params}
+            label="Business Address Look-up"
+            variant="outlined"
+            fullWidth
+            value={searchInput}	
+            rowsMax="4"
+            color="primary"
+            
+            className={classes.field}
+            onChange={handleChange}
+          />
+        )}
+        renderOption={option => {
+          const matches = option.structured_formatting.main_text_matched_substrings;
+          const parts = parse(
+            option.structured_formatting.main_text,
+            matches.map((match: any) => [match.offset, match.offset + match.length]),
+          );
 
-        return (
-          <Grid container alignItems="center" onClick={() => getPlaceInformation(option)}>
-            <Grid item>
-              <LocationOnIcon className={classes.icon} onClick={() => getPlaceInformation(option)} />
+          return (
+            <Grid container alignItems="center" onClick={() => getPlaceInformation(option)}>
+              <Grid item>
+                <LocationOnIcon className={classes.icon} onClick={() => getPlaceInformation(option)} />
+              </Grid>
+              <Grid item xs>
+                {parts.map((part: any, index: any) => (
+                  <span onClick={() => getPlaceInformation(option, part)} key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
+                    {part.text}
+                  </span>
+                ))}
+                <Typography variant="body2" color="textSecondary"  onClick={() => getPlaceInformation(option)}>
+                  {option.structured_formatting.secondary_text}
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item xs>
-              {parts.map((part: any, index: any) => (
-                <span onClick={() => getPlaceInformation(option, part)} key={index} style={{ fontWeight: part.highlight ? 700 : 400 }}>
-                  {part.text}
-                </span>
-              ))}
-              <Typography variant="body2" color="textSecondary"  onClick={() => getPlaceInformation(option)}>
-                {option.structured_formatting.secondary_text}
-              </Typography>
-            </Grid>
-          </Grid>
-        );
-      }}
-    />
+          );
+        }}
+      />
+    </>
   )
 }

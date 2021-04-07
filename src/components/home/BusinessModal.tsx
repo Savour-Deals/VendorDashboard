@@ -9,7 +9,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 
 import { SendMessage } from '../../accessor/Message';
 import Business from '../../model/business';
-import { MessageInputForm } from './addBusiness/MessageInputForm';
+import { MessageInputForm } from '../business/addBusiness/MessageInputForm';
 
 interface IBusinessModal {
   business: Business;
@@ -50,7 +50,6 @@ const BusinessModal: React.FC<IBusinessModal> = props => {
   
   const { business, businessState, toggleBusinessModal, updateBusiness } = props;
   const styles = useStyles();
-
 
   const [selectedMessage, setSelectedMessage] = useState(0);
   const [loading, setLoading] = useState(false);

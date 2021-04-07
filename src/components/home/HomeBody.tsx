@@ -8,13 +8,14 @@ import { StripeProvider, Elements } from "react-stripe-elements";
 
 import { Loading } from "../common/Loading";
 import BusinessModal from "./BusinessModal";
-import AddBusinessModal from "./addBusiness/AddBusinessModal";
+import AddBusinessModal from "../business/addBusiness/AddBusinessModal";
 
 import config from "../../config";
-import { UpdateBusiness } from "../../accessor/Business";
+import { GetBusinesses, UpdateBusiness } from "../../accessor/Business";
 import Business from "../../model/business";
 
 import { AuthenticatedPageProperties } from "../../model/page";
+import { UpdateBusinessUser } from "../../accessor/BusinessUser";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
 
-  const {loading, error, businesses, setBusinesses, setError, setLoading } = props;
+  const {loading, error, businesses, businessUser, setBusinessUser, setBusinesses, setError, setLoading } = props;
   const INIT_BUSINESS_STATE:  {[key: string]: boolean} = {};
 
 
@@ -55,16 +56,15 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
 
   const [stripe, setStripe] = useState(null);
   const [businessState, setBusinessState] = useState<{[key: string]: boolean}>({});
-  const [open, setOpen] = useState(false);
+  const [addBusinessModelOpen, setAddBusinessModelOpen] = useState(false);
 
   const styles = useStyles();
-
 
   const updateBusiness = async (updatedBusiness: Business) => {
     try {
       await UpdateBusiness(updatedBusiness);
     } catch(error) {
-      setError("Your profile could not be updated");
+      setError("An error occured updating ");
       toggleBusinessModal(updatedBusiness.id, false);
     }
     const updatedBusinessList = [];
@@ -84,8 +84,30 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
   }, []);
 
 
-  function handleClose() {
-    setOpen(false);
+  async function onClose(business?: Business) {
+    setAddBusinessModelOpen(false);
+    if (business && businessUser) {
+      setLoading(true);
+      businessUser.businesses.push(business.id);
+      try {
+        const newBusinessUser = await UpdateBusinessUser(businessUser);
+        setBusinessUser(newBusinessUser);
+        const { businesses, errors } = await GetBusinesses(businessUser.businesses);
+        if (errors.length === 0) {
+          setLoading(false);
+          setBusinesses(businesses);
+        } else {
+          setBusinesses([]);
+          setLoading(false);
+          setError("Failed to load businesses");
+        }
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
+        setError("Failed to add business to account. Try again and contact us if this persists");
+      }
+      setLoading(false);
+    }
   }
 
   function toggleBusinessModal(id: string, isOpen: boolean) {
@@ -109,14 +131,6 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
     );
   }
 
-  function toggleModal() {
-    setOpen(!open);
-  }
-
-
-  function addBusiness(business: Business) {
-    setBusinesses([...businesses, business])
-  }
   return ( 
     <div className={styles.root}>
     <StripeProvider stripe={stripe}>
@@ -143,15 +157,15 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
           <Button 
             variant="contained"   
             className={styles.button} 
-            onClick={toggleModal}>
+            onClick={() => setAddBusinessModelOpen(true)}>
               Add Business
           </Button>
           <Elements>
             <AddBusinessModal
-              open={open}
-              handleClose={handleClose}
+              open={addBusinessModelOpen}
+              onClose={onClose}
               isLoading={loading}
-              addBusiness={addBusiness}
+              onError={(e) => setError(e)}
             />
           </Elements>
         </div>
