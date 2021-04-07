@@ -47,42 +47,15 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       padding: theme.spacing(2),
     },
-
+    businessCards: {
+      minWidth: "80%",
+    },
   }),
 );
 
 
 
-const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
-  return businesses.map((business: Business): JSX.Element => (
-    <Grid item xs={8}>
-      <CampaignBusinessCard
-        business={business}
-      />
-    </Grid>
 
-
-    )
-  );
-};
-
-const createCampaignCards = (businesses: Array<Business>) : Array<JSX.Element> => {
-  const campaigns: Array<JSX.Element> = [];
-
-  businesses.forEach((business: Business) => {
-    if (business.campaignsMap) {
-      business.campaignsMap!.forEach((campaign: Campaign, key: string) => {
-        campaigns.push(
-          <CampaignCard
-            business={business}
-            campaign={campaign}
-          />
-        )
-      });
-    }
-  });
-  return campaigns;
-}
 
 const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const { error, loading, businesses, setBusinesses } = props;
@@ -90,6 +63,36 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
 
   const [modalOpen, setModalOpen] = useState(false);
 
+  const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
+    return businesses.map((business: Business): JSX.Element => (
+      <Grid item xs={12} className={styles.businessCards}> 
+        <CampaignBusinessCard
+          business={business}
+        />
+      </Grid>
+  
+  
+      )
+    );
+  };
+  
+  const createCampaignCards = (businesses: Array<Business>) : Array<JSX.Element> => {
+    const campaigns: Array<JSX.Element> = [];
+  
+    businesses.forEach((business: Business) => {
+      if (business.campaignsMap) {
+        business.campaignsMap!.forEach((campaign: Campaign, key: string) => {
+          campaigns.push(
+            <CampaignCard
+              business={business}
+              campaign={campaign}
+            />
+          )
+        });
+      }
+    });
+    return campaigns;
+  }
   const addCampaign = async (business: Business, campaign: Campaign) => {
     // add the campaign map if it doesn't already exist!
     if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
