@@ -19,6 +19,7 @@ import {
   TextField,
   Container,
   Typography,
+  Button,
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
@@ -163,7 +164,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
     return messageOptions
   }
-  const submitCampaign = () => {
+  const createCampaign = () => {
 
   };
 
@@ -282,6 +283,20 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                         }}
                       />
                     </Grid> 
+                    <Grid item xs={8}>
+                      <Typography variant="h6">
+                        Cost to run campaign: $$
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button
+                          variant="contained"
+                          className={styles.button}
+                          onClick={createCampaign}
+                        >
+                          Launch Campaign
+                        </Button>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Container>
