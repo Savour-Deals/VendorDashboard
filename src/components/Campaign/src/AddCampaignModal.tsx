@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import Fade from '../../common/Fade';
 
 import { 
@@ -17,6 +17,8 @@ import {
   InputLabel,
   Grid,
   TextField,
+  Container,
+  Typography,
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
@@ -50,9 +52,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     textInput: {
       width: '100%'
-    },
-    inputGrid: {
-      margin: theme.spacing(3),
     },
     inputList: {
       flexGrow: 1
@@ -104,6 +103,12 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       minWidth: 300,
     },
+    inputGrid: {
+      margin: theme.spacing(16),
+    },
+    textArea: {
+      minWidth: "80%",
+    }
   })
 );
 
@@ -121,6 +126,11 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [campaignName, setCampaignName] = useState("");
+  const [messageUrl, setMessageUrl] = useState("");
+  const [message, setMessage] = useState("");
+
+
   const styles = useStyles();
 
   const handleBusinessSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
@@ -129,7 +139,35 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   };
 
   const handleDateChange = (date: Date | null) => setSelectedDate(date);
+  const handleMessageUrlChange = (event: React.ChangeEvent<{ value: string }>) => setMessageUrl(event.target.value);
+  const handleCampaignNameChange = (event: React.ChangeEvent<{ value: string }>) => setCampaignName(event.target.value);
 
+  const getMessageOptions = (business: Business) => {
+    const messageOptions = business.presetMessages.map((message: string, index: number) => (
+        <MenuItem
+        value={message}
+        key={index}
+        >
+          {message}
+        </MenuItem>
+      )
+    );
+
+    messageOptions.push(
+      <MenuItem
+      value={business.onboardMessage}
+      >
+        {business.onboardMessage}
+      </MenuItem>
+    );
+
+    return messageOptions
+  }
+  const submitCampaign = () => {
+
+  };
+
+  const handleMessageChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown; }>) => setMessage(event.target.value as string);
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Modal open={modalOpen} onClose={handleModalClose}>
@@ -142,19 +180,26 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                 </IconButton>
               }/>
             <CardContent>
-                <Grid container spacing={1}>
+            <Typography variant="h2">
+                Create a Campaign
+              </Typography>
+              <Container maxWidth="lg" className={styles.formFields}>
+              
+                <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <TextField
                       label="Campaign Name"
                       variant="outlined"
+                      value={campaignName}
+                      onChange={handleCampaignNameChange}
                       className={styles.formControl}
                     />
                   </Grid> 
                   <Grid item xs={6}>
                     <FormControl className={styles.formControl} variant="outlined">
-                    <InputLabel id="business-dropdown-label">Business</InputLabel>
+                      <InputLabel id="business-dropdown-label">Business</InputLabel>
                       <Select
-                        value={selectedBusiness ? selectedBusiness.businessName : ""}
+                        value={selectedBusiness}
                         onChange={handleBusinessSelection}
                         label="Business"
                       >
@@ -170,33 +215,77 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                     </FormControl>
                   </Grid>
                   <Grid item xs={6}>
-                    <KeyboardDatePicker
-                      disableToolbar
-                      variant="inline"
-                      format="MM/dd/yyyy"
-                      margin="normal"
-                      id="date-picker-inline"
-                      label="Date picker inline"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
+                    <FormControl className={styles.formControl} variant="outlined">
+                      <InputLabel id="business-dropdown-label">Messages</InputLabel>
+                      <Select
+                        value={message}
+                        onChange={handleMessageChange}
+                        disabled={ selectedBusiness === null}
+                        label="Messages"
+                      >
+                        {selectedBusiness 
+                          ? getMessageOptions(selectedBusiness)
+                          : null
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid> 
+                  <Grid item xs={12}>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Campaign message (limit 100 characters)"
+                      multiline
+                      rows={4}
+                      defaultValue=""
+                      value={message}
+                      onChange={handleMessageChange}
+                      variant="outlined"
+                      className={styles.textArea}
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <KeyboardTimePicker
-                      margin="normal"
-                      id="time-picker"
-                      label="Time picker"
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change time',
-                      }}
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Link included in message"
+                      value={messageUrl}
+                      onChange={handleMessageUrlChange}
+                      variant="outlined"
+                      className={styles.textArea}
                     />
+                  </Grid>
+                  <Grid item xs={12} container spacing={1}>
+                    <Grid item xs={6}>
+                      <KeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
+                        format="MM/dd/yyyy"
+                        margin="normal"
+                        id="date-picker-inline"
+                        label="Date picker inline"
+                        className={styles.formControl}
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <KeyboardTimePicker
+                        margin="normal"
+                        id="time-picker"
+                        label="Time picker"
+                        className={styles.formControl}
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change time',
+                        }}
+                      />
+                    </Grid> 
                   </Grid>
                 </Grid>
+              </Container>
+            
               <Dialog open={isLoading}>
                 <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
               </Dialog>
