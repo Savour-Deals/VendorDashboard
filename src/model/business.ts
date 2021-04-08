@@ -24,4 +24,5 @@ export interface Campaign {
   startDateTime: string;
   message: string;
 	textCount: number;
+	messageUrl?: string;
 }

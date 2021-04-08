@@ -55,8 +55,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 
-
-
 const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const { error, loading, businesses, setBusinesses } = props;
   const styles = useStyles();
@@ -104,7 +102,7 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
     await UpdateBusiness(business);
 
     // update current business object 
-    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id ===  business.id ? business : oldBusiness);
+    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === business.id ? business : oldBusiness);
 
     setBusinesses(updatedBusinesses);
   };
@@ -168,6 +166,7 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
           modalOpen={modalOpen}
           handleModalClose={handleModalClose}
           businesses={businesses} 
+          setBusinesses={setBusinesses}
           addCampaign={addCampaign}
         />
       </div>

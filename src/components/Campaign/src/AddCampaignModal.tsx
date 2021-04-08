@@ -25,6 +25,9 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import Loader from "react-loader-spinner";
 import Business, { Campaign } from "../../../model/business";
+import { UpdateBusiness } from "../../../accessor/Business";
+
+import { v4 as uuidv4 } from 'uuid';
 
 
 import 'date-fns';
@@ -119,10 +122,11 @@ interface IAddCampaignModal {
   handleModalClose: () => void;
   businesses: Array<Business>;
   addCampaign: (business: Business, campaign: Campaign) => Promise<void>;
+  setBusinesses: (business: Business[]) => void;
 
 }
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
-  const { modalOpen, handleModalClose, businesses } = props;
+  const { modalOpen, handleModalClose, businesses, setBusinesses } = props;
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
@@ -164,8 +168,35 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
     return messageOptions
   }
-  const createCampaign = () => {
+  const createCampaign = async () => {
+    if (!selectedBusiness) {
+      alert("Please select a business for the campaign");
+      return;
+    }
 
+    if (!selectedDate) {
+      alert("Please select a start date for the campaign");
+      return;
+    }
+
+    const campaign: Campaign = {
+      businessId: selectedBusiness!.id,
+      campaignName,
+      startDateTime: selectedDate!.toISOString(),
+      message,
+      textCount: 0,
+      messageUrl
+    };
+    
+    if (!selectedBusiness.campaignsMap) selectedBusiness.campaignsMap = new Map<string, Campaign>();
+    const campaignId = uuidv4();
+    selectedBusiness.campaignsMap!.set(campaignId, campaign);
+    await UpdateBusiness(selectedBusiness);
+
+    // update current business object 
+    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === selectedBusiness.id ? selectedBusiness : oldBusiness);
+
+    setBusinesses(updatedBusinesses);
   };
 
   const handleMessageChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown; }>) => setMessage(event.target.value as string);
@@ -221,7 +252,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                       <Select
                         value={message}
                         onChange={handleMessageChange}
-                        disabled={ selectedBusiness === null}
+                        disabled={selectedBusiness === null}
                         label="Messages"
                       >
                         {selectedBusiness 
