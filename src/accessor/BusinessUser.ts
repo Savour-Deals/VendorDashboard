@@ -55,12 +55,15 @@ export async function CreateBusinessUser(user: BusinessUser): Promise<BusinessUs
 	);
 }
 export async function AddBusiness(businessUserId: string, businessId: string): Promise<void> {
+
+	const user: BusinessUser = await GetBusinessUser(businessUserId);
+
 	return API.put(
 		PATHS.BUSINESS_USER.api,
 		PATHS.BUSINESS_USER.UPDATE.replace("{id}", businessUserId), 
 		{
 			body: {
-				businesses: businessId,
+				businesses: [ ...(user.businesses || []), businessId],
 			}
 		}
 	);

@@ -169,6 +169,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
     return messageOptions
   }
   const createCampaign = async () => {
+    setIsLoading(true);
     if (!selectedBusiness) {
       alert("Please select a business for the campaign");
       return;
@@ -191,15 +192,26 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
     if (!selectedBusiness.campaignsMap) selectedBusiness.campaignsMap = new Map<string, Campaign>();
     const campaignId = uuidv4();
     selectedBusiness.campaignsMap!.set(campaignId, campaign);
-    await UpdateBusiness(selectedBusiness);
+    console.log(selectedBusiness);
+
+    try {
+      const res = await UpdateBusiness(selectedBusiness);
+
+      console.log(res);
+    } catch (e) {
+      console.log("Sorry, your campaign could not be created");
+    }
 
     // update current business object 
     const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === selectedBusiness.id ? selectedBusiness : oldBusiness);
 
     setBusinesses(updatedBusinesses);
+    setIsLoading(false);
+
   };
 
   const handleMessageChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown; }>) => setMessage(event.target.value as string);
+  
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Modal open={modalOpen} onClose={handleModalClose}>
