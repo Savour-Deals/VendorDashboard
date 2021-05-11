@@ -60,6 +60,7 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const styles = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [campaigns, setCampaigns] = useState([]);
 
   const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
     return businesses.map((business: Business): JSX.Element => (

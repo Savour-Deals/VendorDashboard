@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import Fade from '../../common/Fade';
 
 import { 
@@ -26,6 +26,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Loader from "react-loader-spinner";
 import Business, { Campaign } from "../../../model/business";
 import { UpdateBusiness } from "../../../accessor/Business";
+import { CreateCampaignRequest, CreateCampaign } from "../../../accessor/Message";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -125,6 +126,7 @@ interface IAddCampaignModal {
   setBusinesses: (business: Business[]) => void;
 
 }
+
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   const { modalOpen, handleModalClose, businesses, setBusinesses } = props;
 
@@ -168,7 +170,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
     return messageOptions
   }
-  const createCampaign = async () => {
+  const createCampaign = useCallback(async () => {
     setIsLoading(true);
     if (!selectedBusiness) {
       alert("Please select a business for the campaign");
@@ -189,26 +191,42 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
       messageUrl
     };
     
-    if (!selectedBusiness.campaignsMap) selectedBusiness.campaignsMap = new Map<string, Campaign>();
+    const createCampaignRequest: CreateCampaignRequest = {
+      message,
+      link: messageUrl,
+      businessId: selectedBusiness!.id,
+      campaignDateTimeUtc: selectedDate!.toUTCString(),
+    };
+
+    const business = Object.assign({}, selectedBusiness);
+    if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
     const campaignId = uuidv4();
-    selectedBusiness.campaignsMap!.set(campaignId, campaign);
-    console.log(selectedBusiness);
+    business.campaignsMap!.set(campaignId, campaign);
+    console.log(business);
+
 
     try {
-      const res = await UpdateBusiness(selectedBusiness);
+      CreateCampaign(createCampaignRequest);
+    } catch (error) {
+      alert("Sorry, your campaign could not be created");
+    }
+    try {
+      const res = await UpdateBusiness(business);
 
       console.log(res);
     } catch (e) {
-      console.log("Sorry, your campaign could not be created");
+      alert("Sorry, your campaign could not be created");
+      setIsLoading(false);
+
     }
 
     // update current business object 
-    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === selectedBusiness.id ? selectedBusiness : oldBusiness);
+    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === business.id ? business : oldBusiness);
 
     setBusinesses(updatedBusinesses);
     setIsLoading(false);
 
-  };
+  }, []);
 
   const handleMessageChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown; }>) => setMessage(event.target.value as string);
   

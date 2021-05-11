@@ -2,6 +2,7 @@ export const PATHS = {
 	MESSAGE: {
 		api: "message",
 		CREATE_NUMBER: "/message/number",
+		CREATE_CAMPAIGN: "/message/create",
 		SEND_MESSAGE: "/message/send"
 	},
 	BUSINESS: {
