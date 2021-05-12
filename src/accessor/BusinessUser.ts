@@ -27,6 +27,7 @@ export async function CreateBusinessUser(user: BusinessUser): Promise<BusinessUs
 		}
 	);
 }
+
 export async function UpdateBusinessUser(businessUser: BusinessUser): Promise<BusinessUser> {
 	return API.put(
 		PATHS.BUSINESS_USER.api,

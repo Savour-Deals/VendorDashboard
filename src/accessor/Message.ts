@@ -6,6 +6,13 @@ declare interface CreateNumberResponse {
   number: string;
 }
 
+export interface CreateCampaignRequest {
+	message: string,
+	link: string,
+	businessId: string,
+	campaignDateTimeUtc: string
+};
+
 export async function CreateNumber(businessId: string): Promise<string> {
 	return API.post(
 		PATHS.MESSAGE.api,
@@ -21,7 +28,6 @@ export async function CreateNumber(businessId: string): Promise<string> {
 declare interface SendMessageResponse {
   messageId: string;
 }
-
 export async function SendMessage(id: string, message: string, link?: string): Promise<string> {
 	return API.post(
 		PATHS.MESSAGE.api,
@@ -35,3 +41,13 @@ export async function SendMessage(id: string, message: string, link?: string): P
 		}
 	).then((response: SendMessageResponse) => response.messageId);
 }
+
+export async function CreateCampaign(request: CreateCampaignRequest): Promise<any> {
+	return API.post(
+		PATHS.MESSAGE.api,
+		PATHS.MESSAGE.CREATE_CAMPAIGN, 
+		{
+			body: request,
+		}
+	);
+}	

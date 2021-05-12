@@ -1,9 +1,10 @@
 import React from 'react';
 import { animated, useSpring } from "react-spring";
-import {  
+import { 
   createStyles, 
   makeStyles, 
   Theme, 
+
 } from "@material-ui/core";
 
 interface FadeProps {

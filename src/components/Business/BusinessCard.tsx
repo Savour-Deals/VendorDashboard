@@ -4,9 +4,6 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import React from "react";
 
-interface IBusinessCard {
-  vendor: Vendor;
-};
 
 const BusinessCard: React.FC = () => {
   return (

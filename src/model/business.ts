@@ -22,6 +22,8 @@ export interface SubscriberInfo {
 export interface Campaign {
   businessId: string;
   campaignName: string;
-  startDateTime: Date;
+  startDateTime: string;
   message: string;
+	textCount: number;
+	messageUrl?: string;
 }

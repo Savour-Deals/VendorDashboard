@@ -49,7 +49,7 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
   const INIT_BUSINESS_STATE:  {[key: string]: boolean} = {};
 
 
-  // initialize vendor modal state (everything is closed)
+  // initialize business modal state (everything is closed)
   for (const business of businesses) {
     INIT_BUSINESS_STATE[business.id] = false;
   }
