@@ -28,7 +28,6 @@ export async function CreateNumber(businessId: string): Promise<string> {
 declare interface SendMessageResponse {
   messageId: string;
 }
-
 export async function SendMessage(id: string, message: string, link?: string): Promise<string> {
 	return API.post(
 		PATHS.MESSAGE.api,

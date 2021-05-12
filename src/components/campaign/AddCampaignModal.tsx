@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import Fade from '../../common/Fade';
+import Fade from '../common/Fade';
 
 import { 
   Card, 
-  CardContent, 
   CardHeader, 
+  CardContent,
   createStyles, 
   IconButton, 
   makeStyles, 
@@ -24,9 +24,9 @@ import {
 
 import CloseIcon from "@material-ui/icons/Close";
 import Loader from "react-loader-spinner";
-import Business, { Campaign } from "../../../model/business";
-import { UpdateBusiness } from "../../../accessor/Business";
-import { CreateCampaignRequest, CreateCampaign } from "../../../accessor/Message";
+import Business, { Campaign } from "../../model/business";
+import { UpdateBusiness } from "../../accessor/Business";
+import { CreateCampaignRequest, CreateCampaign } from "../../accessor/Message";
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -182,15 +182,6 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
       return;
     }
 
-    const campaign: Campaign = {
-      businessId: selectedBusiness!.id,
-      campaignName,
-      startDateTime: selectedDate!.toISOString(),
-      message,
-      textCount: 0,
-      messageUrl
-    };
-    
     const createCampaignRequest: CreateCampaignRequest = {
       message,
       link: messageUrl,
@@ -198,32 +189,12 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
       campaignDateTimeUtc: selectedDate!.toUTCString(),
     };
 
-    const business = Object.assign({}, selectedBusiness);
-    if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
-    const campaignId = uuidv4();
-    business.campaignsMap!.set(campaignId, campaign);
-    console.log(business);
-
-
     try {
       CreateCampaign(createCampaignRequest);
     } catch (error) {
       alert("Sorry, your campaign could not be created");
     }
-    try {
-      const res = await UpdateBusiness(business);
 
-      console.log(res);
-    } catch (e) {
-      alert("Sorry, your campaign could not be created");
-      setIsLoading(false);
-
-    }
-
-    // update current business object 
-    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === business.id ? business : oldBusiness);
-
-    setBusinesses(updatedBusinesses);
     setIsLoading(false);
 
   }, []);

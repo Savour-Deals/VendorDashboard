@@ -52,6 +52,4 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
   );
 });
 
-
-
 export default Fade;

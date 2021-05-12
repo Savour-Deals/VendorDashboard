@@ -1,19 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { Login }  from "./components/Account/Login";
+import { Login }  from "./components/account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { HomeBody } from "./components/Home/HomeBody";
+import { HomeBody } from "./components/home/HomeBody";
 import { withHeader } from "./components/common/withHeader";
-import { CreateAccount } from "./components/Account/CreateAccount";
+import { CreateAccount } from "./components/account/CreateAccount";
 import Amplify from 'aws-amplify';
 import config from "./config";
 import { Loading } from "./components/common/Loading";
-import ResetAccount from "./components/Account/ResetAccount";
+import ResetAccount from "./components/account/ResetAccount";
 import { PATHS } from "./accessor/paths";
-import { Campaigns } from "./components/Campaign"
+import { Campaigns } from "./components/campaign/Campaigns"
 import { useCallback } from "react";
-import { GetBusinesses } from "./accessor/BusinessUser";
+import { GetBusinessUser } from "./accessor/BusinessUser";
 import Business from "./model/business";
+import { GetBusinesses } from "./accessor/Business";
+import BusinessUser from "./model/businessUser";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -46,60 +48,67 @@ const App: React.FC<IApp> = props => {
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [businesses, setBusinesses] = useState<Array<Business>>([]);
-
+  const [businessUser, setBusinessUser] = useState<BusinessUser>();
   console.log(userContext);
 
-  const loadBusinesses = useCallback(async (username: string) => {
-    const { loadedBusinesses, error } = await GetBusinesses(username);
+  const loadData = useCallback(async (username: string) => {
+    const { businessUser, error } = await GetBusinessUser(username);
+    if (error) {
+      setLoading(false);
+      setError("Failed to load your profile");
+    }
+    setBusinessUser(businessUser);
+    const { businesses, errors } = await GetBusinesses(businessUser.businesses);
 
-    if (!error) {
-      setBusinesses(loadedBusinesses);
+    if (errors.length === 0) {
+      setBusinesses(businesses);
       setLoading(false);
       setError("");
     } else {
       setLoading(false);
       setError("Failed to load your profile");
     }
-
-  }, [setBusinesses, setLoading, userContext.user]);
+  }, [setBusinesses, setLoading]);
 
 
   useEffect(() => {
     if (userContext.user) {
       setLoading(true);
-      loadBusinesses(userContext.user.username);
+      loadData(userContext.user.username);
     }
-  }, [loadBusinesses]);
+  }, [loadData, userContext.user]);
 
   const pageProps =  {
     error,
     loading,
+    businessUser,
     businesses,
+    setBusinessUser,
     setBusinesses,
     setLoading,
     setError,
   };
 
   return (
-      <>
-        <BrowserRouter>
-        {userContext.isLoading && 
-          <Loading/>
-        }
-        <Switch>
-            <Route path="/login" render={() => <Login {...loginProps} />}/>
-            <Route path="/create-account" render={() => <CreateAccount/>}/>
-            <Route path="/reset-account" render={() => <ResetAccount/>}/>
-            <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
-            <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(Campaigns, pageProps)} />
+    <>
+      <BrowserRouter>
+      {userContext.isLoading && 
+        <Loading/>
+      }
+      <Switch>
+          <Route path="/login" render={() => <Login {...loginProps} />}/>
+          <Route path="/create-account" render={() => <CreateAccount/>}/>
+          <Route path="/reset-account" render={() => <ResetAccount/>}/>
+          <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
+          <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(Campaigns, pageProps)} />
 
-          </Switch>
-          {
-            userContext.isAuthenticated
-            ? <Redirect to="/index" />
-            : <Redirect to="/login" />
-          }
-        </BrowserRouter>
+        </Switch>
+        {
+          userContext.isAuthenticated
+          ? <Redirect to="/index" />
+          : <Redirect to="/login" />
+        }
+      </BrowserRouter>
     </>
   );
 }

@@ -20,6 +20,24 @@ export function GetBusiness(businessId: string): Promise<Business> {
 	);
 }
 
+export async function GetBusinesses(businessIds: Array<string>): Promise<{businesses: Array<Business>, errors: Array<string>}> {
+	const businessPromises = businessIds ? businessIds.map((id: string) => GetBusiness(id)) : [];
+	
+	const businesses: Array<Business> = [];
+	const errors: Array<string> = [];
+	for (const businessPromise of businessPromises) {
+		try {
+			const business: Business = await businessPromise;
+			businesses.push(business);
+		} catch (e) {
+			errors.push(e);
+		}
+
+	}
+
+	return { businesses, errors };
+}
+
 export function UpdateBusiness(business: Business): Promise<Business> {
 	return API.put(
 		PATHS.BUSINESS.api,

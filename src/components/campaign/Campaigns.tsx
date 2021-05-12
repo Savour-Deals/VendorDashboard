@@ -12,15 +12,15 @@ import {
 
 } from "@material-ui/core";
 
-import { Loading } from "../../common/Loading";
+import { Loading } from "../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
 import CampaignCard from "./CampaignCard";
-import { AuthenticatedPageProperties } from "../../../model/page";
-import Business, { Campaign } from "../../../model/business";
+import { AuthenticatedPageProperties } from "../../model/page";
+import Business, { Campaign } from "../../model/business";
 import AddCampaignModal from "./AddCampaignModal";
 import { v4 as uuidv4 } from 'uuid';
 
-import { UpdateBusiness } from "../../../accessor/Business";
+import { UpdateBusiness } from "../../accessor/Business";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 
-const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
+export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const { error, loading, businesses, setBusinesses } = props;
   const styles = useStyles();
 
@@ -174,5 +174,3 @@ const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
     </>
   )
 };
-
-export default Campaigns; 

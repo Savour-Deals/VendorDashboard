@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import Business from "../../../model/business";
+import Business from "../../model/business";
 
 interface ICampaignBusinessCard {
   business: Business;
@@ -47,7 +47,7 @@ const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
       />
       <CardContent>
         <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Phone #: {business.twilioNumber}
+            Phone #: {business.messagingNumber}
           </Typography>
           <Typography className={styles.title} color="textSecondary" gutterBottom>
             Number of Subscribers: {business.subscriberMap.size}
