@@ -11,7 +11,6 @@ export default interface Business {
 	stripeUsageSubItem?: string,
 	messagingNumber?: string,
 	subscriberMap: Map<string, SubscriberInfo>,
-	campaignsMap?: Map<string, Campaign>,
 }
 
 export interface SubscriberInfo {
@@ -20,10 +19,14 @@ export interface SubscriberInfo {
 }
 
 export interface Campaign {
-  businessId: string;
-  campaignName: string;
-  startDateTime: string;
-  message: string;
-	textCount: number;
-	messageUrl?: string;
+	id: string,
+	campaignName: string,
+	campaignStatus: string,
+	businessId: string,
+	message: string,
+	link?: string,
+	campaignDateTimeUtc: string
+	createdDateTimeUtc: string,
+	lastUpdatedDateTimeUtc: string,
+	twilioResponse?: any[],
 }

@@ -1,10 +1,8 @@
 import { API } from "aws-amplify";
 import { PATHS } from "./paths";
+import { Campaign } from '../model/business';
 
-
-
-//TODO: change any to MessageAudit list type
-export async function GetAll(businessId: string): Promise<any> {
+export async function GetAll(businessId: string): Promise<Array<Campaign>> {
 	return API.get(
 		PATHS.PUSH.api,
 		PATHS.PUSH.GET_ALL.replace("{id}", businessId), 
@@ -12,8 +10,7 @@ export async function GetAll(businessId: string): Promise<any> {
 	);
 }
 
-//TODO: change any to MessageAudit type
-export async function Get(uid: string): Promise<any> {
+export async function Get(uid: string): Promise<Campaign> {
 	return API.get(
 		PATHS.PUSH.api,
 		PATHS.PUSH.GET.replace("{id}", uid), 

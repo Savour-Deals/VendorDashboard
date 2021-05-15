@@ -142,6 +142,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
   const handleBusinessSelection = (event: React.ChangeEvent<{ value: unknown }>) => {
     const business = event.target.value as Business;
+    console.log(business);
     setSelectedBusiness(business);
   };
 
@@ -174,11 +175,15 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
     setIsLoading(true);
     if (!selectedBusiness) {
       alert("Please select a business for the campaign");
+      setIsLoading(false);
+
       return;
     }
 
     if (!selectedDate) {
       alert("Please select a start date for the campaign");
+      setIsLoading(false);
+
       return;
     }
 
@@ -190,14 +195,16 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
     };
 
     try {
-      CreateCampaign(createCampaignRequest);
+      const campaignResult = await CreateCampaign(createCampaignRequest);
+      console.log(campaignResult);
     } catch (error) {
+      console.log(error);
       alert("Sorry, your campaign could not be created");
     }
 
     setIsLoading(false);
 
-  }, []);
+  }, [selectedBusiness, selectedDate, messageUrl, message]);
 
   const handleMessageChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown; }>) => setMessage(event.target.value as string);
   
