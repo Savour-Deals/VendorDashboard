@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from 'react';
 import Fade from '../common/Fade';
 
 import { 
@@ -122,13 +122,13 @@ interface IAddCampaignModal {
   modalOpen: boolean;
   handleModalClose: () => void;
   businesses: Array<Business>;
-  addCampaign: (business: Business, campaign: Campaign) => Promise<void>;
+  addCampaign: (campaign: Campaign) => void;
   setBusinesses: (business: Business[]) => void;
 
 }
 
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
-  const { modalOpen, handleModalClose, businesses, setBusinesses } = props;
+  const { modalOpen, handleModalClose, businesses, addCampaign } = props;
 
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
@@ -176,6 +176,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
     if (!selectedBusiness) {
       alert("Please select a business for the campaign");
       setIsLoading(false);
+      handleModalClose();
 
       return;
     }
@@ -183,27 +184,28 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
     if (!selectedDate) {
       alert("Please select a start date for the campaign");
       setIsLoading(false);
+      handleModalClose();
 
       return;
     }
 
     const createCampaignRequest: CreateCampaignRequest = {
       message,
+      campaignName,
       link: messageUrl,
       businessId: selectedBusiness!.id,
       campaignDateTimeUtc: selectedDate!.toUTCString(),
     };
 
     try {
-      const campaignResult = await CreateCampaign(createCampaignRequest);
-      console.log(campaignResult);
+      addCampaign(await CreateCampaign(createCampaignRequest));
     } catch (error) {
       console.log(error);
       alert("Sorry, your campaign could not be created");
     }
 
     setIsLoading(false);
-
+    handleModalClose();
   }, [selectedBusiness, selectedDate, messageUrl, message]);
 
   const handleMessageChange = (event: ChangeEvent<{ name?: string | undefined; value: unknown; }>) => setMessage(event.target.value as string);

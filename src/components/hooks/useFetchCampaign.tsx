@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, SetStateAction, Dispatch } from 'react';
 import Business, { Campaign } from '../../model/business';
 import { GetAll } from '../../accessor/Push';
 import _ from 'lodash';
 
 interface CampaignFetchResult {
   campaigns: Array<Campaign>;
+  setCampaigns: Dispatch<SetStateAction<Campaign[]>>;
   error?: string;
 };
 
@@ -40,7 +41,7 @@ function useFetchCampaign(businesses: Array<Business>): CampaignFetchResult {
     fetchCampaigns();
   }, [fetchCampaigns]);
 
-  return { campaigns, error };
+  return { campaigns, setCampaigns, error };
 }
 
 export default useFetchCampaign;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
@@ -61,7 +61,9 @@ export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
   const styles = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const { campaigns, error } = useFetchCampaign(businesses);
+  const { campaigns, setCampaigns, error } = useFetchCampaign(businesses);
+
+  const addCampaign = (campaign: Campaign) => setCampaigns([...campaigns, campaign]);
 
   const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
     return businesses.map((business: Business): JSX.Element => (
@@ -74,31 +76,11 @@ export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
     );
   };
 
-  useEffect(() => {
-
-  }, []);
-  
   const createCampaignCards = (campaigns: Array<Campaign>) : Array<JSX.Element> => {
     const campaignCards: Array<JSX.Element> = [];
   
     return campaignCards;
   }
-
-  const addCampaign = async (business: Business, campaign: Campaign) => {
-    // add the campaign map if it doesn't already exist!
-    // if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
-
-    // const campaignId = uuidv4();
-    // business.campaignsMap!.set(campaignId, campaign);
-
-
-    // await UpdateBusiness(business);
-
-    // // update current business object 
-    // const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === business.id ? business : oldBusiness);
-
-    // setBusinesses(updatedBusinesses);
-  };
 
   const handleModalClose = () => {
     setModalOpen(false);  
