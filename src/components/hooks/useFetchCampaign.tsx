@@ -18,24 +18,27 @@ function useFetchCampaign(businesses: Array<Business>): CampaignFetchResult {
     businesses.map(async (business: Business) => {
       const res: Promise<Array<Campaign>> = GetAll(business.id)
       .then((campaigns: Array<Campaign>) => {
+        console.log(res);
         return campaigns;
       })
       .catch(e => {
         setError(e);
         return e;
       });
-      
-      campaignPromises.concat(res);
+
+      campaignPromises.push(res);
     });
 
+    console.log(campaignPromises);
+    const campaignsArray = await Promise.all(campaignPromises);
 
-    const campaignsArray = [...(await Promise.all(campaignPromises))];
+    console.log(campaignsArray);
     setCampaigns(_.flatten(campaignsArray));
-  }, []);
+  }, [businesses]);
 
   useEffect(() => {
     fetchCampaigns();
-  }, [campaigns, setCampaigns]);
+  }, [fetchCampaigns]);
 
   return { campaigns, error };
 }

@@ -57,11 +57,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
-  const { error, loading, businesses, setBusinesses } = props;
+  const { loading, businesses, setBusinesses } = props;
   const styles = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const { campaigns } = useFetchCampaign(businesses);
+  const { campaigns, error } = useFetchCampaign(businesses);
 
   const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
     return businesses.map((business: Business): JSX.Element => (
