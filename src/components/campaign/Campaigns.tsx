@@ -14,13 +14,14 @@ import {
 
 import { Loading } from "../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
-import CampaignCard from "./CampaignCard";
 import { AuthenticatedPageProperties } from "../../model/page";
 import Business, { Campaign } from "../../model/business";
 import AddCampaignModal from "./AddCampaignModal";
 import { v4 as uuidv4 } from 'uuid';
 
 import { UpdateBusiness } from "../../accessor/Business";
+import useFetchCampaign from "../hooks/useFetchCampaign";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -56,11 +57,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
-  const { error, loading, businesses, setBusinesses } = props;
+  const { loading, businesses, setBusinesses } = props;
   const styles = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [campaigns, setCampaigns] = useState([]);
+  const { campaigns, setCampaigns, error } = useFetchCampaign(businesses);
+
+  const addCampaign = (campaign: Campaign) => setCampaigns([...campaigns, campaign]);
 
   const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
     return businesses.map((business: Business): JSX.Element => (
@@ -69,47 +72,18 @@ export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
           business={business}
         />
       </Grid>
-  
-  
       )
     );
   };
+
+  const createCampaignCards = (campaigns: Array<Campaign>) : Array<JSX.Element> => {
+    const campaignCards: Array<JSX.Element> = [];
   
-  const createCampaignCards = (businesses: Array<Business>) : Array<JSX.Element> => {
-    const campaigns: Array<JSX.Element> = [];
-  
-    businesses.forEach((business: Business) => {
-      if (business.campaignsMap) {
-        business.campaignsMap!.forEach((campaign: Campaign, key: string) => {
-          campaigns.push(
-            <CampaignCard
-              business={business}
-              campaign={campaign}
-            />
-          )
-        });
-      }
-    });
-    return campaigns;
+    return campaignCards;
   }
-  const addCampaign = async (business: Business, campaign: Campaign) => {
-    // add the campaign map if it doesn't already exist!
-    if (!business.campaignsMap) business.campaignsMap = new Map<string, Campaign>();
-
-    const campaignId = uuidv4();
-    business.campaignsMap!.set(campaignId, campaign);
-
-
-    await UpdateBusiness(business);
-
-    // update current business object 
-    const updatedBusinesses = businesses.map((oldBusiness: Business) =>  oldBusiness.id === business.id ? business : oldBusiness);
-
-    setBusinesses(updatedBusinesses);
-  };
 
   const handleModalClose = () => {
-    setModalOpen(false);
+    setModalOpen(false);  
   };
 
   return (
@@ -152,7 +126,7 @@ export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
                     Campaigns
                   </Typography>
                   </Grid>
-                  {createCampaignCards(businesses)}
+                  {createCampaignCards(campaigns)}
                 </Grid>
                 </CardContent>
             </Card>

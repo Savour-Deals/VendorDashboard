@@ -7,10 +7,11 @@ declare interface CreateNumberResponse {
 }
 
 export interface CreateCampaignRequest {
-	message: string,
-	link: string,
-	businessId: string,
-	campaignDateTimeUtc: string
+	message: string;
+	link: string;
+	businessId: string;
+	campaignDateTimeUtc: string;
+	campaignName: string;
 };
 
 export async function CreateNumber(businessId: string): Promise<string> {
