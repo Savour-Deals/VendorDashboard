@@ -22,7 +22,7 @@ const useStyles = makeStyles(
     pos: {
       marginBottom: 12,
     },
-    businessCard: {
+    campaignCard: {
       margin: theme.spacing(2),
       width: "100%",
     }
@@ -41,17 +41,20 @@ const CampaignCard: React.FC<ICampaignCard> = props => {
   const styles = useStyles();
 
   return (
-    <Card className={styles.businessCard}>
+    <Card className={styles.campaignCard}>
       <CardHeader
-        title={business.businessName}
+        title={campaign.campaignName}
       />
       <CardContent>
         <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Phone #: {business.messagingNumber}
-          </Typography>
-          <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Number of Subscribers: {business.subscriberMap.size}
-          </Typography>
+            {campaign.message}
+        </Typography>
+        <Typography className={styles.title} color="textSecondary" gutterBottom>
+            Campaign will run on: {campaign.campaignDateTimeUtc}
+        </Typography>
+        <Typography className={styles.title} color="textSecondary" gutterBottom>
+            Status: {campaign.campaignStatus}
+        </Typography>
       </CardContent>
       
     </Card>

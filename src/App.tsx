@@ -10,7 +10,7 @@ import config from "./config";
 import { Loading } from "./components/common/Loading";
 import ResetAccount from "./components/account/ResetAccount";
 import { PATHS } from "./accessor/paths";
-import { Campaigns } from "./components/campaign/Campaigns"
+import { CampaignPage } from "./components/campaign/CampaignPage"
 import { useCallback } from "react";
 import { GetBusinessUser } from "./accessor/BusinessUser";
 import Business from "./model/business";
@@ -100,7 +100,7 @@ const App: React.FC<IApp> = props => {
           <Route path="/create-account" render={() => <CreateAccount/>}/>
           <Route path="/reset-account" render={() => <ResetAccount/>}/>
           <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
-          <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(Campaigns, pageProps)} />
+          <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(CampaignPage, pageProps)} />
 
         </Switch>
         {

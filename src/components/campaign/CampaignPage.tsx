@@ -12,16 +12,36 @@ import {
 
 } from "@material-ui/core";
 
+import 'react-multi-carousel/lib/styles.css';
+import Carousel from "react-multi-carousel";
+
 import { Loading } from "../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
 import { AuthenticatedPageProperties } from "../../model/page";
 import Business, { Campaign } from "../../model/business";
 import AddCampaignModal from "./AddCampaignModal";
-import { v4 as uuidv4 } from 'uuid';
-
-import { UpdateBusiness } from "../../accessor/Business";
 import useFetchCampaign from "../hooks/useFetchCampaign";
+import CampaignCard from "./CampaignCard";
 
+const responsive = {
+  superLargeDesktop: {
+    // the naming can be any, depends on you.
+    breakpoint: { max: 4000, min: 3000 },
+    items: 5
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1
+  }
+};
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -56,39 +76,27 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 
-export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
+export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
   const { loading, businesses, setBusinesses } = props;
   const styles = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
   const { campaigns, setCampaigns, error } = useFetchCampaign(businesses);
+  const [selected, setSelected] = useState(businesses.length > 0 ? businesses[0]: null); 
 
   const addCampaign = (campaign: Campaign) => setCampaigns([...campaigns, campaign]);
-
-  const createBusinessCards = (businesses: Array<Business>) : Array<JSX.Element> => {
-    return businesses.map((business: Business): JSX.Element => (
-      <Grid item xs={12} className={styles.businessCards}> 
-        <CampaignBusinessCard
-          business={business}
-        />
-      </Grid>
-      )
-    );
-  };
-
-  const createCampaignCards = (campaigns: Array<Campaign>) : Array<JSX.Element> => {
-    const campaignCards: Array<JSX.Element> = [];
-  
-    return campaignCards;
-  }
 
   const handleModalClose = () => {
     setModalOpen(false);  
   };
 
+  const onBusinessSelected = (business: Business) => {
+    setSelected(business);
+  }
+
   return (
     <>
-          {loading &&
+      {loading &&
         <Loading />
       }
       {error && 
@@ -99,36 +107,35 @@ export const Campaigns: React.FC<AuthenticatedPageProperties> = props => {
       <div className={styles.root}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12}>
-          <Card>
-                <CardHeader
-                />
-                <CardContent>
-                <Grid container spacing={1} alignItems="center" direction="column">
-                  <Grid item xs={6}>
-                  <Typography variant="h3" className={styles.title}>
-                    Businesses
-                  </Typography>
-                  </Grid>
-                  {createBusinessCards(businesses)}
-                </Grid>
-                </CardContent>
-            </Card>
+            <Carousel 
+              responsive={responsive}>
+              {
+                businesses.map((business: Business) => 
+                  <CampaignBusinessCard
+                    business={business}
+                    selected={selected ? selected.id === business.id : false}
+                    onSelect={onBusinessSelected}/>)
+              }
+            </Carousel>
           </Grid>
           <Grid item xs={12}>
             <Card>
-                <CardHeader
-                />
-                <CardContent>
-
-                <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={12}>
-                  <Typography variant="h3" className={styles.title}>
-                    Campaigns
-                  </Typography>
-                  </Grid>
-                  {createCampaignCards(campaigns)}
+              <CardHeader/>
+              <CardContent>
+              <Grid container spacing={1} alignItems="center">
+                <Grid item xs={12}>
+                <Typography variant="h3" className={styles.title}>
+                  Campaigns
+                </Typography>
                 </Grid>
-                </CardContent>
+                {campaigns && selected && 
+                  campaigns.filter((campaign: Campaign) => campaign.businessId === selected.id).map((campaign: Campaign) => <CampaignCard
+                    business={selected}
+                    campaign={campaign}
+                  />)
+                }
+              </Grid>
+              </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12}>

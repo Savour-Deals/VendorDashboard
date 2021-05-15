@@ -8,6 +8,8 @@ import Business from "../../model/business";
 
 interface ICampaignBusinessCard {
   business: Business;
+  onSelect: (business: Business) => void;
+  selected: boolean;
 };
 
 const useStyles = makeStyles(
@@ -29,32 +31,35 @@ const useStyles = makeStyles(
     },
     businessCard: {
       margin: theme.spacing(2),
-      width: "100%",
+      width: "90%",
     }
-    
   }),
 );
 
 const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
 
-  const { business } = props;
+  const { business, onSelect, selected } = props;
   const styles = useStyles();
 
   return (
-    <Card className={styles.businessCard}>
-      <CardHeader
-        title={business.businessName}
-      />
-      <CardContent>
-        <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Phone #: {business.messagingNumber}
-          </Typography>
+    <div onClick={() => onSelect(business)}>
+      <Card 
+        className={styles.businessCard}
+        style={selected ? {
+          backgroundColor: "grey",
+        }: {}}>
+        <CardHeader title={business.businessName}/>
+        <CardContent>
           <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Number of Subscribers: {business.subscriberMap.size}
-          </Typography>
-      </CardContent>
-      
-    </Card>
+              Phone #: {business.messagingNumber}
+            </Typography>
+            <Typography className={styles.title} color="textSecondary" gutterBottom>
+              Number of Subscribers: {business.subscriberMap.size}
+            </Typography>
+        </CardContent>
+      </Card>
+    </div>
+
   );
 }
 

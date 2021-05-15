@@ -1,4 +1,4 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import Fade from '../common/Fade';
 
 import { 
@@ -25,11 +25,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import Loader from "react-loader-spinner";
 import Business, { Campaign } from "../../model/business";
-import { UpdateBusiness } from "../../accessor/Business";
 import { CreateCampaignRequest, CreateCampaign } from "../../accessor/Message";
-
-import { v4 as uuidv4 } from 'uuid';
-
 
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
@@ -124,7 +120,6 @@ interface IAddCampaignModal {
   businesses: Array<Business>;
   addCampaign: (campaign: Campaign) => void;
   setBusinesses: (business: Business[]) => void;
-
 }
 
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
