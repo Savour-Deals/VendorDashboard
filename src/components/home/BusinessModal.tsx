@@ -9,7 +9,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 
 import { SendMessage } from '../../accessor/Message';
 import Business from '../../model/business';
-import { MessageInputForm } from '../business/addBusiness/MessageInputForm';
+import { MessageInputForm } from '../business/addbusiness/MessageInputForm';
 
 interface IBusinessModal {
   business: Business;
