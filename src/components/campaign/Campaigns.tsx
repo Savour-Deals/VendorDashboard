@@ -17,9 +17,7 @@ import CampaignBusinessCard from "./CampaignBusinessCard";
 import { AuthenticatedPageProperties } from "../../model/page";
 import Business, { Campaign } from "../../model/business";
 import AddCampaignModal from "./AddCampaignModal";
-import { v4 as uuidv4 } from 'uuid';
 
-import { UpdateBusiness } from "../../accessor/Business";
 import useFetchCampaign from "../hooks/useFetchCampaign";
 
 const useStyles = makeStyles((theme: Theme) =>

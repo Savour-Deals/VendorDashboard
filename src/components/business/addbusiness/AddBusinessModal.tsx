@@ -130,7 +130,7 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
   const [presetMessages, setPresetMessages] = useState<string[]>([""]); //always start with at least one blank preset
   const [onboardMessage, setOnboardMessage] = useState("");
   const [paymentError, setPaymentError] = useState<string>();
-  const [cardName, setCardName] = useState("");
+  const [cardName, setCardName] = useState(""); // where should this be passed?
   const styles = useStyles();
   const userContext: IUserContext = useContext(UserContext);
   
@@ -160,6 +160,8 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
       subscriberMap: new Map<string, SubscriberInfo>(),
       campaignsMap: new Map<string, Campaign>(),
     };
+    
+    console.log(cardName);
     
     return Promise.all([
       CreateBusiness(business),

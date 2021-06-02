@@ -5,7 +5,6 @@ import { AppBar, Grid, Hidden, IconButton } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 
 import { SideBar } from "./SideBar";
-import { Pages } from "../../constants/Pages";
 
 import LogoWhite from "../../assets/img/brand/Savour_White.png";
 
