@@ -8,7 +8,7 @@ declare interface CreateNumberResponse {
 
 export interface CreateCampaignRequest {
 	message: string;
-	link: string;
+	link?: string;
 	businessId: string;
 	campaignDateTimeUtc: string;
 	campaignName: string;

@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
 import {
-  Card, 
-  CardContent, 
-  CardHeader, 
   Button, 
   Grid,
-  Typography
-
+  Typography,
+  Tab
 } from "@material-ui/core";
 
 import 'react-multi-carousel/lib/styles.css';
@@ -21,7 +18,8 @@ import { AuthenticatedPageProperties } from "../../model/page";
 import Business, { Campaign } from "../../model/business";
 import AddCampaignModal from "./AddCampaignModal";
 import useFetchCampaign from "../hooks/useFetchCampaign";
-import CampaignCard from "./CampaignCard";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { CampaignTable } from "./CampaignTable";
 
 const responsive = {
   superLargeDesktop: {
@@ -71,10 +69,11 @@ const useStyles = makeStyles((theme: Theme) =>
     businessCards: {
       minWidth: "80%",
     },
+    tabs: {
+      width: "100%",
+    }
   }),
 );
-
-
 
 export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
   const { loading, businesses, setBusinesses } = props;
@@ -82,8 +81,8 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const { campaigns, setCampaigns, error } = useFetchCampaign(businesses);
-  const [selected, setSelected] = useState(businesses.length > 0 ? businesses[0]: null); 
-
+  const [selectedBusiness, setSelectedBusiness] = useState(businesses.length > 0 ? businesses[0]: null); 
+  const [selectedTab, setSelectedTab] = useState("0");
   const addCampaign = (campaign: Campaign) => setCampaigns([...campaigns, campaign]);
 
   const handleModalClose = () => {
@@ -91,7 +90,11 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
   };
 
   const onBusinessSelected = (business: Business) => {
-    setSelected(business);
+    setSelectedBusiness(business);
+  }
+
+  const onTabChange = (event: ChangeEvent<{}>, value: string) => {
+    setSelectedTab(value);
   }
 
   return (
@@ -103,55 +106,69 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
       <Alert severity="error">
         {error}
       </Alert>
-      }  
-      <div className={styles.root}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12}>
-            <Carousel 
-              responsive={responsive}>
-              {
-                businesses.map((business: Business) => 
-                  <CampaignBusinessCard
-                    business={business}
-                    selected={selected ? selected.id === business.id : false}
-                    onSelect={onBusinessSelected}/>)
-              }
-            </Carousel>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <CardHeader/>
-              <CardContent>
-              <Grid container spacing={1} alignItems="center">
-                <Grid item xs={12}>
-                <Typography variant="h3" className={styles.title}>
-                  Campaigns
-                </Typography>
-                </Grid>
-                {campaigns && selected && 
-                  campaigns.filter((campaign: Campaign) => campaign.businessId === selected.id).map((campaign: Campaign) => <CampaignCard
-                    business={selected}
-                    campaign={campaign}
-                  />)
+      }
+      {selectedBusiness && 
+        <div className={styles.root}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12}>
+              <Carousel 
+                responsive={responsive}>
+                {
+                  businesses.map((business: Business) => 
+                    <CampaignBusinessCard
+                      business={business}
+                      selected={selectedBusiness ? selectedBusiness.id === business.id : false}
+                      onSelect={onBusinessSelected}/>)
                 }
-              </Grid>
-              </CardContent>
-            </Card>
+              </Carousel>
+            </Grid>
+            <Typography variant="h3" className={styles.title}>
+              {selectedBusiness?.businessName} Campaigns
+            </Typography>
+            <TabContext value={selectedTab}>
+              <TabList 
+                onChange={onTabChange}
+                variant="fullWidth"
+                className={styles.tabs}>
+                <Tab value="0" label="Upcoming and in-progress"/>
+                <Tab value="1" label="Past"/>
+              </TabList>
+              <TabPanel style={{width: '100%'}} value="0">
+                <CampaignTable
+                  campaigns={campaigns
+                    .filter((campaign: Campaign) => campaign.businessId === selectedBusiness.id)
+                    .filter((campaign: Campaign) => Date.parse(campaign.campaignDateTimeUtc) >= Date.now())}
+                />
+              </TabPanel>
+              <TabPanel style={{width: '100%'}} value="1">
+                {campaigns && selectedBusiness && 
+                  <CampaignTable
+                    campaigns={campaigns
+                      .filter((campaign: Campaign) => campaign.businessId === selectedBusiness.id)
+                      .filter((campaign: Campaign) => Date.parse(campaign.campaignDateTimeUtc) < Date.now())}
+                  />
+                }
+              </TabPanel>
+            </TabContext>
+            <Grid item xs={12}>
+              <Button className={styles.button} onClick={() => setModalOpen(true)}>
+                Run New Campaign
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Button className={styles.button} onClick={() => setModalOpen(true)}>
-              Run New Campaign
-            </Button>
-          </Grid>
-        </Grid>
-        <AddCampaignModal
-          modalOpen={modalOpen}
-          handleModalClose={handleModalClose}
-          businesses={businesses} 
-          setBusinesses={setBusinesses}
-          addCampaign={addCampaign}
-        />
-      </div>
+          {modalOpen && 
+            <AddCampaignModal
+              modalOpen={true}
+              handleModalClose={handleModalClose}
+              businesses={businesses} 
+              setBusinesses={setBusinesses}
+              addCampaign={addCampaign}/>
+          }
+
+        </div>
+      }
+      {!selectedBusiness && "No Business"}
+      
     </>
   )
 };

@@ -32,6 +32,16 @@ const useStyles = makeStyles(
     businessCard: {
       margin: theme.spacing(2),
       width: "90%",
+      borderRadius: 10,
+      padding: 10,
+    },
+    businessCardSelected: {
+      margin: theme.spacing(2),
+      width: "90%",
+      borderRadius: 10,
+      padding: 10,
+      boxShadow: '0px 0px 10px #9E9E9E'
+      
     }
   }),
 );
@@ -44,10 +54,7 @@ const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
   return (
     <div onClick={() => onSelect(business)}>
       <Card 
-        className={styles.businessCard}
-        style={selected ? {
-          backgroundColor: "grey",
-        }: {}}>
+        className={selected ? styles.businessCardSelected : styles.businessCard } >
         <CardHeader title={business.businessName}/>
         <CardContent>
           <Typography className={styles.title} color="textSecondary" gutterBottom>
