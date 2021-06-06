@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from 'react';
 
-import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, Button, InputLabel } from "@material-ui/core";
+import { Card, CardContent, CardHeader, createStyles, Fade, Grid, IconButton, makeStyles, Modal, Theme, Button, InputLabel, Dialog } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl/FormControl";
 import Select from "@material-ui/core/Select/Select";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
@@ -145,6 +145,9 @@ const BusinessModal: React.FC<IBusinessModal> = props => {
                     })}>
                     Save
                   </Button>
+                  <Dialog open={loading}>
+                    <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
+                  </Dialog>
                 </CardContent>
               </Card>
             </Fade>
