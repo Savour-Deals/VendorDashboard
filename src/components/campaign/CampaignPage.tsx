@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useMemo, useState } from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
@@ -6,20 +6,22 @@ import {
   Button, 
   Grid,
   Typography,
-  Tab
+  Tab,
+  CircularProgress
 } from "@material-ui/core";
 
 import 'react-multi-carousel/lib/styles.css';
 import Carousel from "react-multi-carousel";
 
-import { Loading } from "../common/Loading";
 import CampaignBusinessCard from "./CampaignBusinessCard";
 import { AuthenticatedPageProperties } from "../../model/page";
-import Business, { Campaign } from "../../model/business";
+import Business from "../../model/business";
+import Campaign from "../../model/campaign";
 import AddCampaignModal from "./AddCampaignModal";
 import useFetchCampaign from "../hooks/useFetchCampaign";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { CampaignTable } from "./CampaignTable";
+import { CampaignTable, CampaignTableType } from "./CampaignTable";
+import { COLORS } from "../../constants/Constants";
 
 const responsive = {
   superLargeDesktop: {
@@ -59,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
         height:"auto",
     },
     button: {
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
@@ -76,11 +78,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
-  const { loading, businesses, setBusinesses } = props;
+  const { businesses, setBusinesses } = props;
   const styles = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const { campaigns, setCampaigns, error } = useFetchCampaign(businesses);
+  const { campaigns, setCampaigns, error, loading } = useFetchCampaign(businesses);
   const [selectedBusiness, setSelectedBusiness] = useState(businesses.length > 0 ? businesses[0]: null); 
   const [selectedTab, setSelectedTab] = useState("0");
   const addCampaign = (campaign: Campaign) => setCampaigns([...campaigns, campaign]);
@@ -97,15 +99,23 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
     setSelectedTab(value);
   }
 
+  const {upcoming, past} = useMemo(() => {
+    if (selectedBusiness) {
+      const businessCampaigns = campaigns
+        .filter((campaign: Campaign) => campaign.businessId === selectedBusiness.id);
+      const upcoming = businessCampaigns.filter((campaign: Campaign) => Date.parse(campaign.campaignDateTimeUtc) >= Date.now());
+      const past = businessCampaigns.filter((campaign: Campaign) => Date.parse(campaign.campaignDateTimeUtc) < Date.now());
+      return {upcoming, past};
+    }
+    return {upcoming: [], past: []};
+  }, [campaigns, selectedBusiness]);
+
   return (
     <>
-      {loading &&
-        <Loading />
-      }
       {error && 
-      <Alert severity="error">
-        {error}
-      </Alert>
+        <Alert severity="error">
+          {error}
+        </Alert>
       }
       {selectedBusiness && 
         <div className={styles.root}>
@@ -134,26 +144,42 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
                 <Tab value="1" label="Past"/>
               </TabList>
               <TabPanel style={{width: '100%'}} value="0">
-                <CampaignTable
-                  campaigns={campaigns
-                    .filter((campaign: Campaign) => campaign.businessId === selectedBusiness.id)
-                    .filter((campaign: Campaign) => Date.parse(campaign.campaignDateTimeUtc) >= Date.now())}
-                />
+                {(!loading && upcoming.length > 0)&&
+                  <CampaignTable
+                    campaigns={upcoming}
+                    type={CampaignTableType.UPCOMING}
+                  />
+                }
+                {(!loading  && upcoming.length === 0) &&
+                  <Typography variant="subtitle1">
+                    No campaigns scheduled. Schedule a new campaign!
+                  </Typography>
+                }
               </TabPanel>
               <TabPanel style={{width: '100%'}} value="1">
-                {campaigns && selectedBusiness && 
+                {(!loading && past.length > 0)&&
                   <CampaignTable
-                    campaigns={campaigns
-                      .filter((campaign: Campaign) => campaign.businessId === selectedBusiness.id)
-                      .filter((campaign: Campaign) => Date.parse(campaign.campaignDateTimeUtc) < Date.now())}
+                    campaigns={past}
+                    type={CampaignTableType.PAST}
                   />
+                }
+                {(!loading && past.length === 0)&&
+                  <Typography variant="subtitle1">
+                    No campaigns have run. Schedule a new campaign!
+                  </Typography>
                 }
               </TabPanel>
             </TabContext>
+
             <Grid item xs={12}>
-              <Button className={styles.button} onClick={() => setModalOpen(true)}>
-                Run New Campaign
-              </Button>
+              {loading &&
+                <CircularProgress/>
+              }
+              {!loading && 
+                <Button className={styles.button} onClick={() => setModalOpen(true)}>
+                  Run New Campaign
+                </Button>
+              }
             </Grid>
           </Grid>
           {modalOpen && 
@@ -162,9 +188,9 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
               handleModalClose={handleModalClose}
               businesses={businesses} 
               setBusinesses={setBusinesses}
-              addCampaign={addCampaign}/>
+              addCampaign={addCampaign}
+              selectedBusiness={selectedBusiness}/>
           }
-
         </div>
       }
       {!selectedBusiness && "No Business"}

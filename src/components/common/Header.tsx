@@ -7,6 +7,7 @@ import { Menu } from "@material-ui/icons";
 import { SideBar } from "./SideBar";
 
 import LogoWhite from "../../assets/img/brand/Savour_White.png";
+import { COLORS } from "../../constants/Constants";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
     },
     drawer: {
       width: drawerWidth,

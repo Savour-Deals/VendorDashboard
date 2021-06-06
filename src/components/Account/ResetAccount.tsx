@@ -14,6 +14,7 @@ import {
 import { TextField } from '@material-ui/core';
 import { Auth } from "aws-amplify";
 import { useHistory } from 'react-router-dom';
+import { COLORS } from "../../constants/Constants";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
     img: {
       width: "100%",
       height: 125,
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
     },
     button: {
       background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',

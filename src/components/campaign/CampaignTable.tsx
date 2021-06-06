@@ -8,10 +8,11 @@ import {
 	TableBody, 
 	createStyles,
 	makeStyles,
-	Theme
+	Theme,
 } from "@material-ui/core";
-import React from "react";
-import { Campaign } from "../../model/business";
+import React, { useMemo } from "react";
+import Campaign from "../../model/campaign";
+import { CampaignRow } from "./CampaignRow";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,13 +25,26 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export enum CampaignTableType {
+	UPCOMING,
+	PAST
+}
+
 interface IAddCampaignTable {
   campaigns: Campaign[];
+	type: CampaignTableType;
 }
 
 export const CampaignTable: React.FC<IAddCampaignTable> = props => {
-	const { campaigns } = props;
+	const { campaigns, type } = props;
   const styles = useStyles();
+
+	const dateTimeTitle: string = useMemo(() => {
+		if (type === CampaignTableType.UPCOMING) {
+			return "Go-live date"
+		}
+		return "Date"
+	}, [type])
 
   return (
 		<TableContainer 				
@@ -42,21 +56,17 @@ export const CampaignTable: React.FC<IAddCampaignTable> = props => {
         <TableHead>
           <TableRow>
             <TableCell>Title</TableCell>
-            <TableCell >Go-live date</TableCell>
+            <TableCell >{dateTimeTitle}</TableCell>
             <TableCell >Status</TableCell>
             <TableCell >Message</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {campaigns.map((campaign) => (
-            <TableRow key={campaign.id}>
-              <TableCell component="th" scope="row">
-                {campaign.campaignName}
-              </TableCell>
-              <TableCell >{campaign.campaignDateTimeUtc}</TableCell>
-              <TableCell >{campaign.campaignStatus}</TableCell>
-              <TableCell >{campaign.message}</TableCell>
-            </TableRow>
+            <CampaignRow
+							campaign={campaign}
+							type={type}
+						/>
           ))}
         </TableBody>
       </Table>

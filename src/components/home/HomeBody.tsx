@@ -16,6 +16,7 @@ import Business from "../../model/business";
 
 import { AuthenticatedPageProperties } from "../../model/page";
 import { UpdateBusinessUser } from "../../accessor/BusinessUser";
+import { COLORS } from "../../constants/Constants";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
         height:"auto",
     },
     button: {
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },

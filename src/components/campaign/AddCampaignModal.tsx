@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 
 import { 
   createStyles, 
@@ -18,7 +18,8 @@ import {
   Tab
 } from "@material-ui/core";
 
-import Business, { Campaign } from "../../model/business";
+import Business from "../../model/business";
+import Campaign from "../../model/campaign";
 import { CreateCampaignRequest, CreateCampaign } from "../../accessor/Message";
 
 import 'date-fns';
@@ -29,6 +30,9 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
+import { COLORS } from "../../constants/Constants";
+import { secondsToFuzzy } from '../../utils/customHooks/timeUtils';
+import { numberToCurrency } from '../../utils/formatters/currencyFormatter';
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -43,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.grey[500],
     },
     actionButton: {
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
@@ -53,16 +57,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: 'auto',
       width: '75%',
     },
-    // textArea: {
-    //   width: "100%",
-    //   margin: theme.spacing(1),
-    // },
     halfFormField: {
       margin: theme.spacing(1),
       width: '45%',
     },
     fullFormField: {
-      margin: theme.spacing(1),
+      margin: theme.spacing(2),
       width: '90%',
     }
   })
@@ -77,6 +77,7 @@ interface IAddCampaignModal {
   modalOpen: boolean;
   handleModalClose: () => void;
   businesses: Array<Business>;
+  selectedBusiness: Business;
   addCampaign: (campaign: Campaign) => void;
   setBusinesses: (business: Business[]) => void;
 }
@@ -85,7 +86,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   const { modalOpen, handleModalClose, businesses, addCampaign } = props;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedBusiness, setSelectedBusiness] = useState<Business>(businesses[0]);
+  const [selectedBusiness, setSelectedBusiness] = useState<Business>(props.selectedBusiness);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [campaignName, setCampaignName] = useState<string | undefined>();
   const [messageUrl, setMessageUrl] = useState<string | undefined>();
@@ -120,6 +121,21 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
     return messageOptions
   }
+
+  const costPerMessage = 0.02;
+  const perMessageCost = numberToCurrency(costPerMessage);
+  const subscriberCount = useMemo(() => {
+    return selectedBusiness.subscriberMap ? Object.keys(selectedBusiness.subscriberMap).length : 0;
+  }, [selectedBusiness]);
+
+  const totalCost = useMemo(() => {
+    return numberToCurrency(subscriberCount * costPerMessage);
+  }, [subscriberCount])
+
+  const estimatedMessageTime = useMemo(() => {
+    //based on ~1 message per second spec from Twilio
+    return secondsToFuzzy(subscriberCount);
+  }, [subscriberCount])
 
   const createCampaign = useCallback(async () => {
     setIsLoading(true);
@@ -283,8 +299,11 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
             }}
             fullWidth
           />
-          <Typography variant="h6">
-            Cost to run campaign: $$
+          <Typography variant="body1">
+            Cost to run campaign: {subscriberCount} (subscribers) x {perMessageCost} = {totalCost}
+          </Typography>
+          <Typography variant="body1">
+            Time to run campaign: {estimatedMessageTime}
           </Typography>
           <DialogActions>
             <Button

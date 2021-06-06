@@ -34,9 +34,11 @@ import { UserContext } from "../../../auth/UserContext";
 import { CreateNumber } from "../../../accessor/Message";
 import { CreateBusiness } from "../../../accessor/Business";
 import { CreateSubscription } from "../../../accessor/Payment";
-import Business, { SubscriberInfo, Campaign } from "../../../model/business";
+import Business, { SubscriberInfo } from "../../../model/business";
+import Campaign from "../../../model/campaign";
 import Fade from "../../common/Fade";
 import { Alert } from "@material-ui/lab";
+import { COLORS } from "../../../constants/Constants";
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -79,7 +81,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }
     },
     button: {
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
@@ -209,7 +211,7 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
             }/>
           <CardContent className={styles.cardContent} >
             <Dialog open={isLoading}>
-              <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
+              <Loader type="ThreeDots" color={COLORS.primary.light} height={100} width={100}/>
             </Dialog>
             <form>
               <Typography variant="h1">
