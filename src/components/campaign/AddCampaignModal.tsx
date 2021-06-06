@@ -85,7 +85,7 @@ interface IAddCampaignModal {
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   const { modalOpen, handleModalClose, businesses, addCampaign } = props;
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business>(props.selectedBusiness);
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [campaignName, setCampaignName] = useState<string | undefined>();
@@ -187,7 +187,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
     setIsLoading(false);
     handleModalClose();
-  }, [selectedBusiness, selectedDate, messageUrl, preselectMessage, customMessage, campaignName]);
+  }, [selectedBusiness, selectedDate, messageUrl, preselectMessage, customMessage, campaignName, addCampaign, handleModalClose, selectedTab]);
 
   const onTabChange = (_event: ChangeEvent<{}>, value: string) => {
     setSelectedTab(value);
@@ -312,6 +312,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                 Cancel
             </Button>
             <Button
+              disabled={loading}
               variant="contained"
               className={styles.actionButton}
               onClick={createCampaign}>

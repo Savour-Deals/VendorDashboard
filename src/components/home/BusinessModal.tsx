@@ -9,8 +9,9 @@ import CancelIcon from "@material-ui/icons/Cancel";
 
 import { SendMessage } from '../../accessor/Message';
 import Business from '../../model/business';
-import { MessageInputForm } from '../business/addBusiness/MessageInputForm';
+import { MessageInputForm } from '../business/addbusiness/MessageInputForm';
 import { COLORS } from '../../constants/Constants';
+import Loader from 'react-loader-spinner';
 
 interface IBusinessModal {
   business: Business;
@@ -146,7 +147,7 @@ const BusinessModal: React.FC<IBusinessModal> = props => {
                     Save
                   </Button>
                   <Dialog open={loading}>
-                    <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
+                    <Loader type="ThreeDots" color={COLORS.primary.light} height={100} width={100}/>
                   </Dialog>
                 </CardContent>
               </Card>

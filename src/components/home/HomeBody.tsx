@@ -8,7 +8,6 @@ import { StripeProvider, Elements } from "react-stripe-elements";
 
 import { Loading } from "../common/Loading";
 import BusinessModal from "./BusinessModal";
-import AddBusinessModal from "../business/addbusiness/AddBusinessModal";
 
 import config from "../../config";
 import { GetBusinesses, UpdateBusiness } from "../../accessor/Business";
@@ -17,6 +16,7 @@ import Business from "../../model/business";
 import { AuthenticatedPageProperties } from "../../model/page";
 import { UpdateBusinessUser } from "../../accessor/BusinessUser";
 import { COLORS } from "../../constants/Constants";
+import AddBusinessModal from "../business/addbusiness/AddBusinessModal";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
