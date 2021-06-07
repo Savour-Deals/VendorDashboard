@@ -92,21 +92,31 @@ const App: React.FC<IApp> = props => {
   return (
     <>
       <BrowserRouter>
-      {userContext.isLoading && 
-        <Loading/>
-      }
-      <Switch>
-          <Route path="/login" render={() => <Login {...loginProps} />}/>
-          <Route path="/create-account" render={() => <CreateAccount/>}/>
-          <Route path="/reset-account" render={() => <ResetAccount/>}/>
-          <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
-          <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(CampaignPage, pageProps)} />
-
-        </Switch>
-        {
-          userContext.isAuthenticated
-          ? <Redirect to="/index" />
-          : <Redirect to="/login" />
+        {userContext.isLoading && 
+          <Loading/>
+        }
+        {!userContext.isLoading && 
+          <>
+            {!userContext.isAuthenticated && 
+              <Switch>
+                <Route path="/login" render={() => <Login {...loginProps} />}/>
+                <Route path="/create-account" render={() => <CreateAccount/>}/>
+                <Route path="/reset-account" render={() => <ResetAccount/>}/>
+                <Route path="/*">
+                    <Redirect to="/login" />
+                </Route>
+              </Switch>
+            }
+            {userContext.isAuthenticated && 
+              <Switch>
+                <PrivateRoute path="/home" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
+                <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(CampaignPage, pageProps)} />
+                <Route path="/*">
+                    <Redirect to="/home" />
+                </Route>
+              </Switch>
+            }
+          </>
         }
       </BrowserRouter>
     </>

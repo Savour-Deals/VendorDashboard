@@ -70,7 +70,7 @@ export const Login: React.FC<any> = (props) => {
 
   async function handleSignIn() {
     await handleLogin(email, password);
-    history.push("/index");
+    history.push("/home");
   }
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {

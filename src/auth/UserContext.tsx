@@ -44,6 +44,13 @@ function reducer(state: IUserContext, action: any) {
         ...state,
         isLoading: true
       }
+    case "LOGOUT_USER":
+      return {
+        ...state,
+        user: undefined,
+        isLoading: false,
+        isAuthenticated: false,
+      }
     default:
       return state;
   }
