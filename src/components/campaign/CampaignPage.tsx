@@ -3,12 +3,17 @@ import React, { ChangeEvent, useMemo, useState } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
 import {
-  Button, 
   Grid,
   Typography,
   Tab,
-  CircularProgress
+  CircularProgress,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Button
 } from "@material-ui/core";
+import AddIcon from '@material-ui/icons/Add';
 
 import 'react-multi-carousel/lib/styles.css';
 import Carousel from "react-multi-carousel";
@@ -46,9 +51,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      textAlign: "center",
-      alignItems: "center",
-      alignContent: "center",
       paddingLeft: 250,
       [theme.breakpoints.only('sm')]: {
         paddingLeft: theme.spacing(1),
@@ -119,68 +121,83 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
       }
       {selectedBusiness && 
         <div className={styles.root}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12}>
-              <Carousel 
-                responsive={responsive}>
-                {
-                  businesses.map((business: Business) => 
-                    <CampaignBusinessCard
-                      business={business}
-                      selected={selectedBusiness ? selectedBusiness.id === business.id : false}
-                      onSelect={onBusinessSelected}/>)
-                }
-              </Carousel>
-            </Grid>
-            <Typography variant="h3" className={styles.title}>
-              {selectedBusiness?.businessName} Campaigns
-            </Typography>
-            <TabContext value={selectedTab}>
-              <TabList 
-                onChange={onTabChange}
-                variant="fullWidth"
-                className={styles.tabs}>
-                <Tab value="0" label="Upcoming and in-progress"/>
-                <Tab value="1" label="Past"/>
-              </TabList>
-              <TabPanel style={{width: '100%'}} value="0">
-                {(!loading && upcoming.length > 0)&&
-                  <CampaignTable
-                    campaigns={upcoming}
-                    type={CampaignTableType.UPCOMING}
-                  />
-                }
-                {(!loading  && upcoming.length === 0) &&
-                  <Typography variant="subtitle1">
-                    No campaigns scheduled. Schedule a new campaign!
-                  </Typography>
-                }
-              </TabPanel>
-              <TabPanel style={{width: '100%'}} value="1">
-                {(!loading && past.length > 0)&&
-                  <CampaignTable
-                    campaigns={past}
-                    type={CampaignTableType.PAST}
-                  />
-                }
-                {(!loading && past.length === 0)&&
-                  <Typography variant="subtitle1">
-                    No campaigns have run. Schedule a new campaign!
-                  </Typography>
-                }
-              </TabPanel>
-            </TabContext>
+          <Carousel 
+            responsive={responsive}>
+            {
+              businesses.map((business: Business) => 
+                <CampaignBusinessCard
+                  business={business}
+                  selected={selectedBusiness ? selectedBusiness.id === business.id : false}
+                  onSelect={onBusinessSelected}/>)
+            }
+          </Carousel>
+          <Divider />
+          <Typography variant="h3" className={styles.title}>
+            {selectedBusiness?.businessName}
+          </Typography>
+          <List>
+            <ListItem>
+              <ListItemText primary="Address" secondary={selectedBusiness?.address}/>
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Phone number" secondary={selectedBusiness?.messagingNumber}/>
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Number of subscribers" secondary={Object.keys(selectedBusiness.subscriberMap).length}/>
+            </ListItem>
+          </List>
+          <Divider />
+          <Typography variant="h3" className={styles.title}>
+            Campaigns           
+            {!loading && 
+              <Button 
+                className={styles.button} 
+                onClick={() => setModalOpen(true)}>
+                <AddIcon/> Create Campaign
+              </Button>
+            }
+          </Typography>
 
-            <Grid item xs={12}>
-              {loading &&
-                <CircularProgress/>
+          <br/>
+          <TabContext value={selectedTab}>
+            <TabList 
+              onChange={onTabChange}
+              variant="fullWidth"
+              className={styles.tabs}>
+              <Tab value="0" label="Upcoming and in-progress"/>
+              <Tab value="1" label="Past"/>
+            </TabList>
+            <TabPanel style={{width: '100%'}} value="0">
+              {(!loading && upcoming.length > 0)&&
+                <CampaignTable
+                  campaigns={upcoming}
+                  type={CampaignTableType.UPCOMING}
+                />
               }
-              {!loading && 
-                <Button className={styles.button} onClick={() => setModalOpen(true)}>
-                  Run New Campaign
-                </Button>
+              {(!loading  && upcoming.length === 0) &&
+                <Typography variant="subtitle1">
+                  No campaigns scheduled. Schedule a new campaign!
+                </Typography>
               }
-            </Grid>
+            </TabPanel>
+            <TabPanel style={{width: '100%'}} value="1">
+              {(!loading && past.length > 0)&&
+                <CampaignTable
+                  campaigns={past}
+                  type={CampaignTableType.PAST}
+                />
+              }
+              {(!loading && past.length === 0)&&
+                <Typography variant="subtitle1">
+                  No campaigns have run. Schedule a new campaign!
+                </Typography>
+              }
+            </TabPanel>
+          </TabContext>
+          <Grid item xs={12}>
+            {loading &&
+              <CircularProgress/>
+            }
           </Grid>
           {modalOpen && 
             <AddCampaignModal

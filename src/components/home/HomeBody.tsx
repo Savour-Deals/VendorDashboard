@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import Alert from "@material-ui/lab/Alert/Alert";
-import { Button, Grid} from "@material-ui/core";
+import { Button, Grid, Typography} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { StripeProvider, Elements } from "react-stripe-elements";
@@ -17,6 +17,7 @@ import { AuthenticatedPageProperties } from "../../model/page";
 import { UpdateBusinessUser } from "../../accessor/BusinessUser";
 import { COLORS } from "../../constants/Constants";
 import AddBusinessModal from "../business/addbusiness/AddBusinessModal";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -134,46 +135,48 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
 
   return ( 
     <div className={styles.root}>
-    <StripeProvider stripe={stripe}>
-      <>
-      
-      {loading &&
-        <Loading />
-      }
-      {!loading && 
+      <StripeProvider stripe={stripe}>
         <>
-        {error && 
-          <Alert severity="error">
-            {error}
-          </Alert>
-        }  
-        <div className={styles.root}>
-          <Grid container spacing={3} direction="column" alignItems="center"> 
-            <Grid item xs={12}>
-              <Grid container justify="center" direction="column" spacing={3}>
-                {generateBusinesses(businesses)}
-              </Grid>
-            </Grid>
-          </Grid>
-          <Button 
-            variant="contained"   
-            className={styles.button} 
-            onClick={() => setAddBusinessModelOpen(true)}>
-              Add Business
-          </Button>
-          <Elements>
-            <AddBusinessModal
-              open={addBusinessModelOpen}
-              onClose={onClose}
-              isLoading={loading}
-              onError={(e) => setError(e)}
-            />
-          </Elements>
-        </div>
+          {loading &&
+            <Loading />
+          }
+          {!loading && 
+            <>
+              {error && 
+                <Alert severity="error">
+                  {error}
+                </Alert>
+              }  
+              <div className={styles.root}>
+                {businesses && businesses.length > 0 &&
+                  <Redirect to="/campaigns" />
+                } 
+                {(!businesses || businesses.length === 0) &&
+                  <>
+                    <Typography variant="h4" >
+                      Add a business to start sending campaigns to your subscribers.
+                    </Typography>
+                    <Button 
+                      variant="contained"   
+                      className={styles.button} 
+                      onClick={() => setAddBusinessModelOpen(true)}>
+                        Add Business
+                    </Button>
+                    <Elements>
+                      <AddBusinessModal
+                        open={addBusinessModelOpen}
+                        onClose={onClose}
+                        isLoading={loading}
+                        onError={(e) => setError(e)}
+                      />
+                    </Elements>
+                  </>
+                }
+              </div>
+            </>
+          }
         </>
-      }
-      </>
-    </StripeProvider>
+      </StripeProvider>
     </div>
   );
 }

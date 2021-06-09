@@ -40,8 +40,7 @@ const useStyles = makeStyles(
       width: "90%",
       borderRadius: 10,
       padding: 10,
-      boxShadow: '0px 0px 10px #9E9E9E'
-      
+      boxShadow: '0px 0px 10px #9F9F9F'
     }
   }),
 );
@@ -56,14 +55,6 @@ const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
       <Card 
         className={selected ? styles.businessCardSelected : styles.businessCard } >
         <CardHeader title={business.businessName}/>
-        <CardContent>
-          <Typography className={styles.title} color="textSecondary" gutterBottom>
-              Phone #: {business.messagingNumber}
-            </Typography>
-            <Typography className={styles.title} color="textSecondary" gutterBottom>
-              Number of Subscribers: {business.subscriberMap.size}
-            </Typography>
-        </CardContent>
       </Card>
     </div>
 
