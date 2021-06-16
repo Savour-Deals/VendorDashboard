@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Card, CardContent, CardHeader } from '@material-ui/core';
+import { Card, CardHeader } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 
 import Business from "../../model/business";
 

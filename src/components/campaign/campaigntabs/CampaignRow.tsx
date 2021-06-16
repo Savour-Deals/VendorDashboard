@@ -3,9 +3,9 @@ import {
 	TableCell,
 } from "@material-ui/core";
 import React from "react";
-import Campaign, { CampaignStatusColors, CampaignStatusText } from "../../model/campaign";
+import Campaign, { CampaignStatusColors, CampaignStatusText } from "../../../model/campaign";
 import { CampaignTableType } from "./CampaignTable";
-import { DateTimeFormat } from "../../constants/Constants";
+import { DateTimeFormat } from "../../../constants/Constants";
 import Chip from '@material-ui/core/Chip';
 import moment from 'moment-timezone';
 
