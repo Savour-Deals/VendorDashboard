@@ -7,10 +7,6 @@ import {
   Typography,
   Tab,
   CircularProgress,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
   Button
 } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
@@ -27,6 +23,7 @@ import useFetchCampaign from "../hooks/useFetchCampaign";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { CampaignTable, CampaignTableType } from "./CampaignTable";
 import { COLORS } from "../../constants/Constants";
+import BusinessInfo from "./BusinessInfo";
 
 const responsive = {
   superLargeDesktop: {
@@ -131,22 +128,7 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
                   onSelect={onBusinessSelected}/>)
             }
           </Carousel>
-          <Divider />
-          <Typography variant="h3" className={styles.title}>
-            {selectedBusiness?.businessName}
-          </Typography>
-          <List>
-            <ListItem>
-              <ListItemText primary="Address" secondary={selectedBusiness?.address}/>
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Phone number" secondary={selectedBusiness?.messagingNumber}/>
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Number of subscribers" secondary={Object.keys(selectedBusiness.subscriberMap).length}/>
-            </ListItem>
-          </List>
-          <Divider />
+          <BusinessInfo selectedBusiness={selectedBusiness}/>
           <Typography variant="h3" className={styles.title}>
             Campaigns           
             {!loading && 
