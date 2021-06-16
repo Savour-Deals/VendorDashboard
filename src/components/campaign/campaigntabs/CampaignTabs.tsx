@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import moment from "moment";
 import React, { ChangeEvent, useMemo } from "react";
 import { useState } from "react";
 
@@ -84,7 +85,7 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 					}
 					{(!loading && upcoming.length > 0) &&
 						<CampaignTable
-							campaigns={upcoming}
+							campaigns={upcoming.sort((c1, c2) => moment(c1.campaignDateTimeUtc).diff(moment(c2.campaignDateTimeUtc)))}
 							type={CampaignTableType.UPCOMING}
 						/>
 					}
@@ -105,7 +106,7 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 					}
 					{(!loading && past.length > 0) &&
 						<CampaignTable
-							campaigns={past}
+							campaigns={past.sort((c1, c2) => moment(c2.campaignDateTimeUtc).diff(moment(c1.campaignDateTimeUtc)))}
 							type={CampaignTableType.PAST}
 						/>
 					}

@@ -32,14 +32,12 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
   const { businesses, setBusinesses } = props;
   const styles = useStyles();
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const { campaigns, setCampaigns, error, loading } = useFetchCampaign(businesses);
+  const [businessModalOpen, setBusinessModalOpen] = useState(false);
+  const [campaignModalOpen, setCampaignModalOpen] = useState(false);
+  const { campaigns, setCampaigns, error, setError, loading } = useFetchCampaign(businesses);
   const [selectedBusiness, setSelectedBusiness] = useState(businesses.length > 0 ? businesses[0]: null); 
-  const addCampaign = (campaign: Campaign) => setCampaigns([...campaigns, campaign]);
 
-  const handleModalClose = () => {
-    setModalOpen(false);  
-  };
+  const addCampaign = (campaign: Campaign) => setCampaigns([...campaigns, campaign]);
 
   const onBusinessSelected = (business: Business) => {
     setSelectedBusiness(business);
@@ -72,11 +70,11 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
           <CampaignTabs
             campaigns={selectedCampaigns}
             loading={loading}
-            openAddCampaignModal={() => setModalOpen(true)}/>
-          {modalOpen && 
+            addCampaignTapped={() => setCampaignModalOpen(true)}/>
+          {campaignModalOpen && 
             <AddCampaignModal
               modalOpen={true}
-              handleModalClose={handleModalClose}
+              handleModalClose={() => setCampaignModalOpen(false)}
               businesses={businesses} 
               setBusinesses={setBusinesses}
               addCampaign={addCampaign}
