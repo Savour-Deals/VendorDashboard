@@ -178,15 +178,14 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
       campaignDateTimeUtc: selectedDate!.toISOString(),
     };
 
-    try {
-      addCampaign(await CreateCampaign(createCampaignRequest));
-    } catch (error) {
+    CreateCampaign(createCampaignRequest).then((campaign: Campaign) => {
+      addCampaign(campaign);
+      setIsLoading(false);
+      handleModalClose();
+    }).catch((error) => {
       console.log(error);
       alert("Sorry, your campaign could not be created");
-    }
-
-    setIsLoading(false);
-    handleModalClose();
+    });
   }, [selectedBusiness, selectedDate, messageUrl, preselectMessage, customMessage, campaignName, addCampaign, handleModalClose, selectedTab]);
 
   const onTabChange = (_event: ChangeEvent<{}>, value: string) => {

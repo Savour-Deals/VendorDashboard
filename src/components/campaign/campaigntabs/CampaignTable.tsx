@@ -11,7 +11,7 @@ import {
 	Theme,
 } from "@material-ui/core";
 import React, { useMemo } from "react";
-import Campaign from "../../model/campaign";
+import Campaign from "../../../model/campaign";
 import { CampaignRow } from "./CampaignRow";
 
 const useStyles = makeStyles((theme: Theme) =>

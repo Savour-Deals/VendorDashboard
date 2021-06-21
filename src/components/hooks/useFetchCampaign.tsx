@@ -8,13 +8,14 @@ interface CampaignFetchResult {
   campaigns: Array<Campaign>;
   setCampaigns: Dispatch<SetStateAction<Campaign[]>>;
   error?: string;
+  setError: Dispatch<SetStateAction<string | undefined>>
   loading: boolean;
 };
 
 function useFetchCampaign(businesses: Array<Business>): CampaignFetchResult {
   const [campaigns, setCampaigns] = useState<Array<Campaign>>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState();
+  const [error, setError] = useState<string>();
 
   const fetchCampaigns = useCallback(async () => {
     const campaignPromises: Array<Promise<Array<Campaign>>> = [];
@@ -45,7 +46,7 @@ function useFetchCampaign(businesses: Array<Business>): CampaignFetchResult {
     fetchCampaigns();
   }, [fetchCampaigns]);
 
-  return { campaigns, setCampaigns, error, loading };
+  return { campaigns, setCampaigns, error, setError, loading };
 }
 
 export default useFetchCampaign;
