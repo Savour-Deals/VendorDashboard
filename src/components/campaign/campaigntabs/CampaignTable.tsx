@@ -64,6 +64,7 @@ export const CampaignTable: React.FC<IAddCampaignTable> = props => {
         <TableBody>
           {campaigns.map((campaign) => (
             <CampaignRow
+							key={campaign.id}
 							campaign={campaign}
 							type={type}
 						/>

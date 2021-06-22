@@ -10,12 +10,12 @@ import config from "./config";
 import { Loading } from "./components/common/Loading";
 import ResetAccount from "./components/account/ResetAccount";
 import { PATHS } from "./accessor/paths";
-import { CampaignPage } from "./components/campaign/CampaignPage"
 import { useCallback } from "react";
 import { GetBusinessUser } from "./accessor/BusinessUser";
 import Business from "./model/business";
 import { GetBusinesses } from "./accessor/Business";
 import BusinessUser from "./model/businessUser";
+import { CampaignPage } from "./components/campaign/CampaignPage";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
