@@ -1,6 +1,4 @@
 import { 
-	TableContainer, 
-	Paper, 
 	Table, 
 	TableHead, 
 	TableRow, 
@@ -17,11 +15,8 @@ import { CampaignRow } from "./CampaignRow";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: "100%",
+      overflow: "scroll",
 		},
-		table: {
-			width: "100%",
-		}
   })
 );
 
@@ -47,11 +42,8 @@ export const CampaignTable: React.FC<IAddCampaignTable> = props => {
 	}, [type])
 
   return (
-		<TableContainer 				
-			className={styles.root} 
-			component={Paper}>
+		<div className={styles.root}>
       <Table 
-				style={{ minWidth: "100%" }}
 				aria-label="campaign table">
         <TableHead>
           <TableRow>
@@ -71,6 +63,6 @@ export const CampaignTable: React.FC<IAddCampaignTable> = props => {
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
+    </div>
   )
 };

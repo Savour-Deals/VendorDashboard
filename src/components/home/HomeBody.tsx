@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       alignContent: "center",
       paddingLeft: 250,
-      [theme.breakpoints.only('sm')]: {
-        paddingLeft: theme.spacing(1),
+      [theme.breakpoints.down('sm')]: {
+        paddingLeft: 0,
       },
       padding: theme.spacing(1),
       ...theme.mixins.toolbar
@@ -83,7 +83,7 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
   return ( 
     <div className={styles.root}>
       {businesses && businesses.length > 0 &&
-        <Redirect to="/campaigns" />
+        <Redirect to="/home" />
       } 
       {(!businesses || businesses.length === 0) &&
         <>

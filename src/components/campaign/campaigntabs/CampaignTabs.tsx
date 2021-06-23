@@ -25,9 +25,6 @@ interface IAddCampaignTabs {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    table: {
-      width: "100%",
-    },
 		title: {
       padding: theme.spacing(2),
     },
@@ -74,7 +71,7 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 					<Tab value="0" label="Upcoming and in-progress"/>
 					<Tab value="1" label="Past"/>
 				</TabList>
-				<TabPanel style={{width: '100%'}} value="0">
+				<TabPanel style={{width: '90%'}} value="0">
 					{loading &&
 						<>
 							<Typography variant="subtitle1">
@@ -95,7 +92,7 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 						</Typography>
 					}
 				</TabPanel>
-				<TabPanel style={{width: '100%'}} value="1">
+				<TabPanel style={{width: '90%'}} value="1">
 					{loading &&
 						<>
 							<Typography variant="subtitle1">

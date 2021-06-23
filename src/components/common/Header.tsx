@@ -7,7 +7,6 @@ import { Menu } from "@material-ui/icons";
 import { SideBar } from "./SideBar";
 
 import LogoWhite from "../../assets/img/brand/Savour_White.png";
-import { COLORS } from "../../constants/Constants";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
-      backgroundColor: COLORS.primary.light,
+      backgroundColor: "#49ABAA",
     },
     drawer: {
       width: drawerWidth,
@@ -56,7 +55,7 @@ export const Header: React.FC = () => {
     <>
       <AppBar position="sticky" className={classes.appBar}>
         <Grid container  spacing={1} direction="row"  alignItems="center" justify="center">
-          <Hidden smUp >
+          <Hidden mdUp >
             <Grid item xs={6}>
               <IconButton             
                 onClick={handleDrawerToggle}>
@@ -69,22 +68,21 @@ export const Header: React.FC = () => {
           </Grid>
         </Grid>
       </AppBar>
-
-        <Hidden smUp >
-          <SideBar
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-          >
-          </SideBar>
-        </Hidden>
-        <Hidden xsDown >
-          <SideBar
-            variant="permanent"
-            open
-          >
-          </SideBar>
-        </Hidden>
+      <Hidden mdUp >
+        <SideBar
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+        >
+        </SideBar>
+      </Hidden>
+      <Hidden smDown >
+        <SideBar
+          variant="permanent"
+          open
+        >
+        </SideBar>
+      </Hidden>
     </>
   );
 }

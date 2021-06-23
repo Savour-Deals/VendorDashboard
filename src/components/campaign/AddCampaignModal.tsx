@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 import { 
   createStyles, 
@@ -74,7 +75,7 @@ enum MessageTabs {
 }
 
 interface IAddCampaignModal {
-  modalOpen: boolean;
+  width: any;
   handleModalClose: () => void;
   businesses: Array<Business>;
   selectedBusiness: Business;
@@ -83,7 +84,7 @@ interface IAddCampaignModal {
 }
 
 const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
-  const { modalOpen, handleModalClose, businesses, addCampaign } = props;
+  const { handleModalClose, businesses, addCampaign } = props;
 
   const [loading, setIsLoading] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState<Business>(props.selectedBusiness);
@@ -197,7 +198,11 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Dialog onClose={handleModalClose} open={modalOpen}>
+      <Dialog 
+        onClose={handleModalClose} 
+        open
+        fullScreen={!isWidthUp('md', props.width)}
+        fullWidth={isWidthUp('md', props.width)}>
         <DialogTitle className={styles.root} disableTypography>
           <Typography variant="h4">
             Create a campaign
@@ -325,4 +330,4 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   );
 };
 
-export default AddCampaignModal;
+export default withWidth()(AddCampaignModal);

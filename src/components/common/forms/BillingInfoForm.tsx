@@ -63,7 +63,7 @@ export const BillingInfoForm: React.FC<IBillingInfoForm> = props => {
   return ( 
     <List className={styles.root}>
       <ListItem>
-        <Typography variant="h2">
+        <Typography variant="h3">
           Billing Info
         </Typography>
       </ListItem>

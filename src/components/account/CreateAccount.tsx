@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       backgroundSize: 'cover',
+      overflow: 'scroll',
     },
     header: {
       backgroundColor: COLORS.primary.light,

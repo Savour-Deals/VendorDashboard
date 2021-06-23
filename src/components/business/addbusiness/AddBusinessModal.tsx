@@ -3,10 +3,10 @@ import React, {
   useContext,
   useCallback
 } from "react";
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 import { 
   createStyles, 
-  Grid, 
   Button, 
   makeStyles, 
   Theme, 
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       margin: 0,
       padding: theme.spacing(2),
-      maxWidth: "70%"
+      width: "70%",
     },
     card: {
       overflow: 'scroll',
@@ -69,13 +69,17 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: '5px 5px 5px #888888'
     },
     dialogCustomizedWidth: {
-      'max-width': '80%'
+      width: '80%',
+      [theme.breakpoints.down('sm')]: {
+        width: "100%",
+      },
     }
   })
 );
 
 interface IAddBusinessModal {
   businessUser: BusinessUser;
+  width: any;
   stripe?: any;
   elements?: any;
   onClose: (business?: Business) => void;
@@ -107,6 +111,8 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
   const [cardName, setCardName] = useState<string | undefined>();
   const [cardElement, setCardElement] = useState<stripe.elements.Element | undefined>();
   const [paymentError, setPaymentError] = useState<string>();
+
+
 
   const onCardChanged = useCallback((name: string, element?: stripe.elements.Element) => {
     setCardName(name);
@@ -184,10 +190,11 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
       classes={{ paperFullWidth: styles.dialogCustomizedWidth }}
       onClose={() => onClose()} 
       open
-      fullWidth>
+      fullScreen={!isWidthUp('md', props.width)}
+      fullWidth={isWidthUp('md', props.width)}>
       <DialogTitle className={styles.root} disableTypography>
         <Typography variant="h2">
-          Create a campaign
+          Add Business
         </Typography>
       </DialogTitle>
       <DialogContent className={styles.cardContent} >
@@ -195,15 +202,12 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
           <Loader type="ThreeDots" color={COLORS.primary.light} height={100} width={100}/>
         </Dialog>
         <form>
-          <Grid container spacing={4} className={styles.formFields}>
             <BusinessInfoForm
               onChange={onBusinessInfoChange}
             />
-          </Grid>
-          <Grid container spacing={4} className={styles.formFields}>
             <List className={styles.inputList}>
               <ListItem>
-                <Typography variant="h2">
+                <Typography variant="h3">
                   Setup Messages
                 </Typography>
               </ListItem>
@@ -213,14 +217,11 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
                 presetMessages={presetMessages}
                 onboardingMessage={onboardMessage}/>
             </List>
-          </Grid>
-          <Grid container spacing={4}  className={styles.formFields}>
             <BillingInfoForm
               error={paymentError}
               elements={elements}
               onCardChanged={onCardChanged}
             />
-          </Grid>
         </form>
       </DialogContent>
       <DialogActions>
@@ -253,4 +254,4 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
   );
 }
 
-export default AddBusinessModal;
+export default withWidth()(AddBusinessModal);

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Login }  from "./components/account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { HomeBody } from "./components/home/HomeBody";
 import { withHeader } from "./components/common/withHeader";
 import { CreateAccount } from "./components/account/CreateAccount";
 import Amplify from 'aws-amplify';
@@ -15,7 +14,7 @@ import { GetBusinessUser } from "./accessor/BusinessUser";
 import Business from "./model/business";
 import { GetBusinesses } from "./accessor/Business";
 import BusinessUser from "./model/businessUser";
-import { CampaignPage } from "./components/campaign/CampaignPage";
+import { HomePage } from "./components/home/HomePage";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -109,8 +108,8 @@ const App: React.FC<IApp> = props => {
             }
             {userContext.isAuthenticated && 
               <Switch>
-                <PrivateRoute path="/home" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
-                <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(CampaignPage, pageProps)} />
+                {/* <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} /> */}
+                <PrivateRoute path="/home" auth={userContext.isAuthenticated} component={withHeader(HomePage, pageProps)} />
                 <Route path="/*">
                     <Redirect to="/home" />
                 </Route>

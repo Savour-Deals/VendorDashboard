@@ -2,36 +2,42 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
-import { Divider } from "@material-ui/core";
-
+import { Button, Divider, Typography } from "@material-ui/core";
 
 import { AuthenticatedPageProperties } from "../../model/page";
 import Business from "../../model/business";
 import Campaign from "../../model/campaign";
-import AddCampaignModal from "./AddCampaignModal";
+import AddCampaignModal from "../campaign/AddCampaignModal";
 import useFetchCampaign from "../hooks/useFetchCampaign";
-import { CampaignTabs } from "./campaigntabs/CampaignTabs";
+import { CampaignTabs } from "../campaign/campaigntabs/CampaignTabs";
 import { BusinessDetails } from "../business/BusinessDetails";
 import { BusinessCarousel } from "../business/BusinessCarousel";
 import AddBusinessModal from "../business/addbusiness/AddBusinessModal";
 import { Loading } from "../common/Loading";
+import { COLORS } from "../../constants/Constants";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
       paddingLeft: 250,
-      [theme.breakpoints.only('sm')]: {
+      [theme.breakpoints.down('sm')]: {
         paddingLeft: theme.spacing(1),
       },
       padding: theme.spacing(1),
       ...theme.mixins.toolbar
     },
+    button: {
+      backgroundColor: COLORS.primary.light,
+      color: "white",
+      margin: theme.spacing(2),
+    },
   }),
 );
 
-export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
+export const HomePage: React.FC<AuthenticatedPageProperties> = props => {
   const { businesses, setBusinesses, businessUser, setBusinessUser } = props;
+  const businessLoading = props.loading;
   const styles = useStyles();
 
   const [addBusinessModalOpen, setAddBusinessModalOpen] = useState(false);
@@ -70,7 +76,7 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
     );
   }
 
-  if (loading || !businessUser) {
+  if (loading || businessLoading || !businessUser) {
     return (
       <div className={styles.root}>
         <Loading />
@@ -79,41 +85,57 @@ export const CampaignPage: React.FC<AuthenticatedPageProperties> = props => {
   }
 
   return (
-    <>
-      {selectedBusiness && 
-        <div className={styles.root}>
-          <BusinessCarousel
-            businesses={businesses}
-            selectedBusiness={selectedBusiness}
-            onBusinessSelected={onBusinessSelected}
-            addBusinessTapped={() => setAddBusinessModalOpen(true)}/>
-          <Divider />
-          <BusinessDetails
-            business={selectedBusiness}/>
-          <Divider />
-          <CampaignTabs
-            campaigns={selectedCampaigns}
-            loading={loading}
-            addCampaignTapped={() => setCampaignModalOpen(true)}/>
-          {campaignModalOpen && 
-            <AddCampaignModal
-              modalOpen={true}
-              handleModalClose={() => setCampaignModalOpen(false)}
-              businesses={businesses} 
-              setBusinesses={setBusinesses}
-              addCampaign={addCampaign}
-              selectedBusiness={selectedBusiness}/>
+    <div className={styles.root}>
+      {(businesses.length === 0) &&
+        <>
+          <Typography variant="h4" >
+            Add a business to start sending campaigns to your subscribers.
+          </Typography>
+          <Button 
+            variant="contained"   
+            className={styles.button} 
+            onClick={() => setAddBusinessModalOpen(true)}>
+              Add Business
+          </Button>
+        </>
+      } 
+      {businesses && businesses.length > 0 &&
+        <>
+          {selectedBusiness && 
+            <>
+              <BusinessCarousel
+                businesses={businesses}
+                selectedBusiness={selectedBusiness}
+                onBusinessSelected={onBusinessSelected}
+                addBusinessTapped={() => setAddBusinessModalOpen(true)}/>
+              <Divider />
+              <BusinessDetails
+                business={selectedBusiness}/>
+              <Divider />
+              <CampaignTabs
+                campaigns={selectedCampaigns}
+                loading={loading}
+                addCampaignTapped={() => setCampaignModalOpen(true)}/>
+              {campaignModalOpen && 
+                <AddCampaignModal
+                  handleModalClose={() => setCampaignModalOpen(false)}
+                  businesses={businesses} 
+                  setBusinesses={setBusinesses}
+                  addCampaign={addCampaign}
+                  selectedBusiness={selectedBusiness}/>
+              }
+            </>
           }
-          {addBusinessModalOpen &&
-            <AddBusinessModal
-              businessUser={businessUser}
-              onClose={addBusinessOnClose}
-              onError={(e) => setError(e)}
-            />
-          }
-        </div>
+          {!selectedBusiness && "No Business"}
+        </>
       }
-      {!selectedBusiness && "No Business"}
-    </>
+      {addBusinessModalOpen &&
+        <AddBusinessModal
+          businessUser={businessUser}
+          onClose={addBusinessOnClose}
+          onError={(e) => setError(e)}
+        />
+      }
+    </div>
   )
 };
