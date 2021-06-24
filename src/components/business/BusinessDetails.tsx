@@ -5,10 +5,13 @@ import {
 	Typography,
 	ListItem,
 	ListItemText,
-	List
+	List,
+	IconButton,
+	Grid
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import Business from "../../model/business";
+import EditIcon from "@material-ui/icons/Edit";
 
 interface IBusinessDetails {
   business: Business;
@@ -25,12 +28,24 @@ const useStyles = makeStyles((theme: Theme) =>
 export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 	const { business } = props;
 	const styles = useStyles();
+	const [modalOpen, setModalOpen] = useState(false);
 
+	const openModal = () => setModalOpen(true);
   return (
 		<>
-			<Typography variant="h3" className={styles.title}>
-				{business.businessName}
-			</Typography>
+			<Grid container spacing={2}>
+				<Grid item xs={11}>
+					<Typography variant="h3" className={styles.title}>
+						{business.businessName}
+					</Typography>
+				</Grid>	
+				<Grid item xs={1}>
+					<IconButton>
+						<EditIcon/>
+					</IconButton>
+				</Grid>
+			</Grid>
+
 			<List>
 			<ListItem>
 				<ListItemText primary="Address" secondary={business.address}/>

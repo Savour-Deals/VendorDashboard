@@ -3,8 +3,12 @@ import Carousel, { CarouselInternalState } from "react-multi-carousel";
 
 import Business from "../../model/business";
 import CampaignBusinessCard from "../campaign/CampaignBusinessCard";
+import { COLORS } from "../../constants/Constants";
 
 import 'react-multi-carousel/lib/styles.css';
+import Button from "@material-ui/core/Button";
+import AddIcon from '@material-ui/icons/Add';
+import { createStyles, makeStyles, Theme } from "@material-ui/core";
 
 const responsive = {
   superLargeDesktop: {
@@ -26,28 +30,44 @@ const responsive = {
   }
 };
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+		button: {
+      backgroundColor: COLORS.primary.light,
+      color: "white",
+      margin: theme.spacing(2),
+    },
+  }),
+);
+
 interface IBusinessCarousel {
   businesses: Business[];
 	selectedBusiness: Business;
 	onBusinessSelected: (business: Business) => void;
+	addBusinessTapped: () => void;
 }
 
 export const BusinessCarousel: React.FC<IBusinessCarousel> = props => {
-	const { businesses, selectedBusiness, onBusinessSelected } = props;
-  const [endOfCarousel, setEndOfCarousel] = useState(false);
+	const { businesses, selectedBusiness, onBusinessSelected, addBusinessTapped } = props;
+
+	const styles = useStyles();
+
   return (
 		<>
+			<Button 
+				className={styles.button} 
+				onClick={addBusinessTapped}>
+				<AddIcon/> 
+				Create Business
+			</Button>
 			<Carousel 
 				responsive={responsive}
-        afterChange={(previousSlide: number, state: CarouselInternalState) => {
-          if (businesses.length - previousSlide <= state.slidesToShow) { setEndOfCarousel(true); console.log("TRUE")}
-          else if (endOfCarousel && businesses.length - previousSlide > state.slidesToShow) {setEndOfCarousel(false); console.log("FALSE")}
-        }}
       >
       
 				{
 					businesses.map((business: Business) => 
 						<CampaignBusinessCard
+              key={business.id}
 							business={business}
 							selected={selectedBusiness ? selectedBusiness.id === business.id : false}
 							onSelect={onBusinessSelected}/>)

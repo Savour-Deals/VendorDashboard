@@ -20,7 +20,7 @@ import { CampaignTable, CampaignTableType } from "./CampaignTable";
 interface IAddCampaignTabs {
   campaigns: Campaign[];
 	loading: boolean;
-	openAddCampaignModal: () => void;
+	addCampaignTapped: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
-	const { campaigns, loading, openAddCampaignModal } = props;
+	const { campaigns, loading, addCampaignTapped } = props;
 	const styles = useStyles();
   const [selectedTab, setSelectedTab] = useState("0");
 
@@ -61,7 +61,7 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 				{!loading && 
 					<Button 
 						className={styles.button} 
-						onClick={() => openAddCampaignModal()}>
+						onClick={addCampaignTapped}>
 						<AddIcon/> Create Campaign
 					</Button>
 				}

@@ -9,13 +9,13 @@ import CancelIcon from "@material-ui/icons/Cancel";
 
 import { SendMessage } from '../../accessor/Message';
 import Business from '../../model/business';
+import { MessageInputForm } from '../business/addbusiness/MessageInputForm';
 import { COLORS } from '../../constants/Constants';
 import Loader from 'react-loader-spinner';
-import { MessageInputForm } from '../common/forms/MessageInputForm';
 
 interface IBusinessModal {
   business: Business;
-  businessState: {[key:string]: boolean};
+  modalOpen: boolean;
   toggleBusinessModal: (id: string, isOpen: boolean) => void;
   updateBusiness: (updatedBusiness: Business) => void;
 }
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const BusinessModal: React.FC<IBusinessModal> = props => {
   
-  const { business, businessState, toggleBusinessModal, updateBusiness } = props;
+  const { business, modalOpen, toggleBusinessModal, updateBusiness } = props;
   const styles = useStyles();
 
   const [selectedMessage, setSelectedMessage] = useState(0);
@@ -116,10 +116,10 @@ const BusinessModal: React.FC<IBusinessModal> = props => {
           </Button> 
         </FormControl>
           <Modal 
-            open={businessState[business.id]}
+            open={modalOpen}
             onClose={() => toggleBusinessModal(business.id, false)}
           >
-            <Fade in={businessState[business.id]}>
+            <Fade in={modalOpen}>
               <Card className={styles.modal}>
                 <CardHeader
                     title={business.businessName}
