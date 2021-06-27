@@ -35,6 +35,7 @@ export const Login: React.FC<any> = (props) => {
         width: '100%',
         height: '100%',
         backgroundSize: 'cover',
+        overflow: 'scroll',
       },
       header: {
         backgroundColor: COLORS.primary.light,

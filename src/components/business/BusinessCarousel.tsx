@@ -58,21 +58,21 @@ export const BusinessCarousel: React.FC<IBusinessCarousel> = props => {
 				className={styles.button} 
 				onClick={addBusinessTapped}>
 				<AddIcon/> 
-				Create Business
+				Add a new business
 			</Button>
-			<Carousel 
-				responsive={responsive}
-      >
-      
-				{
-					businesses.map((business: Business) => 
-						<CampaignBusinessCard
-              key={business.id}
-							business={business}
-							selected={selectedBusiness ? selectedBusiness.id === business.id : false}
-							onSelect={onBusinessSelected}/>)
-				}
-			</Carousel>
+      {businesses && businesses.length > 1 && 
+        <Carousel 
+          responsive={responsive}>
+          {
+            businesses.map((business: Business) => 
+              <CampaignBusinessCard
+                key={business.id}
+                business={business}
+                selected={selectedBusiness ? selectedBusiness.id === business.id : false}
+                onSelect={onBusinessSelected}/>)
+          }
+        </Carousel>
+      }
 		</>
   )
 };

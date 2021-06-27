@@ -44,7 +44,7 @@ export const BusinessInfoForm: React.FC<IBusinessInfoForm> = props => {
   return (
     <List className={styles.inputList}>
 			<ListItem>                  
-				<Typography variant="h2">
+				<Typography variant="h3">
 					Business Info
 				</Typography>
 			</ListItem>

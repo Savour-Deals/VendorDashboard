@@ -12,9 +12,12 @@ import {
 import React, { useState } from "react";
 import Business from "../../model/business";
 import EditIcon from "@material-ui/icons/Edit";
+import BusinessEditModal from "./BusinessEditModal";
+
 
 interface IBusinessDetails {
   business: Business;
+	updateBusiness: (business: Business) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,11 +29,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export const BusinessDetails: React.FC<IBusinessDetails> = props => {
-	const { business } = props;
+	const { business, updateBusiness } = props;
 	const styles = useStyles();
-	const [modalOpen, setModalOpen] = useState(false);
+
 
 	const openModal = () => setModalOpen(true);
+
+	const [modalOpen, setModalOpen] = useState(false);
+
+
   return (
 		<>
 			<Grid container spacing={2}>
@@ -40,7 +47,9 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 					</Typography>
 				</Grid>	
 				<Grid item xs={1}>
-					<IconButton>
+					<IconButton
+						onClick={() => openModal()}
+					>
 						<EditIcon/>
 					</IconButton>
 				</Grid>
@@ -57,6 +66,12 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 				<ListItemText primary="Number of subscribers" secondary={Object.keys(business.subscriberMap).length}/>
 			</ListItem>
 			</List>
+			<BusinessEditModal
+				business={business}
+				modalOpen={modalOpen}
+				toggleBusinessModal={setModalOpen}
+				updateBusiness={updateBusiness}
+			/>
 		</>
   )
 };
