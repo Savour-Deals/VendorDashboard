@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Carousel, { CarouselInternalState } from "react-multi-carousel";
+import React from "react";
+import Carousel from "react-multi-carousel";
 
 import Business from "../../model/business";
 import CampaignBusinessCard from "../campaign/CampaignBusinessCard";
