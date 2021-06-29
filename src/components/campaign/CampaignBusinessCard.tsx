@@ -1,13 +1,14 @@
 import React from 'react';
 
-import { Card, CardContent, CardHeader } from '@material-ui/core';
+import { Card, CardHeader } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 
 import Business from "../../model/business";
 
 interface ICampaignBusinessCard {
   business: Business;
+  onSelect: (business: Business) => void;
+  selected: boolean;
 };
 
 const useStyles = makeStyles(
@@ -29,32 +30,33 @@ const useStyles = makeStyles(
     },
     businessCard: {
       margin: theme.spacing(2),
-      width: "100%",
+      width: "90%",
+      borderRadius: 10,
+      padding: 10,
+    },
+    businessCardSelected: {
+      margin: theme.spacing(2),
+      width: "90%",
+      borderRadius: 10,
+      padding: 10,
+      boxShadow: '0px 0px 10px #9F9F9F'
     }
-    
   }),
 );
 
 const CampaignBusinessCard: React.FC<ICampaignBusinessCard> = props => {
 
-  const { business } = props;
+  const { business, onSelect, selected } = props;
   const styles = useStyles();
 
   return (
-    <Card className={styles.businessCard}>
-      <CardHeader
-        title={business.businessName}
-      />
-      <CardContent>
-        <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Phone #: {business.messagingNumber}
-          </Typography>
-          <Typography className={styles.title} color="textSecondary" gutterBottom>
-            Number of Subscribers: {business.subscriberMap.size}
-          </Typography>
-      </CardContent>
-      
-    </Card>
+    <div onClick={() => onSelect(business)}>
+      <Card 
+        className={selected ? styles.businessCardSelected : styles.businessCard } >
+        <CardHeader title={business.businessName}/>
+      </Card>
+    </div>
+
   );
 }
 

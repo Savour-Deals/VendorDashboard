@@ -1,6 +1,6 @@
 import { API } from "aws-amplify";
 import { PATHS } from "./paths";
-import { Campaign } from '../model/business';
+import Campaign from '../model/campaign';
 
 export async function GetAll(businessId: string): Promise<Array<Campaign>> {
 	return API.get(

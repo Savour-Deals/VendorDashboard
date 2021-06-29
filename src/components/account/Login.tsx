@@ -17,6 +17,7 @@ import Background from "../../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../../auth/UserContext";
+import { COLORS } from "../../constants/Constants";
 
 export const Login: React.FC<any> = (props) => {
 
@@ -34,15 +35,16 @@ export const Login: React.FC<any> = (props) => {
         width: '100%',
         height: '100%',
         backgroundSize: 'cover',
+        overflow: 'scroll',
       },
       header: {
-        backgroundColor: "#49ABAA",
+        backgroundColor: COLORS.primary.light,
   
       },
       img: {
         width: "100%",
         height: 125,
-        backgroundColor: "#49ABAA",
+        backgroundColor: COLORS.primary.light,
   
         
       },
@@ -69,7 +71,7 @@ export const Login: React.FC<any> = (props) => {
 
   async function handleSignIn() {
     await handleLogin(email, password);
-    history.push("/index");
+    history.push("/home");
   }
 
   function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {

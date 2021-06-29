@@ -1,4 +1,5 @@
 import { API } from "aws-amplify";
+import Campaign from "../model/campaign";
 import { PATHS } from "./paths";
 
 declare interface CreateNumberResponse {
@@ -8,7 +9,7 @@ declare interface CreateNumberResponse {
 
 export interface CreateCampaignRequest {
 	message: string;
-	link: string;
+	link?: string;
 	businessId: string;
 	campaignDateTimeUtc: string;
 	campaignName: string;
@@ -29,6 +30,7 @@ export async function CreateNumber(businessId: string): Promise<string> {
 declare interface SendMessageResponse {
   messageId: string;
 }
+
 export async function SendMessage(id: string, message: string, link?: string): Promise<string> {
 	return API.post(
 		PATHS.MESSAGE.api,
@@ -43,12 +45,16 @@ export async function SendMessage(id: string, message: string, link?: string): P
 	).then((response: SendMessageResponse) => response.messageId);
 }
 
-export async function CreateCampaign(request: CreateCampaignRequest): Promise<any> {
+declare interface CreateCampaignResponse {
+  campaign: Campaign;
+}
+
+export async function CreateCampaign(request: CreateCampaignRequest): Promise<Campaign> {
 	return API.post(
 		PATHS.MESSAGE.api,
 		PATHS.MESSAGE.CREATE_CAMPAIGN, 
 		{
 			body: request,
 		}
-	);
+	).then((response: CreateCampaignResponse) => response.campaign);
 }	

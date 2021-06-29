@@ -1,93 +1,64 @@
 import React, { 
-  ChangeEvent, 
   useState, 
-  useContext
+  useContext,
+  useCallback
 } from "react";
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
   createStyles, 
-  Grid, 
-  IconButton, 
   Button, 
   makeStyles, 
-  Modal, 
-  TextField, 
   Theme, 
   List, 
   ListItem, 
-  Typography
+  Typography,
+  DialogContent,
+  DialogTitle,
+  DialogActions
 } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
 import Dialog from '@material-ui/core/Dialog';
 
-import { CardElement, injectStripe } from "react-stripe-elements";
+import { Elements, injectStripe, StripeProvider } from "react-stripe-elements";
 
 import Loader from "react-loader-spinner";
 import { v4 as uuidv4 } from 'uuid';
 
-import { MessageInputForm } from "./MessageInputForm";
-import { BusinessSearchBox } from "./BusinessSearchBox";
 import { UserContext } from "../../../auth/UserContext";
 import { CreateNumber } from "../../../accessor/Message";
 import { CreateBusiness } from "../../../accessor/Business";
 import { CreateSubscription } from "../../../accessor/Payment";
-import Business, { SubscriberInfo, Campaign } from "../../../model/business";
-import Fade from "../../common/Fade";
-import { Alert } from "@material-ui/lab";
+import Business, { SubscriberInfo } from "../../../model/business";
+import Campaign from "../../../model/campaign";
+import { COLORS } from "../../../constants/Constants";
+import config from "../../../config";
+import { UpdateBusinessUser } from "../../../accessor/BusinessUser";
+import BusinessUser from "../../../model/businessUser";
+import { BillingInfoForm } from "../../common/forms/BillingInfoForm";
+import { BusinessInfoForm } from "../../common/forms/BusinessInfoForm";
+import { MessageInputForm } from "../../common/forms/MessageInputForm";
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
+    root: {
+      margin: 0,
+      padding: theme.spacing(2),
+      width: "70%",
+    },
     card: {
       overflow: 'scroll',
-      margin: theme.spacing(3),
       display: "inline-block",
-      width: "90%",
-    },
-    root: {
-      textAlign: "center",
-      padding: theme.spacing(1),
-      position: 'fixed',
-      width: '100%',
-      height: '100%',
-      overflow: 'auto'
-    },
-    textInput: {
-      width: '100%'
-    },
-    inputGrid: {
-      margin: theme.spacing(3),
     },
     inputList: {
       flexGrow: 1
     },
     cardContent: {
-      overflow: 'scroll',
       alignItems: 'center',
-      '&::-webkit-scrollbar': {
-        width: '0.4em'
-      },
-      '&::-webkit-scrollbar-track': {
-        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
-        webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
-      },
-      '&::-webkit-scrollbar-thumb': {
-        backgroundColor: 'rgba(0,0,0,.1)',
-        outline: '1px solid slategrey'
-      }
     },
     button: {
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
       color: "white",
       margin: theme.spacing(2),
-    },
-    search: {
-      textAlign: 'center',
-      display: 'block',
-      marginLeft: 'auto',
-      marginRight: 'auto'
     },
     formFields: {
       margin: '25px',
@@ -97,51 +68,75 @@ const useStyles = makeStyles((theme: Theme) =>
       outline: '1px solid slategrey',
       boxShadow: '5px 5px 5px #888888'
     },
-    cardField: {
-      width: "100%",
-      marginBottom: '15px',
-      backgroundColor: 'white',
-      padding: '11px 16px',
-      borderRadius: '6px',
-      border: '1px solid #CCC',
-      boxShadow: 'inset 0 1px 1px rgba(102, 175, 233, 0.6)',
-      lineHeight: '1.3333333'
+    dialogCustomizedWidth: {
+      width: '80%',
+      [theme.breakpoints.down('sm')]: {
+        width: "100%",
+      },
     }
   })
 );
 
 interface IAddBusinessModal {
-  open: boolean;
-  isLoading: boolean;
-  onClose: (business?: Business) => void;
-  onError: (error: string) => void;
+  businessUser: BusinessUser;
+  width: any;
   stripe?: any;
   elements?: any;
+  onClose: (business?: Business) => void;
+  onError: (error: string) => void;
 }
 
+const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
+  const styles = useStyles();
 
-const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
+  const { 
+    businessUser,
+    stripe,
+    elements,
+    onClose, 
+    onError,
+  } = props;
 
-  const { open, onClose, onError, stripe, elements } = props;
 
   const [isLoading, setIsLoading] = useState(false);
+
   const [businessName, setBusinessName] = useState("");
   const [address, setAddress] = useState("");
+
   const [presetMessages, setPresetMessages] = useState<string[]>([""]); //always start with at least one blank preset
   const [onboardMessage, setOnboardMessage] = useState("");
-  const [paymentError, setPaymentError] = useState<string>();
-  const [cardName, setCardName] = useState(""); // where should this be passed?
-  const styles = useStyles();
+  
   const userContext: IUserContext = useContext(UserContext);
+
+  const [cardName, setCardName] = useState<string | undefined>();
+  const [cardElement, setCardElement] = useState<stripe.elements.Element | undefined>();
+  const [paymentError, setPaymentError] = useState<string>();
+
+
+
+  const onCardChanged = useCallback((name: string, element?: stripe.elements.Element) => {
+    setCardName(name);
+    setCardElement(element);
+  }, []);
+
+  const onBusinessInfoChange = useCallback((name: string, address: string) => {
+    setBusinessName(name);
+    setAddress(address);
+  }, []);
+  
   
   const createBusiness = async () => {
+    if (!cardElement || !cardName || !businessName || !address || !onboardMessage || !presetMessages) {
+      return 
+    }
+
     setIsLoading(true);
-    const cardElement = elements.getElement('card');
-    const { paymentMethod, error } = await await stripe.createPaymentMethod({
+    const { paymentMethod, error } = await stripe.createPaymentMethod({
       type: 'card',
       card: cardElement,
       billing_details: {
-        email: userContext.user.email
+        email: userContext.user.email,
+        // name: cardName,
       },
     });
 
@@ -161,21 +156,25 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
       campaignsMap: new Map<string, Campaign>(),
     };
     
-    console.log(cardName);
-    
     return Promise.all([
       CreateBusiness(business),
       CreateNumber(business.id),
     ]).then(() => {
-      return CreateSubscription(business.id, {
-        email: userContext.user.attributes.email,
-        name: businessName,
-        paymentMethod: paymentMethod.id,
-        subscriptions: {
-          recurring: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
-          usage: "price_1IV8SPFdZgF3d0XeK1qX4bW1",
-        }
-      });      
+      return Promise.all([
+        CreateSubscription(business.id, {
+          email: userContext.user.attributes.email,
+          name: businessName,
+          paymentMethod: paymentMethod.id,
+          subscriptions: {
+            recurring: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
+            usage: "price_1IV8SPFdZgF3d0XeK1qX4bW1",
+          }
+        }),
+        UpdateBusinessUser({
+          ...businessUser,
+          businesses: [...businessUser.businesses, business.id]
+        }),
+      ]); 
     }).then(() => {
       setIsLoading(false);
       onClose(business);
@@ -186,151 +185,73 @@ const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
     });
   }
 
-  function businessNameChange(event: ChangeEvent<HTMLInputElement>) {
-    setBusinessName(event.target.value);
-  }
-
-  function addressChange(event: ChangeEvent<HTMLInputElement>) {
-    setAddress(event.target.value);
-  }
-
-  function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
-    setCardName(event.target.value);
-  }
-  
-
   return (
-    <Modal open={open} onClose={() => onClose()}>
-      <Fade in={open}>
-        <Card className={styles.card}>
-          <CardHeader
-            action={
-              <IconButton onClick={() => onClose()}>
-                <CloseIcon/>
-              </IconButton>
-            }/>
-          <CardContent className={styles.cardContent} >
-            <Dialog open={isLoading}>
-              <Loader type="ThreeDots" color="#49ABAA" height={100} width={100}/>
-            </Dialog>
-            <form>
-              <Typography variant="h1">
-                Add Business
-              </Typography>
-              <div>
-                <Grid container spacing={4} className={styles.formFields}>
-                  <List className={styles.inputList}>
-                    <ListItem>                  
-                      <Typography variant="h2">
-                        Business Info
-                      </Typography>
-                    </ListItem>
-                    <ListItem>
-                      <Typography variant="body1">
-                        Search for a business below or manually enter your business name and address.
-                      </Typography>
-                    </ListItem>
-                    <ListItem>
-                      <BusinessSearchBox 
-                        setPrimaryAddress={setAddress}
-                        setVendorName={setBusinessName}/>
-                    </ListItem>
-                    <ListItem>
-                      <TextField
-                        className={styles.textInput}
-                        label="Business Name"
-                        value={businessName}
-                        variant="outlined"
-                        onChange={businessNameChange}
-                      />  
-                    </ListItem>
-                    <ListItem>
-                      <TextField
-                        className={styles.textInput}
-                        label="Address"
-                        variant="outlined"
-                        value={address}
-                        onChange={addressChange}
-                      />
-                    </ListItem>
-                  </List>
-                </Grid>
-                <Grid container spacing={4} className={styles.formFields}>
-                  <List className={styles.inputList}>
-                    <ListItem>
-                      <Typography variant="h2">
-                        Setup Messages
-                      </Typography>
-                    </ListItem>
-                    <MessageInputForm
-                      onUpdatePresetMessages={setPresetMessages}
-                      onUpdateOnboardingMessage={setOnboardMessage}
-                      presetMessages={presetMessages}
-                      onboardingMessage={onboardMessage}/>
-                  </List>
-                </Grid>
-                <Grid container spacing={4}  className={styles.formFields}>
-                  <ListItem>
-                    <Typography variant="h2">
-                      Billing Info
-                    </Typography>
-                  </ListItem>
-                  <ListItem>
-                    <Typography variant="body1">
-                      Enter your business billing information. Our payment structure is simple. You pay:
-                    </Typography>
-                  </ListItem>
-                  <ListItem>
-                  <List>
-                      <ListItem>
-                        <Typography variant="body1">
-                          &#8226; $40/month subscription fee
-                        </Typography>
-                      </ListItem>
-                      <ListItem>
-                        <Typography variant="body1">
-                          &#8226; $0.01 for every message sent
-                        </Typography>
-                      </ListItem>
-                    </List>
-                  </ListItem>
-                  {paymentError && 
-                    <ListItem>
-                      <Alert severity="error">
-                        {paymentError}
-                      </Alert>
-                    </ListItem>
-                  }  
-                  <ListItem>
-                      <TextField
-                        variant="outlined"
-                        label="Name on Card"
-                        fullWidth
-                        onChange={cardNameChange}
-                      />
-                  </ListItem>
-                  <ListItem>
-                    <CardElement
-                      className={styles.cardField}
-                      style={{
-                        base: { fontSize: "18px", fontFamily: '"Open Sans", sans-serif' }
-                      }}/>
-                  </ListItem>
-                </Grid>
-                <Button 
-                  variant="contained" 
-                  disabled={isLoading}  
-                  className={styles.button} 
-                  onClick={createBusiness}>
-                  Create Business
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </Fade> 
-    </Modal>
+    <Dialog 
+      classes={{ paperFullWidth: styles.dialogCustomizedWidth }}
+      onClose={() => onClose()} 
+      open
+      fullScreen={!isWidthUp('md', props.width)}
+      fullWidth={isWidthUp('md', props.width)}>
+      <DialogTitle className={styles.root} disableTypography>
+        <Typography variant="h2">
+          Add Business
+        </Typography>
+      </DialogTitle>
+      <DialogContent className={styles.cardContent} >
+        <Dialog open={isLoading}>
+          <Loader type="ThreeDots" color={COLORS.primary.light} height={100} width={100}/>
+        </Dialog>
+        <form>
+            <BusinessInfoForm
+              onChange={onBusinessInfoChange}
+            />
+            <List className={styles.inputList}>
+              <ListItem>
+                <Typography variant="h3">
+                  Setup Messages
+                </Typography>
+              </ListItem>
+              <MessageInputForm
+                onUpdatePresetMessages={setPresetMessages}
+                onUpdateOnboardingMessage={setOnboardMessage}
+                presetMessages={presetMessages}
+                onboardingMessage={onboardMessage}/>
+            </List>
+            <BillingInfoForm
+              error={paymentError}
+              elements={elements}
+              onCardChanged={onCardChanged}
+            />
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          variant="contained"
+          onClick={() => onClose()}>
+            Cancel
+        </Button>
+        <Button
+          disabled={isLoading}
+          variant="contained"
+          className={styles.button} 
+          onClick={createBusiness}>
+          Create Business
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 
-export default injectStripe(AddBusinessModal);
+const InternalAddBusinessModal = injectStripe(_AddBusinessModal)
+
+const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
+  return (
+    <StripeProvider apiKey={config.STRIPE_KEY}>
+      <Elements>
+        <InternalAddBusinessModal {...props}/>
+      </Elements>
+    </StripeProvider>
+  );
+}
+
+export default withWidth()(AddBusinessModal);

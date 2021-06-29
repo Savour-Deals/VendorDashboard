@@ -55,7 +55,7 @@ export const Header: React.FC = () => {
     <>
       <AppBar position="sticky" className={classes.appBar}>
         <Grid container  spacing={1} direction="row"  alignItems="center" justify="center">
-          <Hidden smUp >
+          <Hidden mdUp >
             <Grid item xs={6}>
               <IconButton             
                 onClick={handleDrawerToggle}>
@@ -68,22 +68,21 @@ export const Header: React.FC = () => {
           </Grid>
         </Grid>
       </AppBar>
-
-        <Hidden smUp >
-          <SideBar
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-          >
-          </SideBar>
-        </Hidden>
-        <Hidden xsDown >
-          <SideBar
-            variant="permanent"
-            open
-          >
-          </SideBar>
-        </Hidden>
+      <Hidden mdUp >
+        <SideBar
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+        >
+        </SideBar>
+      </Hidden>
+      <Hidden smDown >
+        <SideBar
+          variant="permanent"
+          open
+        >
+        </SideBar>
+      </Hidden>
     </>
   );
 }

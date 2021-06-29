@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Login }  from "./components/account/Login";
 import { PrivateRoute } from "./components/PrivateRoute";
-import { HomeBody } from "./components/home/HomeBody";
 import { withHeader } from "./components/common/withHeader";
 import { CreateAccount } from "./components/account/CreateAccount";
 import Amplify from 'aws-amplify';
@@ -10,12 +9,12 @@ import config from "./config";
 import { Loading } from "./components/common/Loading";
 import ResetAccount from "./components/account/ResetAccount";
 import { PATHS } from "./accessor/paths";
-import { Campaigns } from "./components/campaign/Campaigns"
 import { useCallback } from "react";
 import { GetBusinessUser } from "./accessor/BusinessUser";
 import Business from "./model/business";
 import { GetBusinesses } from "./accessor/Business";
 import BusinessUser from "./model/businessUser";
+import { HomePage } from "./components/home/HomePage";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -92,21 +91,31 @@ const App: React.FC<IApp> = props => {
   return (
     <>
       <BrowserRouter>
-      {userContext.isLoading && 
-        <Loading/>
-      }
-      <Switch>
-          <Route path="/login" render={() => <Login {...loginProps} />}/>
-          <Route path="/create-account" render={() => <CreateAccount/>}/>
-          <Route path="/reset-account" render={() => <ResetAccount/>}/>
-          <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} />
-          <PrivateRoute path="/campaigns" auth={userContext.isAuthenticated} component={withHeader(Campaigns, pageProps)} />
-
-        </Switch>
-        {
-          userContext.isAuthenticated
-          ? <Redirect to="/index" />
-          : <Redirect to="/login" />
+        {userContext.isLoading && 
+          <Loading/>
+        }
+        {!userContext.isLoading && 
+          <>
+            {!userContext.isAuthenticated && 
+              <Switch>
+                <Route path="/login" render={() => <Login {...loginProps} />}/>
+                <Route path="/create-account" render={() => <CreateAccount/>}/>
+                <Route path="/reset-account" render={() => <ResetAccount/>}/>
+                <Route path="/*">
+                    <Redirect to="/login" />
+                </Route>
+              </Switch>
+            }
+            {userContext.isAuthenticated && 
+              <Switch>
+                {/* <PrivateRoute path="/index" auth={userContext.isAuthenticated} component={withHeader(HomeBody, pageProps)} /> */}
+                <PrivateRoute path="/home" auth={userContext.isAuthenticated} component={withHeader(HomePage, pageProps)} />
+                <Route path="/*">
+                    <Redirect to="/home" />
+                </Route>
+              </Switch>
+            }
+          </>
         }
       </BrowserRouter>
     </>

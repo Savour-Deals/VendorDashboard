@@ -10,7 +10,6 @@ import {
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
-
 import Constants from "../../../constants/Constants";
 
 interface IMessageInputForm {
@@ -69,8 +68,8 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
   return ( 
     <List
       className={styles.root}>
-      <ListItem>Onboarding Message</ListItem>
-      <ListItem>
+      <ListItem key={0}>Onboarding Message</ListItem>
+      <ListItem key={1}>
         <TextField
           className={styles.textInput}
           label="Onboard Message"
@@ -78,7 +77,7 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
           value={props.onboardingMessage || ""}
           onChange={onOnboardingChange}/>
       </ListItem>
-      <ListItem>
+      <ListItem key={2}>
         Preset Messages
         { props.presetMessages.length === 0 && 
           <IconButton 
@@ -89,7 +88,7 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
           </IconButton>}
       </ListItem>
       { props.presetMessages.map((message, index) => 
-        <ListItem>
+        <ListItem key={3}>
           <TextField
             className={styles.textInput}
             label= {`Preset message ${index}`}

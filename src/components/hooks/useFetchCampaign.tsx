@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, SetStateAction, Dispatch } from 'react';
-import Business, { Campaign } from '../../model/business';
+import Business from '../../model/business';
+import Campaign from "../../model/campaign";
 import { GetAll } from '../../accessor/Push';
 import _ from 'lodash';
 
@@ -7,11 +8,14 @@ interface CampaignFetchResult {
   campaigns: Array<Campaign>;
   setCampaigns: Dispatch<SetStateAction<Campaign[]>>;
   error?: string;
+  setError: Dispatch<SetStateAction<string | undefined>>
+  loading: boolean;
 };
 
 function useFetchCampaign(businesses: Array<Business>): CampaignFetchResult {
   const [campaigns, setCampaigns] = useState<Array<Campaign>>([]);
-  const [error, setError] = useState();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>();
 
   const fetchCampaigns = useCallback(async () => {
     const campaignPromises: Array<Promise<Array<Campaign>>> = [];
@@ -35,13 +39,14 @@ function useFetchCampaign(businesses: Array<Business>): CampaignFetchResult {
 
     console.log(campaignsArray);
     setCampaigns(_.flatten(campaignsArray));
+    setLoading(false);
   }, [businesses]);
 
   useEffect(() => {
     fetchCampaigns();
   }, [fetchCampaigns]);
 
-  return { campaigns, setCampaigns, error };
+  return { campaigns, setCampaigns, error, setError, loading };
 }
 
 export default useFetchCampaign;

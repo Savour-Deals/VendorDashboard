@@ -17,6 +17,7 @@ import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../../auth/UserContext";
 import { ConfirmAccountDialog } from "./ConfirmAccountDialog";
+import { COLORS } from "../../constants/Constants";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,15 +35,16 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       backgroundSize: 'cover',
+      overflow: 'scroll',
     },
     header: {
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
 
     },
     img: {
       width: "100%",
       height: 125,
-      backgroundColor: "#49ABAA",
+      backgroundColor: COLORS.primary.light,
     },
     createAccount: {
       margin: theme.spacing(2),

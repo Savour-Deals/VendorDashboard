@@ -18,15 +18,3 @@ export interface SubscriberInfo {
 	timestamp: string
 }
 
-export interface Campaign {
-	id: string,
-	campaignName: string,
-	campaignStatus: string,
-	businessId: string,
-	message: string,
-	link?: string,
-	campaignDateTimeUtc: string
-	createdDateTimeUtc: string,
-	lastUpdatedDateTimeUtc: string,
-	twilioResponse?: any[],
-}
