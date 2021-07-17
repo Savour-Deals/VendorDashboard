@@ -5,7 +5,6 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { withHeader } from "./components/common/withHeader";
 import { CreateAccount } from "./components/account/CreateAccount";
 import Amplify from 'aws-amplify';
-import config from "./config";
 import { Loading } from "./components/common/Loading";
 import ResetAccount from "./components/account/ResetAccount";
 import { PATHS } from "./accessor/paths";
@@ -15,6 +14,7 @@ import Business from "./model/business";
 import { GetBusinesses } from "./accessor/Business";
 import BusinessUser from "./model/businessUser";
 import { HomePage } from "./components/home/HomePage";
+import config from "./config";
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,

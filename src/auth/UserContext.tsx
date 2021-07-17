@@ -14,7 +14,6 @@ const INITIAL_AUTH: IUserContext = {
     isAuthenticated: false
   })),
   handleLogout: () => {},
-  confirmSignUp: async (username: string, code: string) => {},
   addBusiness: (business: Business) => {}
 }
 
@@ -97,10 +96,6 @@ export const UserContextProvider = (props: any) => {
         error,
       }
     }  
-  }
-  
-  async function confirmSignUp(username: string, code: string) {
-    return await Auth.confirmSignUp(username, code);
   }
 
   async function handleAuthentication(): Promise<{
@@ -210,7 +205,6 @@ export const UserContextProvider = (props: any) => {
     handleLogin,
     handleLogout,
     handleSignUp,
-    confirmSignUp,
     addBusiness
   }}>
     {props.children}

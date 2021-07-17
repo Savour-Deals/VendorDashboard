@@ -1,17 +1,9 @@
 {
-  "auth": {
-    "vendordashboard972ec46c": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false
-    }
-  },
   "hosting": {
     "amplifyhosting": {
       "service": "amplifyhosting",
       "type": "cicd",
-      "lastPushTimeStamp": "2021-01-21T01:08:56.243Z"
+      "lastPushTimeStamp": "2021-07-17T14:02:10.903Z"
     }
   }
 }

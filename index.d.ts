@@ -8,7 +8,6 @@ declare interface IUserContext {
   handleLogin: (email: string, password: string) => void;
   handleSignUp: (signupData: SignUpData) => Promise<UserAuth>;
   handleLogout: () => void;
-  confirmSignUp: (username: string, code: string) => Promise<any>;
   addBusiness: (business: Business) => void;
 }
 
@@ -21,13 +20,6 @@ declare interface IPageProps {
   error?: string;
 }
 
-declare interface IConfirmAccountDialog {
-  open: boolean;
-  redirectToLogin: () => void;
-  confirmSignup: (username: string, code: string) => Promise<any>;
-  username: string;
-  style: string;
-}
 declare interface LoadingDialogProps {
   isLoading: boolean;
 }
