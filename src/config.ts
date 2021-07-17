@@ -35,7 +35,7 @@ const prod: Config = {
   },
   apiGateway: {
     REGION: "us-east-1",
-    URL: "https://waujulq2ic.execute-api.us-east-1.amazonaws.com/prod	"
+    URL: "https://waujulq2ic.execute-api.us-east-1.amazonaws.com/prod"
   },
   STRIPE_KEY: "pk_live_zwDKo1RWSPCdp4N2ZWtS7nKV007mQ54KkY"
 }
