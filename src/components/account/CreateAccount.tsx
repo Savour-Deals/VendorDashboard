@@ -16,7 +16,6 @@ import Background from "../../assets/img/brand/vendorbackground.jpg";
 import { useSpring, animated } from 'react-spring'
 import { useHistory } from "react-router-dom";
 import { UserContext } from "../../auth/UserContext";
-import { ConfirmAccountDialog } from "./ConfirmAccountDialog";
 import { COLORS } from "../../constants/Constants";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -76,9 +75,8 @@ export const CreateAccount: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { handleSignUp, confirmSignUp } = useContext<IUserContext>(UserContext);
+  const { handleSignUp } = useContext<IUserContext>(UserContext);
 
   function redirectToLogin() {
     history.push("/login");
@@ -116,7 +114,7 @@ export const CreateAccount: React.FC = () => {
 
     if (!error) {
       alert("Please check your email to confirm your account.");
-      setDialogOpen(true);
+      redirectToLogin();
     } else {
       alert(`Error, could not create user. ${error.message}`);
     }
@@ -229,13 +227,6 @@ export const CreateAccount: React.FC = () => {
         <Typography className={styles.createAccount} onClick={() => history.push("/login")}>Already Have an Account? Click Here!</Typography>
         </CardContent>
       </Card>
-      <ConfirmAccountDialog 
-        open={dialogOpen} 
-        redirectToLogin={redirectToLogin} 
-        confirmSignup={confirmSignUp} 
-        username={email}
-        style={styles.confirmAccountDialog}
-      />
     </animated.div>
   );
 }

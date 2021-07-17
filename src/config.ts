@@ -12,12 +12,12 @@ interface Config {
   STRIPE_KEY: string
 }
 
-const local: Config = {
+const dev: Config = {
   cognito: {
     REGION: "us-east-1",
-    USER_POOL_ID: "us-east-1_HWIES9skP",
-    APP_CLIENT_ID: "1olalmrrmqjrr2c81p57pnk6s6",
-    IDENTITY_POOL_ID: "us-east-1:bf7e302d-4473-4af1-9c1e-d90adb31facc"
+    USER_POOL_ID: "us-east-1_99Rfz0HLh",
+    APP_CLIENT_ID: "3i676cplem2mu4esqj2pjh39sg",
+    IDENTITY_POOL_ID: "us-east-1:003092b5-97c1-49a9-bf37-92aa035324cc"
   },
   apiGateway: {
     REGION: "us-east-1",
@@ -26,20 +26,20 @@ const local: Config = {
   STRIPE_KEY: "pk_test_PvociWFfxr6L1cjqbkYXVhkm003Rm6oZNW"
 }
 
-const live: Config = {
+const prod: Config = {
   cognito: {
-    REGION: process.env.REGION!!,
-    USER_POOL_ID: process.env.USER_POOL_ID!!,
-    APP_CLIENT_ID: process.env.APP_CLIENT_ID!!,
-    IDENTITY_POOL_ID: process.env.IDENTITY_POOL_ID!!
+    REGION: "us-east-1",
+    USER_POOL_ID: "us-east-1_u9El8rFRy",
+    APP_CLIENT_ID: "6sko6vk038tcuhk31e5tju9ilm",
+    IDENTITY_POOL_ID: "us-east-1:26242418-2b37-4aba-8a9a-1a12a5be9c9b"
   },
   apiGateway: {
-    REGION: process.env.REGION!!,
-    URL: process.env.API_GATEWAY_URL!!,
+    REGION: "us-east-1",
+    URL: "https://waujulq2ic.execute-api.us-east-1.amazonaws.com/prod	"
   },
-  STRIPE_KEY: process.env.STRIPE_KEY!!
+  STRIPE_KEY: "pk_live_zwDKo1RWSPCdp4N2ZWtS7nKV007mQ54KkY"
 }
 
-const config = (process.env.STAGE === "prod" || process.env.STAGE === "dev") ? live : local;
+const config = process.env.REACT_APP_STAGE === "prod" ? prod : dev;
 
 export default config;

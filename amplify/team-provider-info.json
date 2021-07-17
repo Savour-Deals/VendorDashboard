@@ -1,26 +1,23 @@
 {
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-vendordashboard-dev-185749-authRole",
-      "UnauthRoleArn": "arn:aws:iam::020530118966:role/amplify-vendordashboard-dev-185749-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::020530118966:role/amplify-vendordashboard-dev-185749-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-vendordashboard-dev-185749-deployment",
-      "UnauthRoleName": "amplify-vendordashboard-dev-185749-unauthRole",
-      "StackName": "amplify-vendordashboard-dev-185749",
-      "StackId": "arn:aws:cloudformation:us-east-1:020530118966:stack/amplify-vendordashboard-dev-185749/ae9bedb0-5b83-11eb-80b0-12b6a099270b",
-      "AmplifyAppId": "d3rqlvpc7nqdj5"
-    },
-    "categories": {
-      "hosting": {
-        "amplifyhosting": {
-          "appId": "d3rqlvpc7nqdj5",
-          "type": "cicd"
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-savourdashboard-dev-85658-authRole",
+            "UnauthRoleArn": "arn:aws:iam::020530118966:role/amplify-savourdashboard-dev-85658-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::020530118966:role/amplify-savourdashboard-dev-85658-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-savourdashboard-dev-85658-deployment",
+            "UnauthRoleName": "amplify-savourdashboard-dev-85658-unauthRole",
+            "StackName": "amplify-savourdashboard-dev-85658",
+            "StackId": "arn:aws:cloudformation:us-east-1:020530118966:stack/amplify-savourdashboard-dev-85658/dbbd5310-e706-11eb-8b36-1260e6a1f297",
+            "AmplifyAppId": "d3883sjdc4zj2p"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "d3883sjdc4zj2p",
+                    "type": "cicd"
+                }
+            }
         }
-      },
-      "auth": {
-        "vendordashboard972ec46c": {}
-      }
     }
-  }
 }
