@@ -166,8 +166,8 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
           name: businessName,
           paymentMethod: paymentMethod.id,
           subscriptions: {
-            recurring: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
-            usage: "price_1IV8SPFdZgF3d0XeK1qX4bW1",
+            recurring: config.stripe.RECURRING_ID,
+            usage: config.stripe.USAGE_ID,
           }
         }),
         UpdateBusinessUser({
@@ -246,7 +246,7 @@ const InternalAddBusinessModal = injectStripe(_AddBusinessModal)
 
 const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
   return (
-    <StripeProvider apiKey={config.STRIPE_KEY}>
+    <StripeProvider apiKey={config.stripe.API_KEY}>
       <Elements>
         <InternalAddBusinessModal {...props}/>
       </Elements>

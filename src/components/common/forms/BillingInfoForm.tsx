@@ -76,12 +76,12 @@ export const BillingInfoForm: React.FC<IBillingInfoForm> = props => {
         <List>
           <ListItem>
             <Typography variant="body1">
-              &#8226; $40/month subscription fee
+              &#8226; $45/month subscription fee
             </Typography>
           </ListItem>
           <ListItem>
             <Typography variant="body1">
-              &#8226; $0.01 for every message sent
+              &#8226; $0.02 for every message sent
             </Typography>
           </ListItem>
         </List>

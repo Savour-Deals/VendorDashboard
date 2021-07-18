@@ -9,7 +9,11 @@ interface Config {
     REGION: string,
     URL: string
   },
-  STRIPE_KEY: string
+  stripe: {
+    API_KEY: string,
+    RECURRING_ID: string,
+    USAGE_ID: string
+  }
 }
 
 const dev: Config = {
@@ -23,7 +27,11 @@ const dev: Config = {
     REGION: "us-east-1",
     URL: "https://6zs6jwpnw5.execute-api.us-east-1.amazonaws.com/dev"
   },
-  STRIPE_KEY: "pk_test_PvociWFfxr6L1cjqbkYXVhkm003Rm6oZNW"
+  stripe: {
+    API_KEY: "pk_test_PvociWFfxr6L1cjqbkYXVhkm003Rm6oZNW",
+    RECURRING_ID: "price_1IR58xFdZgF3d0Xe5IaMr0KY",
+    USAGE_ID: "price_1IV8SPFdZgF3d0XeK1qX4bW1" 
+  }
 }
 
 const prod: Config = {
@@ -37,7 +45,11 @@ const prod: Config = {
     REGION: "us-east-1",
     URL: "https://waujulq2ic.execute-api.us-east-1.amazonaws.com/prod"
   },
-  STRIPE_KEY: "pk_live_zwDKo1RWSPCdp4N2ZWtS7nKV007mQ54KkY"
+  stripe: {
+    API_KEY: "pk_live_zwDKo1RWSPCdp4N2ZWtS7nKV007mQ54KkY",
+    RECURRING_ID: "price_1JEdacFdZgF3d0XeBj1s70YQ",
+    USAGE_ID: "price_1JEdiVFdZgF3d0XecdPYnZYf" 
+  }
 }
 
 const config = process.env.REACT_APP_STAGE === "prod" ? prod : dev;
