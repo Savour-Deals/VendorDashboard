@@ -9,8 +9,8 @@ import {
 	IconButton,
 	Grid
 } from "@material-ui/core";
-import React, { useState } from "react";
-import Business from "../../model/business";
+import React, { useMemo, useState } from "react";
+import Business, { SubscriberInfo } from "../../model/business";
 import EditIcon from "@material-ui/icons/Edit";
 import BusinessEditModal from "./BusinessEditModal";
 
@@ -37,6 +37,13 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 
 	const [modalOpen, setModalOpen] = useState(false);
 
+	const subscriberCount = useMemo(() => {
+    if (business.subscriberMap) {
+      let subscribedUsers = Object.values(business.subscriberMap).filter((v: SubscriberInfo) => v.subscribed);
+      return subscribedUsers.length;
+    }
+    return 0;
+  }, [business]);
 
   return (
 		<>
@@ -63,7 +70,7 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 				<ListItemText primary="Phone number" secondary={business.messagingNumber}/>
 			</ListItem>
 			<ListItem>
-				<ListItemText primary="Number of subscribers" secondary={Object.keys(business.subscriberMap).length}/>
+				<ListItemText primary="Number of subscribers" secondary={subscriberCount}/>
 			</ListItem>
 			</List>
 			<BusinessEditModal
