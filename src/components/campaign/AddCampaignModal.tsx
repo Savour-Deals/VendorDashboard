@@ -19,7 +19,7 @@ import {
   Tab
 } from "@material-ui/core";
 
-import Business from "../../model/business";
+import Business, { SubscriberInfo } from "../../model/business";
 import Campaign from "../../model/campaign";
 import { CreateCampaignRequest, CreateCampaign } from "../../accessor/Message";
 
@@ -126,7 +126,11 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
   const costPerMessage = 0.02;
   const perMessageCost = numberToCurrency(costPerMessage);
   const subscriberCount = useMemo(() => {
-    return selectedBusiness.subscriberMap ? Object.keys(selectedBusiness.subscriberMap).length : 0;
+    if (selectedBusiness.subscriberMap) {
+      let subscribedUsers = Object.values(selectedBusiness.subscriberMap).filter((v: SubscriberInfo) => v.subscribed);
+      return subscribedUsers.length;
+    }
+    return 0;
   }, [selectedBusiness]);
 
   const totalCost = useMemo(() => {
@@ -316,7 +320,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                 Cancel
             </Button>
             <Button
-              disabled={loading}
+              disabled={loading || subscriberCount === 0}
               variant="contained"
               className={styles.actionButton}
               onClick={createCampaign}>
