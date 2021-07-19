@@ -16,7 +16,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Tab
+  Tab,
+  InputAdornment
 } from "@material-ui/core";
 
 import Business, { SubscriberInfo } from "../../model/business";
@@ -178,7 +179,7 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
     const createCampaignRequest: CreateCampaignRequest = {
       message: selectedTab === MessageTabs.PRESELECTED ? preselectMessage! : customMessage!!,
       campaignName,
-      link: messageUrl,
+      link: messageUrl ? "https://" + messageUrl : undefined,
       businessId: selectedBusiness!.id,
       campaignDateTimeUtc: selectedDate!.toISOString(),
     };
@@ -272,11 +273,14 @@ const AddCampaignModal: React.FC<IAddCampaignModal> = props => {
                 className={styles.fullFormField}
               />
               <TextField
-                label="Link included in message (optional)"
+                label="Web URL (optional)"
                 value={messageUrl}
                 onChange={handleMessageUrlChange}
                 variant="outlined"
                 className={styles.fullFormField}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">https://</InputAdornment>,
+                }}
               />
             </TabPanel>
           </TabContext>
