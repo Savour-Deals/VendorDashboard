@@ -6,7 +6,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 
 import Business from '../../model/business';
 import { MessageInputForm } from '../common/forms/MessageInputForm';
-import { COLORS } from '../../constants/Constants';
+import { Colors } from '../../constants/Constants';
 
 interface IBusinessModal {
   business: Business;
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     width: "inherit",
   },
   button: {
-    backgroundColor: COLORS.primary.light,
+    backgroundColor: Colors.primary.light,
     color: "white",
     margin: theme.spacing(2),
   },

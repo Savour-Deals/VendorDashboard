@@ -9,7 +9,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 
 import { SendMessage } from '../../accessor/Message';
 import Business from '../../model/business';
-import { COLORS } from '../../constants/Constants';
+import { Colors } from '../../constants/Constants';
 import Loader from 'react-loader-spinner';
 import { MessageInputForm } from '../common/forms/MessageInputForm';
 
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     width: "inherit",
   },
   button: {
-    backgroundColor: COLORS.primary.light,
+    backgroundColor: Colors.primary.light,
     color: "white",
     margin: theme.spacing(2),
   },
@@ -147,7 +147,7 @@ const BusinessModal: React.FC<IBusinessModal> = props => {
                     Save
                   </Button>
                   <Dialog open={loading}>
-                    <Loader type="ThreeDots" color={COLORS.primary.light} height={100} width={100}/>
+                    <Loader type="ThreeDots" color={Colors.primary.light} height={100} width={100}/>
                   </Dialog>
                 </CardContent>
               </Card>

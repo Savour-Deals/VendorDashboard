@@ -15,6 +15,7 @@ import { GetBusinesses } from "./accessor/Business";
 import BusinessUser from "./model/businessUser";
 import { HomePage } from "./components/home/HomePage";
 import config from "./config";
+
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,

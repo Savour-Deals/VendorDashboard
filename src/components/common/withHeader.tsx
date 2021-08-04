@@ -2,11 +2,14 @@ import React from "react";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { useSpring, animated } from 'react-spring';
 import { Header } from './Header';
+import { Colors } from "../../constants/Constants";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
+      backgroundColor: Colors.background.dark,
+      minHeight: '100vh'
     },
     paper: {
       padding: theme.spacing(2),

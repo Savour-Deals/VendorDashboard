@@ -1,4 +1,4 @@
-import { COLORS } from "../constants/Constants"
+import { Colors } from "../constants/Constants"
 
 export default interface Campaign {
 	id: string,
@@ -28,8 +28,8 @@ export const CampaignStatusText = {
 }
 
 export const CampaignStatusColors = {
-	[CampaignStatus.SCHEDULED]: COLORS.warning.light,
-	[CampaignStatus.SCHEDULING_FAILED]: COLORS.error.light,
-	[CampaignStatus.SENT]: COLORS.success.light,
-	[CampaignStatus.SENDING_FAILED]: COLORS.error.light
+	[CampaignStatus.SCHEDULED]: Colors.warning.light,
+	[CampaignStatus.SCHEDULING_FAILED]: Colors.error.light,
+	[CampaignStatus.SENT]: Colors.success.light,
+	[CampaignStatus.SENDING_FAILED]: Colors.error.light
 }

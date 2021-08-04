@@ -10,8 +10,10 @@ import { useHistory } from "react-router-dom";
 import { Toolbar } from "@material-ui/core";
 import HomeIcon from '@material-ui/icons/Home';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-const drawerWidth = 240;
+import { Colors } from "../../constants/Constants";
+import { LightTextTypography } from "./Typography";
 
+const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) => createStyles({
     fullList: {
       width: 'auto',
@@ -19,15 +21,20 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
+
     },
     drawerPaper: {
       width: drawerWidth,
+      backgroundColor: `${Colors.appBar.dark}`,
     },
     drawerContainer: {
       overflow: 'auto',
     },
     sidebar: {
       padding: theme.spacing(4),
+    },
+    icon: {
+      color: Colors.text.light,
     }
   })
 );
@@ -59,15 +66,19 @@ export const SideBar: React.FC<SideBarProps> = (props) => {
       <List>
         <ListItem button key={"campaigns"} onClick={() => history.push("/home")}>
           <ListItemIcon>
-            <HomeIcon/>
+            <HomeIcon className={styles.icon}/>
           </ListItemIcon>
-          <ListItemText primary={"Home"} />
+          <ListItemText>
+            <LightTextTypography>Home</LightTextTypography>
+          </ListItemText>
         </ListItem>
         <ListItem button key={"logout"} onClick={handleSignOut}>
           <ListItemIcon>
-            <ExitToAppIcon/>
+            <ExitToAppIcon className={styles.icon}/>
           </ListItemIcon>
-          <ListItemText primary={"Log Out"} />
+          <ListItemText>
+            <LightTextTypography>Log out</LightTextTypography>
+          </ListItemText>
         </ListItem>
       </List>
     </div>

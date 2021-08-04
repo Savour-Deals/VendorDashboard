@@ -30,7 +30,7 @@ import { CreateBusiness } from "../../../accessor/Business";
 import { CreateSubscription } from "../../../accessor/Payment";
 import Business, { SubscriberInfo } from "../../../model/business";
 import Campaign from "../../../model/campaign";
-import { COLORS } from "../../../constants/Constants";
+import { Colors } from "../../../constants/Constants";
 import config from "../../../config";
 import { UpdateBusinessUser } from "../../../accessor/BusinessUser";
 import BusinessUser from "../../../model/businessUser";
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     button: {
-      backgroundColor: COLORS.primary.light,
+      backgroundColor: Colors.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
@@ -199,7 +199,7 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
       </DialogTitle>
       <DialogContent className={styles.cardContent} >
         <Dialog open={isLoading}>
-          <Loader type="ThreeDots" color={COLORS.primary.light} height={100} width={100}/>
+          <Loader type="ThreeDots" color={Colors.primary.light} height={100} width={100}/>
         </Dialog>
         <form>
             <BusinessInfoForm

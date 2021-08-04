@@ -2,7 +2,6 @@ import {
 	createStyles,
 	makeStyles,
 	Theme,
-	Typography,
 	ListItem,
 	ListItemText,
 	List,
@@ -13,6 +12,8 @@ import React, { useMemo, useState } from "react";
 import Business, { SubscriberInfo } from "../../model/business";
 import EditIcon from "@material-ui/icons/Edit";
 import BusinessEditModal from "./BusinessEditModal";
+import { Colors } from "../../constants/Constants";
+import { LightTextTypography } from "../common/Typography";
 
 
 interface IBusinessDetails {
@@ -25,6 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
 		title: {
       padding: theme.spacing(2),
     },
+		icon: {
+			color: Colors.text.light
+		}
   }),
 );
 
@@ -47,30 +51,35 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 
   return (
 		<>
-			<Grid container spacing={2}>
-				<Grid item xs={11}>
-					<Typography variant="h3" className={styles.title}>
+			<Grid container direction="row" justify="flex-start" alignItems="center">
+				<Grid item >
+					<LightTextTypography variant="h3" className={styles.title}>
 						{business.businessName}
-					</Typography>
+					</LightTextTypography>
 				</Grid>	
-				<Grid item xs={1}>
+				<Grid item >
 					<IconButton
-						onClick={() => openModal()}
-					>
-						<EditIcon/>
+						onClick={() => openModal()}>
+						<EditIcon className={styles.icon}/>
 					</IconButton>
 				</Grid>
 			</Grid>
 
 			<List>
 			<ListItem>
-				<ListItemText primary="Address" secondary={business.address}/>
+				<ListItemText 
+					primary={<LightTextTypography>Address</LightTextTypography>} 
+					secondary={<LightTextTypography>{business.address}</LightTextTypography>}/>
 			</ListItem>
 			<ListItem>
-				<ListItemText primary="Phone number" secondary={business.messagingNumber}/>
+				<ListItemText 
+					primary={<LightTextTypography>Phone number</LightTextTypography>} 
+					secondary={<LightTextTypography>{business.messagingNumber}</LightTextTypography>}/>
 			</ListItem>
 			<ListItem>
-				<ListItemText primary="Number of subscribers" secondary={subscriberCount}/>
+				<ListItemText 
+					primary={<LightTextTypography>Number of subscribers</LightTextTypography>} 
+					secondary={<LightTextTypography>{subscriberCount}</LightTextTypography>}/>
 			</ListItem>
 			</List>
 			<BusinessEditModal

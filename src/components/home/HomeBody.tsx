@@ -1,21 +1,21 @@
 import React, { useState, useCallback } from "react";
 
 import Alert from "@material-ui/lab/Alert/Alert";
-import { Button, Typography} from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { Loading } from "../common/Loading";
 import Business from "../../model/business";
 
 import { AuthenticatedPageProperties } from "../../model/page";
-import { COLORS } from "../../constants/Constants";
+import { Colors } from "../../constants/Constants";
 import AddBusinessModal from "../business/addbusiness/AddBusinessModal";
 import { Redirect } from "react-router-dom";
+import { LightTextTypography } from '../common/Typography';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
       textAlign: "center",
       alignItems: "center",
       alignContent: "center",
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
         height:"auto",
     },
     button: {
-      backgroundColor: COLORS.primary.light,
+      backgroundColor: Colors.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
@@ -87,9 +87,9 @@ export const HomeBody: React.FC<AuthenticatedPageProperties> = props => {
       } 
       {(!businesses || businesses.length === 0) &&
         <>
-          <Typography variant="h4" >
+          <LightTextTypography variant="h4" >
             Add a business to start sending campaigns to your subscribers.
-          </Typography>
+          </LightTextTypography>
           <Button 
             variant="contained"   
             className={styles.button} 

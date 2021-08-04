@@ -9,13 +9,16 @@ import {
 	Theme,
 } from "@material-ui/core";
 import React, { useMemo } from "react";
+import { Colors } from "../../../constants/Constants";
 import Campaign from "../../../model/campaign";
+import { LightTextTypography } from "../../common/Typography";
 import { CampaignRow } from "./CampaignRow";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       overflow: "scroll",
+			backgroundColor: `${Colors.background.dark}`
 		},
   })
 );
@@ -47,10 +50,26 @@ export const CampaignTable: React.FC<IAddCampaignTable> = props => {
 				aria-label="campaign table">
         <TableHead>
           <TableRow>
-            <TableCell>Title</TableCell>
-            <TableCell >{dateTimeTitle}</TableCell>
-            <TableCell >Status</TableCell>
-            <TableCell >Message</TableCell>
+            <TableCell>
+							<LightTextTypography>
+								Title
+							</LightTextTypography>
+						</TableCell>
+            <TableCell>
+							<LightTextTypography>
+								{dateTimeTitle}
+							</LightTextTypography>
+						</TableCell>
+            <TableCell>
+							<LightTextTypography>
+								Status
+							</LightTextTypography>
+						</TableCell>
+            <TableCell>
+							<LightTextTypography>
+								Message
+							</LightTextTypography>
+						</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
