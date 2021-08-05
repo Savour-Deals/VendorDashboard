@@ -49,6 +49,21 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
     return 0;
   }, [business]);
 
+	const phoneNumber = useMemo(() => {
+			if (!business.messagingNumber) {
+				return undefined;
+			}
+			
+			let match = business.messagingNumber.match(/^(\+?\d{1,3}|\d{1,4})?(\d{3})(\d{3})(\d{4})$/);
+			//Try to format number in more friendly way
+			if (match) {
+				const start = match[1] ? `${match[1]} (` : '(';
+				return [start, match[2], ')-', match[3], '-', match[4]].join('')
+			}
+			// Otherwise fallback to original
+			return business.messagingNumber;
+	}, [business])
+
   return (
 		<>
 			<Grid container direction="row" justify="flex-start" alignItems="center">
@@ -74,7 +89,7 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 			<ListItem>
 				<ListItemText 
 					primary={<LightTextTypography>Phone number</LightTextTypography>} 
-					secondary={<LightTextTypography>{business.messagingNumber}</LightTextTypography>}/>
+					secondary={<LightTextTypography>{phoneNumber}</LightTextTypography>}/>
 			</ListItem>
 			<ListItem>
 				<ListItemText 
