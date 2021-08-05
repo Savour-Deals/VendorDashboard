@@ -32,7 +32,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import { TabContext, TabList, TabPanel } from '@material-ui/lab';
-import { COLORS } from "../../constants/Constants";
+import { Colors } from "../../constants/Constants";
 import { secondsToFuzzy } from '../../utils/customHooks/timeUtils';
 import { numberToCurrency } from '../../utils/formatters/currencyFormatter';
 
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.grey[500],
     },
     actionButton: {
-      backgroundColor: COLORS.primary.light,
+      backgroundColor: Colors.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },

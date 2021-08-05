@@ -7,7 +7,20 @@ export const DateTimeFormat = {
 	SHORT_LOCALIZED_DATE_TIME: 'llll'
 }
 
-export const COLORS = {
+export const Colors = {
+	appBar: {
+		dark: "#121314"
+	},
+	background: {
+		dark: "#282829"
+	},
+	card: {
+		dark: "#414141"
+	},
+	text: {
+		dark: "#000000",
+		light: "#ffffff",
+	},
 	primary: {
 		light: '#49abaa'
 	},

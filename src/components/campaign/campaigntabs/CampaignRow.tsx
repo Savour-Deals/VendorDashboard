@@ -8,6 +8,7 @@ import { CampaignTableType } from "./CampaignTable";
 import { DateTimeFormat } from "../../../constants/Constants";
 import Chip from '@material-ui/core/Chip';
 import moment from 'moment-timezone';
+import { LightTextTypography } from "../../common/Typography";
 
 interface IAddCampaignTableRow {
   campaign: Campaign;
@@ -22,9 +23,15 @@ export const CampaignRow: React.FC<IAddCampaignTableRow> = (props: IAddCampaignT
   return (
 		<TableRow key={campaign.id}>
 			<TableCell component="th" scope="row">
-				{campaign.campaignName}
+				<LightTextTypography>
+					{campaign.campaignName}
+				</LightTextTypography>
 			</TableCell>
-			<TableCell >{moment.tz(campaign.campaignDateTimeUtc, tz).format(DateTimeFormat.SHORT_LOCALIZED_DATE_TIME)}</TableCell>
+			<TableCell >
+				<LightTextTypography>
+				{moment.tz(campaign.campaignDateTimeUtc, tz).format(DateTimeFormat.SHORT_LOCALIZED_DATE_TIME)}
+				</LightTextTypography>
+			</TableCell>
 			<TableCell >
 				<Chip 
 					color='primary' 
@@ -32,7 +39,9 @@ export const CampaignRow: React.FC<IAddCampaignTableRow> = (props: IAddCampaignT
 					label={CampaignStatusText[campaign.campaignStatus]}/>
 			</TableCell>
 			<TableCell >
-				{campaign.message}
+				<LightTextTypography>
+					{campaign.message}
+				</LightTextTypography>
 			</TableCell>
 		</TableRow>
   )

@@ -1,51 +1,22 @@
 import React, { ChangeEvent, useState } from 'react';
 import { animated, useSpring } from 'react-spring';
-import Background from "../../assets/img/brand/vendorbackground.jpg";
-import LogoWhite from "../../assets/img/brand/Savour_White.png";
+import Logo from "../../assets/img/brand/logo_white.png";
+import Landing from "../../assets/img/brand/landing.png";
 import { 
   Card, 
-  makeStyles, 
-  createStyles, 
-  Theme, 
-  CardMedia,
   CardContent,
   Button,
+  Grid,
 } from "@material-ui/core";
 import { TextField } from '@material-ui/core';
 import { Auth } from "aws-amplify";
 import { useHistory } from 'react-router-dom';
-import { COLORS } from "../../constants/Constants";
+import { accountPageStyles } from "./AccountStyles";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      margin: theme.spacing(3),
-      display: "inline-block",
-    },
-    root: {
-      textAlign: "center",
-      padding: theme.spacing(1),
-      backgroundImage: `url(${Background})`,
-      position: 'fixed',
-      width: '100%',
-      height: '100%',
-      backgroundSize: 'cover',
-    },
-    img: {
-      width: "100%",
-      height: 125,
-      backgroundColor: COLORS.primary.light,
-    },
-    button: {
-      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-      color: "white",
-      margin: theme.spacing(2),
-    },
-  }),
-);
+  
 const ResetAccount: React.FC = () => {
 
-  const styles = useStyles();
+  const styles = accountPageStyles();
   const springProps = useSpring({opacity: 1, from: {opacity: 0}});
   const history = useHistory();
 
@@ -64,28 +35,53 @@ const ResetAccount: React.FC = () => {
   }
 
   return(
-    <animated.div className={styles.root} style={springProps}>
-      <Card className={styles.card}>
-      <CardMedia
-          className={styles.img}
-          image={LogoWhite}
-          title="logo"
-        />
-        <CardContent>
-          <TextField
-            label="Enter Email"
-            type="email"
-            onChange={handleEmailChange}
-          />
-          <Button
-              variant="contained"
-              className={styles.button}
-              onClick={handleSubmit}
-            >
-              Send Password
-            </Button>
-        </CardContent>
-      </Card>
+    <animated.div 
+      className={styles.root} 
+      style={springProps}>
+      <Grid
+        container 
+        direction="column"
+        justify="space-around"
+        className={styles.grid}>
+        <Grid item xs={12} >
+          <img 
+            src={Landing} 
+            className={styles.landingImage} 
+            alt="start engaging your audience"/>
+        </Grid>
+        <Grid item xs={12}>
+          <Card 
+            className={styles.card}>
+            <CardContent>
+              <Grid 
+                container 
+                spacing={2}  
+                direction="column">
+              <Grid item xs={12}>
+                <TextField
+                  label="Enter Email"
+                  type="email"
+                  onChange={handleEmailChange}/>
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  className={styles.button}
+                  onClick={handleSubmit}>
+                  Send Password
+                </Button>
+              </Grid>
+            </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid container justify="flex-end">
+          <img 
+            src={Logo} 
+            className={styles.logo} 
+            alt="savour messaging logo"/>
+        </Grid>
+      </Grid>
     </animated.div>
   );
 }
