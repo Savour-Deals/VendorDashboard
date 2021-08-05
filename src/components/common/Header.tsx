@@ -6,18 +6,26 @@ import { Menu } from "@material-ui/icons";
 
 import { SideBar } from "./SideBar";
 
-import LogoWhite from "../../assets/img/brand/Savour_White.png";
+import LogoWhite from "../../assets/img/brand/logo_white.png";
+import { Colors } from "../../constants/Constants";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    grid: {
+      justifyContent: 'left',
+      [theme.breakpoints.up('sm')]: {
+        padding: theme.spacing(1)
+      },
+    },
     img: {
-      maxWidth:"15%",
-      height:"auto",
+      maxHeight:"5vh",
+      maxWidth:"80vw",
     },
     appBar: {
+      width: '100vw',
       zIndex: theme.zIndex.drawer + 1,
-      backgroundColor: "#49ABAA",
+      backgroundColor: `${Colors.appBar.dark}`,
     },
     drawer: {
       width: drawerWidth,
@@ -30,12 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-      [theme.breakpoints.up('sm')]: {
-        display: 'none',
-      },
-    },
+    icon: {
+      color: Colors.text.light,
+    }
   }),
 );
 
@@ -54,16 +59,16 @@ export const Header: React.FC = () => {
   return (
     <>
       <AppBar position="sticky" className={classes.appBar}>
-        <Grid container  spacing={1} direction="row"  alignItems="center" justify="center">
+        <Grid container direction="row" className={classes.grid} alignItems="center">
           <Hidden mdUp >
-            <Grid item xs={6}>
-              <IconButton             
+            <Grid item >
+              <IconButton         
                 onClick={handleDrawerToggle}>
-                  <Menu/>
+                <Menu className={classes.icon}/>
               </IconButton>
             </Grid>
           </Hidden>
-          <Grid item xs={6}>
+          <Grid item >
             <img src={LogoWhite} className={classes.img} alt="savour logo"/>
           </Grid>
         </Grid>

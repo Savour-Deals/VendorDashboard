@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert/Alert";
-import { Button, Divider, Typography } from "@material-ui/core";
+import { Button, Divider } from "@material-ui/core";
 
 import { AuthenticatedPageProperties } from "../../model/page";
 import Business from "../../model/business";
@@ -14,23 +14,22 @@ import { BusinessDetails } from "../business/BusinessDetails";
 import { BusinessCarousel } from "../business/BusinessCarousel";
 import AddBusinessModal from "../business/addbusiness/AddBusinessModal";
 import { Loading } from "../common/Loading";
-import { COLORS } from "../../constants/Constants";
+import { Colors } from "../../constants/Constants";
 
 import { UpdateBusiness } from "../../accessor/Business";
+import { LightTextTypography } from '../common/Typography';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
       paddingLeft: 250,
       [theme.breakpoints.down('sm')]: {
         paddingLeft: theme.spacing(1),
       },
-      padding: theme.spacing(1),
       ...theme.mixins.toolbar
     },
     button: {
-      backgroundColor: COLORS.primary.light,
+      backgroundColor: Colors.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
@@ -96,9 +95,9 @@ export const HomePage: React.FC<AuthenticatedPageProperties> = props => {
     <div className={styles.root}>
       {(businesses.length === 0) &&
         <>
-          <Typography variant="h4" >
+          <LightTextTypography variant="h4" >
             Add a business to start sending campaigns to your subscribers.
-          </Typography>
+          </LightTextTypography>
           <Button 
             variant="contained"   
             className={styles.button} 

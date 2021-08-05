@@ -3,7 +3,6 @@ import {
 	makeStyles,
 	Theme,
 	Tab,
-	Typography,
 	Button,
 	CircularProgress,
 } from "@material-ui/core";
@@ -13,8 +12,9 @@ import moment from "moment";
 import React, { ChangeEvent, useMemo } from "react";
 import { useState } from "react";
 
-import { COLORS } from "../../../constants/Constants";
+import { Colors } from "../../../constants/Constants";
 import Campaign from "../../../model/campaign";
+import { LightTextTypography } from "../../common/Typography";
 import { CampaignTable, CampaignTableType } from "./CampaignTable";
 
 interface IAddCampaignTabs {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
     },
 		button: {
-      backgroundColor: COLORS.primary.light,
+      backgroundColor: Colors.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
@@ -53,7 +53,7 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 
   return (
 		<>
-			<Typography variant="h3" className={styles.title}>
+			<LightTextTypography variant="h3" className={styles.title}>
 				Campaigns           
 				{!loading && 
 					<Button 
@@ -62,21 +62,24 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 						<AddIcon/> Create Campaign
 					</Button>
 				}
-			</Typography>
+			</LightTextTypography>
 			<br/>
 			<TabContext value={selectedTab}>
 				<TabList 
-					onChange={onTabChange}
-					>
-					<Tab value="0" label="Upcoming and in-progress"/>
-					<Tab value="1" label="Past"/>
+					onChange={onTabChange}>
+					<Tab 
+						value="0" 
+						label={<LightTextTypography>Upcoming and in-progress</LightTextTypography>}/>
+					<Tab 
+						value="1" 
+						label={<LightTextTypography>Past</LightTextTypography>}/>
 				</TabList>
 				<TabPanel style={{width: '90%'}} value="0">
 					{loading &&
 						<>
-							<Typography variant="subtitle1">
+							<LightTextTypography variant="subtitle1">
 								Loading Campaigns...
-							</Typography>
+							</LightTextTypography>
 							<CircularProgress/>
 						</>
 					}
@@ -87,17 +90,17 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 						/>
 					}
 					{(!loading  && upcoming.length === 0) &&
-						<Typography variant="subtitle1">
+						<LightTextTypography variant="subtitle1">
 							No campaigns scheduled. Schedule a new campaign!
-						</Typography>
+						</LightTextTypography>
 					}
 				</TabPanel>
 				<TabPanel style={{width: '90%'}} value="1">
 					{loading &&
 						<>
-							<Typography variant="subtitle1">
+							<LightTextTypography variant="subtitle1">
 								Loading Campaigns...
-							</Typography>
+							</LightTextTypography>
 							<CircularProgress/>
 						</>
 					}
@@ -108,9 +111,9 @@ export const CampaignTabs: React.FC<IAddCampaignTabs> = props => {
 						/>
 					}
 					{(!loading && past.length === 0)&&
-						<Typography variant="subtitle1">
+						<LightTextTypography variant="subtitle1">
 							No campaigns have run. Schedule a new campaign!
-						</Typography>
+						</LightTextTypography>
 					}
 				</TabPanel>
 			</TabContext>

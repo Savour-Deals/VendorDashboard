@@ -3,7 +3,7 @@ import Carousel from "react-multi-carousel";
 
 import Business from "../../model/business";
 import CampaignBusinessCard from "../campaign/CampaignBusinessCard";
-import { COLORS } from "../../constants/Constants";
+import { Colors } from "../../constants/Constants";
 
 import 'react-multi-carousel/lib/styles.css';
 import Button from "@material-ui/core/Button";
@@ -12,7 +12,6 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core";
 
 const responsive = {
   superLargeDesktop: {
-    // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
     items: 5
   },
@@ -33,7 +32,7 @@ const responsive = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
 		button: {
-      backgroundColor: COLORS.primary.light,
+      backgroundColor: Colors.primary.light,
       color: "white",
       margin: theme.spacing(2),
     },
