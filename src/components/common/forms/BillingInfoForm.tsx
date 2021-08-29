@@ -10,12 +10,12 @@ import {
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
-import { CardElement } from "react-stripe-elements";
+import { CardElement, useElements } from "@stripe/react-stripe-js";
+import { StripeCardElement } from '@stripe/stripe-js';
 
 interface IBillingInfoForm {
   error?: string;
-  elements?: stripe.elements.Elements;
-  onCardChanged: (name: string, card?: stripe.elements.Element) => void;
+  onCardChanged: (name: string, card?: StripeCardElement) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => 
@@ -38,21 +38,22 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const BillingInfoForm: React.FC<IBillingInfoForm> = props => {
   const styles = useStyles();
-  const { error, elements, onCardChanged } = props;
+  const elements = useElements();
+  const { error, onCardChanged } = props;
 
   const [cardName, setCardName] = useState<string>(""); 
-  const [cardElement, setCardElement] = useState<stripe.elements.Element | undefined>();
+  const [cardElement, setCardElement] = useState<StripeCardElement | undefined>();
 
   function cardNameChange(event: ChangeEvent<HTMLInputElement>) {
     setCardName(event.target.value);
   }
 
-  function onElementChanged(_event: stripe.elements.ElementChangeResponse) {
+  function onElementChanged() {
     if (!elements) { 
       return;
     }
     
-    const cardElement = elements.getElement('card') ?? undefined;
+    const cardElement = elements.getElement(CardElement) ?? undefined;
     setCardElement(cardElement);
   }
 
@@ -105,8 +106,10 @@ export const BillingInfoForm: React.FC<IBillingInfoForm> = props => {
         <CardElement
           className={styles.cardField}
           onChange={onElementChanged}
-          style={{
-            base: { fontSize: "18px", fontFamily: '"Open Sans", sans-serif' }
+          options={{
+            style: {
+              base: { fontSize: "18px", fontFamily: '"Open Sans", sans-serif' }
+            }
           }}/>
       </ListItem>
     </List>

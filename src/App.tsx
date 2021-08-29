@@ -15,6 +15,8 @@ import { GetBusinesses } from "./accessor/Business";
 import BusinessUser from "./model/businessUser";
 import { HomePage } from "./components/home/HomePage";
 import config from "./config";
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from "@stripe/react-stripe-js";
 
 Amplify.configure({
   Auth: {
@@ -34,6 +36,9 @@ Amplify.configure({
     })
   }
 });
+
+const stripePromise = loadStripe(config.stripe.API_KEY);
+
 
 interface IApp {
   userContext: IUserContext;
@@ -90,7 +95,7 @@ const App: React.FC<IApp> = props => {
   };
 
   return (
-    <>
+    <Elements stripe={stripePromise}>
       <BrowserRouter>
         {userContext.isLoading && 
           <Loading/>
@@ -119,7 +124,7 @@ const App: React.FC<IApp> = props => {
           </>
         }
       </BrowserRouter>
-    </>
+    </Elements>
   );
 }
 

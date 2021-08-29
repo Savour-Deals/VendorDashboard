@@ -19,7 +19,8 @@ import {
 } from "@material-ui/core";
 import Dialog from '@material-ui/core/Dialog';
 
-import { Elements, injectStripe, StripeProvider } from "react-stripe-elements";
+import { StripeCardElement } from '@stripe/stripe-js';
+import { useStripe } from "@stripe/react-stripe-js";
 
 import Loader from "react-loader-spinner";
 import { v4 as uuidv4 } from 'uuid';
@@ -80,19 +81,15 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IAddBusinessModal {
   businessUser: BusinessUser;
   width: any;
-  stripe?: any;
-  elements?: any;
   onClose: (business?: Business) => void;
   onError: (error: string) => void;
 }
 
-const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
+const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
   const styles = useStyles();
 
   const { 
     businessUser,
-    stripe,
-    elements,
     onClose, 
     onError,
   } = props;
@@ -109,12 +106,14 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
   const userContext: IUserContext = useContext(UserContext);
 
   const [cardName, setCardName] = useState<string | undefined>();
-  const [cardElement, setCardElement] = useState<stripe.elements.Element | undefined>();
+  const [cardElement, setCardElement] = useState<StripeCardElement | undefined>();
   const [paymentError, setPaymentError] = useState<string>();
 
+  const stripe = useStripe();
 
 
-  const onCardChanged = useCallback((name: string, element?: stripe.elements.Element) => {
+
+  const onCardChanged = useCallback((name: string, element?: StripeCardElement) => {
     setCardName(name);
     setCardElement(element);
   }, []);
@@ -126,7 +125,7 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
   
   
   const createBusiness = async () => {
-    if (!cardElement || !cardName || !businessName || !address || !onboardMessage || !presetMessages) {
+    if (!cardElement || !cardName || !businessName || !address || !onboardMessage || !presetMessages || !stripe) {
       return 
     }
 
@@ -140,7 +139,7 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
       },
     });
 
-    if (error) {
+    if (error || !paymentMethod) {
       setPaymentError("There was an error processing your payment.");
       setIsLoading(false);
       return;
@@ -219,7 +218,6 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
             </List>
             <BillingInfoForm
               error={paymentError}
-              elements={elements}
               onCardChanged={onCardChanged}
             />
         </form>
@@ -239,18 +237,6 @@ const _AddBusinessModal: React.FC<IAddBusinessModal> = props => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-}
-
-const InternalAddBusinessModal = injectStripe(_AddBusinessModal)
-
-const AddBusinessModal: React.FC<IAddBusinessModal> = props => {
-  return (
-    <StripeProvider apiKey={config.stripe.API_KEY}>
-      <Elements>
-        <InternalAddBusinessModal {...props}/>
-      </Elements>
-    </StripeProvider>
   );
 }
 

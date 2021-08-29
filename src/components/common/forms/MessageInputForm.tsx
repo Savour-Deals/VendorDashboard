@@ -6,6 +6,7 @@ import {
   TextField, 
   List, 
   ListItem, 
+  Typography,
   ListItemSecondaryAction } from "@material-ui/core";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -68,8 +69,17 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
   return ( 
     <List
       className={styles.root}>
-      <ListItem key={0}>Onboarding Message</ListItem>
+      <ListItem key={0}>
+        <Typography variant="body1">
+          Onboarding Message
+        </Typography>
+      </ListItem>
       <ListItem key={1}>
+        <Typography variant="body2">
+          This is the message customers will receive when they first subscribe to your messaging number. You can set a welcome message, give them information about you, or share a deal for subscribing.
+        </Typography>
+      </ListItem>
+      <ListItem key={2}>
         <TextField
           className={styles.textInput}
           label="Onboard Message"
@@ -77,8 +87,10 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
           value={props.onboardingMessage || ""}
           onChange={onOnboardingChange}/>
       </ListItem>
-      <ListItem key={2}>
-        Preset Messages
+      <ListItem key={3}>
+        <Typography variant="body1">
+          Preset Messages
+        </Typography>
         { props.presetMessages.length === 0 && 
           <IconButton 
             edge="end" 
@@ -87,8 +99,13 @@ export const MessageInputForm: React.FC<IMessageInputForm> = props => {
             <AddIcon/>
           </IconButton>}
       </ListItem>
+      <ListItem key={4}>
+        <Typography variant="body2">
+          These are messages you can set for quick and convenient campaigns. You can change these at anytime and let you create common campaigns you may want to send out frequently.
+        </Typography>
+      </ListItem>
       { props.presetMessages.map((message, index) => 
-        <ListItem key={3}>
+        <ListItem key={5}>
           <TextField
             className={styles.textInput}
             label= {`Preset message ${index}`}
