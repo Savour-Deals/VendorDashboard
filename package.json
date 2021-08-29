@@ -96,5 +96,8 @@
     "husky": "^4.2.5",
     "prettier": "1.19.1",
     "pretty-quick": "^2.0.1"
+  },
+  "resolutions": {
+    "babel-loader": "8.0.6"
   }
 }
