@@ -6,11 +6,13 @@ import {
 	ListItemText,
 	List,
 	IconButton,
-	Grid
+	Grid,
+	Tooltip
 } from "@material-ui/core";
+import EditIcon from '@material-ui/icons/Edit';
 import React, { useMemo, useState } from "react";
 import Business, { SubscriberInfo } from "../../model/business";
-import EditIcon from "@material-ui/icons/Edit";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import BusinessEditModal from "./BusinessEditModal";
 import { Colors } from "../../constants/Constants";
 import { LightTextTypography } from "../common/Typography";
@@ -66,7 +68,7 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 
   return (
 		<>
-			<Grid container direction="row" justify="flex-start" alignItems="center">
+			<Grid container direction="row" justifyContent="flex-start" alignItems="center">
 				<Grid item >
 					<LightTextTypography variant="h3" className={styles.title}>
 						{business.businessName}
@@ -79,22 +81,36 @@ export const BusinessDetails: React.FC<IBusinessDetails> = props => {
 					</IconButton>
 				</Grid>
 			</Grid>
-
 			<List>
 			<ListItem>
 				<ListItemText 
-					primary={<LightTextTypography>Address</LightTextTypography>} 
-					secondary={<LightTextTypography>{business.address}</LightTextTypography>}/>
+					primary={<LightTextTypography variant="h5">Address</LightTextTypography>} 
+					secondary={<LightTextTypography variant="body1">{business.address}</LightTextTypography>}/>
 			</ListItem>
 			<ListItem>
 				<ListItemText 
-					primary={<LightTextTypography>Phone number</LightTextTypography>} 
-					secondary={<LightTextTypography>{phoneNumber}</LightTextTypography>}/>
+					primary={
+						<>
+							<LightTextTypography variant="h5">Phone number</LightTextTypography>
+							<Tooltip 
+								title={
+									<LightTextTypography variant="body2">
+										This is the phone number your subscribers will receive messages from. Subscribers should text 'sub' to this number to start receiving messages.
+									</LightTextTypography>
+								}
+								arrow>
+								<IconButton aria-label="phone number help">
+									<HelpOutlineIcon className={styles.icon}/>
+								</IconButton>
+							</Tooltip>
+						</>
+					} 
+					secondary={<LightTextTypography variant="body1">{phoneNumber}</LightTextTypography>}/>
 			</ListItem>
 			<ListItem>
 				<ListItemText 
-					primary={<LightTextTypography>Number of subscribers</LightTextTypography>} 
-					secondary={<LightTextTypography>{subscriberCount}</LightTextTypography>}/>
+					primary={<LightTextTypography variant="h5">Number of subscribers</LightTextTypography>} 
+					secondary={<LightTextTypography variant="body1">{subscriberCount}</LightTextTypography>}/>
 			</ListItem>
 			</List>
 			<BusinessEditModal
