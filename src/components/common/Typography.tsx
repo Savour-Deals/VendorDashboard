@@ -1,13 +1,31 @@
-import { Typography, withStyles } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
+import React from "react";
 
-export const LightTextTypography = withStyles({
-  root: {
+const useStyles = makeStyles({
+  light: {
     color: "#FFFFFF"
-  }
-})(Typography);
-
-export const DarkTextTypography = withStyles({
-  root: {
+  },
+  dark: {
     color: "#000000"
   }
-})(Typography);
+});
+
+export const LightTextTypography = (props: any) => {
+  const styles = useStyles();
+  return <Typography 
+    component="span"
+    variant={props.variant} 
+    className={styles.light}>
+      {props.children}
+    </Typography>;
+};
+
+export const DarkTextTypography = (props: any) => {
+  const styles = useStyles();
+  return <Typography 
+    component="span" 
+    variant={props.variant} 
+    className={styles.dark}>
+      {props.children}
+    </Typography>;
+};

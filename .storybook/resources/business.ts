@@ -1,5 +1,6 @@
 export const business = {
 	id: "id",
+	messagingNumber: "6124812069",
 	businessName: "Test Business",
 	address: "3844 Chicago Ave, Minneapolis MN, 55407",
 	presetMessages: [
